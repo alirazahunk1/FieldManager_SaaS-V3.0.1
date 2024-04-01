@@ -1,0 +1,52 @@
+﻿@model IEnumerable<IpAddressModel>
+<div class="card">
+    <div class="card-header">
+        <h5> IP Addresses</h5>
+    </div>
+    <div class="card-body">
+        @if (Model.Any())
+        {
+            <table class="table table-striped" id="datatable">
+                <thead>
+                    <tr>
+                        <td>@Html.DisplayNameFor(x => x.Id)</td>
+                        <td>@Html.DisplayNameFor(x => x.IpAddress)</td>
+                        <td>@Html.DisplayNameFor(x => x.Name)</td>
+                        <td>@Html.DisplayNameFor(x => x.Description)</td>
+                        <td>@Html.DisplayNameFor(x => x.IsEnabled)</td>
+                        <td>@Html.DisplayNameFor(x => x.CreatedAt)</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="ps-2">@item.Id</td>
+                            <td>@item.IpAddress</td>
+                            <td>@item.Name</td>
+                            <td>@item.Description</td>
+                            <td>
+                                <div class="form-check form-switch">
+                                    @if (item.IsEnabled)
+                                    {
+                                        <input class="form-check-input" type="checkbox" checked onchange="changeStatusN(@item.Id)" />
+                                    }
+                                    else
+                                    {
+                                        <input class="form-check-input" type="checkbox" onchange="changeStatusN(@item.Id)" />
+                                    }
+                                </div>
+                            </td>
+                            <td>@item.CreatedAt</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+        }
+        else
+        {
+            <p>No Ip Address Added!</p>
+        }
+    </div>
+</div>

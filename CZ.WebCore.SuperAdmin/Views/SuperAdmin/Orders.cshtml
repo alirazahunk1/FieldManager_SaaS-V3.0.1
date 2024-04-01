@@ -1,0 +1,71 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@using ESSDataAccess.Models
+@using ESSWebPortal.Core.ViewModel.SuperAdmin
+@model IEnumerable<OrderVM>
+@{
+    ViewData["Title"] = "Orders";
+}
+<div class="row mb-3">
+    <div class="col">
+        <div class="float-start">
+            <h4 class="mt-2">@ViewData["Title"]</h4>
+        </div>
+    </div>
+    <div class="col">
+       
+    </div>
+</div>
+
+<div class="card">
+    <!-- /.card-header -->
+    <div class="card-body">
+        <table id="datatable" class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Order Id</th>
+                    <th>Description</th>
+                    <th>Tenant</th>
+                    <th>Plan</th>
+                    <th>Amount</th>
+                    <th>Order Status</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="ps-3">@item.Id</td>
+                        <td>@item.OrderId</td>
+                        <td>@item.Description</td>
+                        <td>@item.Tenant</td>
+                        <td>@item.Plan</td>
+                        <td>@item.Amount</td>
+                        <td>
+                            @if (item.status == SAOrderStatus.Success)
+                            {
+                                <span class="badge badge-phoenix fs--2 badge-phoenix-success"><span class="badge-label">Success</span><span class="ms-1" data-feather="check" style="height:12.8px;width:12.8px;"></span></span>
+                            }
+                            else if (item.status == SAOrderStatus.Pending)
+                            {
+                                <span class="badge badge-phoenix fs--2 badge-phoenix-warning"><span class="badge-label">Pending</span><span class="ms-1" data-feather="alert-octagon" style="height:12.8px;width:12.8px;"></span></span>
+                            }
+                            else if (item.status == SAOrderStatus.Created)
+                            {
+                                <span class="badge badge-phoenix fs--2 badge-phoenix-primary"><span class="badge-label">@item.status</span><span class="ms-1" data-feather="package" style="height:12.8px;width:12.8px;"></span></span>
+                            }
+                            else
+                            {
+
+                                <span class="badge badge-phoenix fs--2 badge-phoenix-danger"><span class="badge-label">@item.status</span><span class="ms-1" data-feather="x" style="height:12.8px;width:12.8px;"></span></span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <!-- /.card-body -->
+</div>
+<!-- /.card -->

@@ -1,0 +1,257 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@using ESSDataAccess.Tenant.Models;
+@using ESSWebPortal.Core.SuperAdmin
+@using ESSWebPortal.Core.ViewModel.Plan;
+@inject ISASettings _aASettings;
+@model PlanCreateUpdateVM
+
+@{
+    ViewData["Title"] = "Edit Plan";
+    ViewData["Back"] = true;
+    var moduleSettings = await _aASettings.GetModuleSettings();
+}
+
+<div class="row mb-3">
+    <div class="col">
+        <div class="float-start">
+            <h4 class="mt-2">@ViewData["Title"]</h4>
+        </div>
+    </div>
+    <div class="col">
+    </div>
+</div>
+<form asp-action="Edit" class="form-horizontal fs--1">
+    <input asp-for="Id" type="hidden" />
+    <input asp-for="CreatedAt" type="hidden" />
+    <input asp-for="UpdatedAt" type="hidden" />
+    <div class="card shadow">
+        <div class="card-body">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row">
+                <div class="col-4">
+                    <div class="form-group col mb-3">
+                        <label asp-for="Name" class="control-label"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col mb-3">
+                        <label asp-for="Description" class="control-label"></label>
+                        <input asp-for="Description" class="form-control" />
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col mb-3">
+                        <label asp-for="Price" class="control-label"></label>
+                        <input asp-for="Price" class="form-control" />
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col mb-3">
+                        <label asp-for="Type" class="control-label"></label>
+                        <select asp-for="Type" class="form-select">
+                            <option>@PlanType.Weekly</option>
+                            <option>@PlanType.Monthly</option>
+                            <option>@PlanType.Yearly</option>
+                        </select>
+                        <span asp-validation-for="Type" class="text-danger"></span>
+                    </div>
+                    <div class="form-check form-switch">
+                        <label>Is Promotional</label>
+                        <input class="form-check-input" asp-for="IsPromotional" type="checkbox" />
+                    </div>
+                </div>
+                <div class="col-8">
+                    <div class="card shadow-sm mb-3">
+                        <div class="card-header"><i class="bi bi-x-diamond"></i> Standard Options</div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col">
+                                    @if (moduleSettings.IsBiometricVerificationModuleEnabled)
+                                    {
+                                        <div class="form-check form-switch">
+                                            <label>@Html.DisplayNameFor(x => x.IsBiometricVerificationModuleEnabled)</label>
+                                            <input class="form-check-input" asp-for="IsBiometricVerificationModuleEnabled" type="checkbox" />
+                                        </div>
+                                    }
+                                    @if (moduleSettings.IsLeaveModuleEnabled)
+                                    {
+                                        <div class="form-check form-switch">
+                                            <label>@Html.DisplayNameFor(x => x.IsLeaveModuleEnabled)</label>
+                                            <input class="form-check-input" asp-for="IsLeaveModuleEnabled" type="checkbox" />
+                                        </div>
+                                    }
+                                    @if (moduleSettings.IsChatModuleEnabled)
+                                    {
+                                        <div class="form-check form-switch">
+                                            <label>@Html.DisplayNameFor(x => x.IsChatModuleEnabled)</label>
+                                            <input class="form-check-input" asp-for="IsChatModuleEnabled" type="checkbox" />
+                                        </div>
+                                    }
+                                    @if (moduleSettings.IsExpenseModuleEnabled)
+                                    {
+                                        <div class="form-check form-switch">
+                                            <label>@Html.DisplayNameFor(x => x.IsExpenseModuleEnabled)</label>
+                                            <input class="form-check-input" asp-for="IsExpenseModuleEnabled" type="checkbox" />
+                                        </div>
+                                    }
+                                    @if (moduleSettings.IsClientVisitModuleEnabled)
+                                    {
+                                        <div class="form-check form-switch">
+                                            <label>@Html.DisplayNameFor(x => x.IsClientVisitModuleEnabled)</label>
+                                            <input class="form-check-input" asp-for="IsClientVisitModuleEnabled" type="checkbox" />
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card shadow-sm mb-3">
+                        <div class="card-header"><i class="bi bi-gem"></i> Premium Addons</div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-4">
+                                    @if (moduleSettings.IsTaskModuleEnabled)
+                                    {
+                                        <div class="form-check form-switch">
+                                            <label>@Html.DisplayNameFor(x => x.IsTaskModuleEnabled)</label>
+                                            <input class="form-check-input" asp-for="IsTaskModuleEnabled" type="checkbox" />
+                                        </div>
+                                    }
+
+                                    @if (moduleSettings.IsProductModuleEnabled)
+                                    {
+                                        <div class="col">
+                                            <div class="form-check form-switch">
+                                                <label>@Html.DisplayNameFor(x => x.IsProductModuleEnabled)</label>
+                                                <input class="form-check-input" asp-for="IsProductModuleEnabled" type="checkbox" />
+                                            </div>
+                                        </div>
+                                    }
+                                    @if (moduleSettings.IsDynamicFormModuleEnabled)
+                                    {
+                                        <div class="form-check form-switch">
+                                            <label>@Html.DisplayNameFor(x => x.IsDynamicFormModuleEnabled)</label>
+                                            <input class="form-check-input" asp-for="IsDynamicFormModuleEnabled" type="checkbox" />
+                                        </div>
+                                    }
+                                    @if (moduleSettings.IsOfflineTrackingModuleEnabled)
+                                    {
+                                        <div class="form-check form-switch">
+                                            <label>@Html.DisplayNameFor(x => x.IsOfflineTrackingModuleEnabled)</label>
+                                            <input class="form-check-input" asp-for="IsOfflineTrackingModuleEnabled" type="checkbox" />
+                                        </div>
+                                    }
+                                    @if (moduleSettings.IsDataImportExportModuleEnabled)
+                                    {
+                                        <div class="form-check form-switch">
+                                            <label>@Html.DisplayNameFor(x => x.IsDataImportExportModuleEnabled)</label>
+                                            <input class="form-check-input" asp-for="IsDataImportExportModuleEnabled" type="checkbox" />
+                                        </div>
+                                    }
+                                </div>
+                                <div class="col-4">
+                                    @if (moduleSettings.IsNoticeModuleEnabled)
+                                    {
+                                        <div class="form-check form-switch">
+                                            <label>@Html.DisplayNameFor(x => x.IsNoticeModuleEnabled)</label>
+                                            <input class="form-check-input" asp-for="IsNoticeModuleEnabled" type="checkbox" />
+                                        </div>
+                                    }
+                                    @if (moduleSettings.IsDocumentModuleEnabled)
+                                    {
+                                        <div class="form-check form-switch">
+                                            <label>@Html.DisplayNameFor(x => x.IsDocumentModuleEnabled)</label>
+                                            <input class="form-check-input" asp-for="IsDocumentModuleEnabled" type="checkbox" />
+                                        </div>
+                                    }
+                                    @if (moduleSettings.IsLoanModuleEnabled)
+                                    {
+                                        <div class="form-check form-switch">
+                                            <label>@Html.DisplayNameFor(x => x.IsLoanModuleEnabled)</label>
+                                            <input class="form-check-input" asp-for="IsLoanModuleEnabled" type="checkbox" />
+                                        </div>
+                                    }
+                                    @if (moduleSettings.IsPaymentCollectionModuleEnabled)
+                                    {
+                                        <div class="form-check form-switch">
+                                            <label>@Html.DisplayNameFor(x => x.IsPaymentCollectionModuleEnabled)</label>
+                                            <input class="form-check-input" asp-for="IsPaymentCollectionModuleEnabled" type="checkbox" />
+                                        </div>
+                                    }
+                                    @if (moduleSettings.IsUidLoginModuleEnabled)
+                                    {
+                                        <div class="form-check form-switch">
+                                            <label>@Html.DisplayNameFor(x => x.IsUidLoginModuleEnabled)</label>
+                                            <input class="form-check-input" asp-for="IsUidLoginModuleEnabled" type="checkbox" />
+                                        </div>
+                                    }
+                                    @if (moduleSettings.IsBreakModuleEnabled)
+                                    {
+                                        <div class="form-check form-switch">
+                                            <label>@Html.DisplayNameFor(x => x.IsBreakModuleEnabled)</label>
+                                            <input class="form-check-input" asp-for="IsBreakModuleEnabled" type="checkbox" />
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card shadow-sm mb-3">
+                        <div class="card-header"><i class="bi bi-calendar-week"></i> Attendance Type</div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col">
+                                    @if (moduleSettings.IsGeofenceModuleEnabled)
+                                    {
+                                        <div class="form-check form-switch">
+                                            <label>@Html.DisplayNameFor(x => x.IsGeofenceModuleEnabled)</label>
+                                            <input class="form-check-input" asp-for="IsGeofenceModuleEnabled" type="checkbox" />
+                                        </div>
+                                    } @if (moduleSettings.IsQrCodeAttendanceModuleEnabled)
+                                    {
+                                        <div class="form-check form-switch">
+                                            <label>@Html.DisplayNameFor(x => x.IsQrCodeAttendanceModuleEnabled)</label>
+                                            <input class="form-check-input" asp-for="IsQrCodeAttendanceModuleEnabled" type="checkbox" />
+                                        </div>
+                                    } @if (moduleSettings.IsDynamicQrCodeAttendanceEnabled)
+                                    {
+                                        <div class="form-check form-switch">
+                                            <label>@Html.DisplayNameFor(x => x.IsDynamicQrCodeAttendanceEnabled)</label>
+                                            <input class="form-check-input" asp-for="IsDynamicQrCodeAttendanceEnabled" type="checkbox" />
+                                        </div>
+                                    } @if (moduleSettings.IsIpBasedAttendanceModuleEnabled)
+                                    {
+                                        <div class="form-check form-switch">
+                                            <label>@Html.DisplayNameFor(x => x.IsIpBasedAttendanceModuleEnabled)</label>
+                                            <input class="form-check-input" asp-for="IsIpBasedAttendanceModuleEnabled" type="checkbox" />
+                                        </div>
+                                    } @if (moduleSettings.IsSiteModuleEnabled)
+                                    {
+                                        <div class="form-check form-switch">
+                                            <label>@Html.DisplayNameFor(x => x.IsSiteModuleEnabled)</label>
+                                            <input class="form-check-input" asp-for="IsSiteModuleEnabled" type="checkbox" />
+                                        </div>
+                                    }
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary"> Update</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

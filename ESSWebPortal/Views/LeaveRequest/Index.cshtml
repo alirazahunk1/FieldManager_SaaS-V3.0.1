@@ -1,0 +1,182 @@
+﻿@model IEnumerable<ESSDataAccess.Models.LeaveRequestModel>
+@inject IDbSettings _settings;
+@{
+    ViewData["Title"] = "Leave Requests";
+    var apiBaseUrl = await _settings.GetApiBaseUrl();
+}
+<div class="card shadow">
+    <div class="card-header">
+        <div class="float-start">
+            <h4>@ViewData["Title"]</h4>
+        </div>
+    </div>
+    <div class="card-body">
+        <table id="datatable" class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Id)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.User)
+                    </th>
+                    <th>
+                        Leave Date
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.LeaveType)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.CreatedAt)
+                    </th>
+                    <th>
+                        Image
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Status)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Comments)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ApprovedBy)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ApprovedOn)
+                    </th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Id)
+                        </td>
+                        <td>
+                            @item.User.GetFullName()
+                        </td>
+                        <td>
+                            @if (item.FromDate == item.ToDate)
+                            {
+                                @item.FromDate.ToString("dd/MM/yyyy")
+                            }
+                            else
+                            {
+                                <div>
+                                    @item.FromDate.ToString("dd/MM/yyyy")
+                                    to @item.ToDate.ToString("dd/MM/yyyy")
+                                </div>
+
+                            }
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.LeaveType.Name)
+                        </td>
+                        <td>
+                            @item.CreatedAt.ToString("dd/MM/yyyy hh:mm tt")
+                        </td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(item.Document))
+                            {
+                                <img height="100" src="@(apiBaseUrl  + item.Document)">
+                            }
+                        </td>
+                        <td>
+                            @if (item.Status == LeaveRequestStatus.Pending)
+                            {
+                                <span class="badge bg-warning">Pending</span>
+                            }
+                            else if (item.Status == LeaveRequestStatus.Approved)
+                            {
+                                <span class="badge bg-success">Approved</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Rejected</span>
+                            }
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Comments)
+                        </td>
+                        <td>
+                            @if (item.Status == LeaveRequestStatus.Pending)
+                            {
+                                <span class="badge bg-warning">waiting for approval</span>
+                            }
+                            else
+                            {
+                                <p>@item.ApprovedBy</p>
+                            }
+                        </td>
+                        <td>
+                            @if (item.Status == LeaveRequestStatus.Pending)
+                            {
+                                <p>waiting for approval</p>
+                            }
+                            else
+                            {
+                                <p>@item.ApprovedOn.Value.ToString("dd/MM/yyyy hh:mm tt")</p>
+                            }
+                        </td>
+                        <td class="row">
+                            <div class="d-flex flex-row">
+                                @if (item.Status == LeaveRequestStatus.Pending)
+                                {
+
+                                    <div class="p-1"><a data-bs-toggle="tooltip" data-bs-placement="top" title="Approve" class="btn btn-success" asp-action="UpdateStatus" asp-route-id="@item.Id" asp-route-status="approve"><i class="fa fa-check"></i></a></div>
+                                    <div class="p-1"><a data-bs-toggle="tooltip" data-bs-placement="top" title="Reject" class="btn btn-danger" asp-action="UpdateStatus" asp-route-id="@item.Id" asp-route-status="reject"><i class="fa fa-times"></i></a></div>
+
+                                }
+                                <div class="p-1"><a data-bs-toggle="tooltip" data-bs-placement="top" title="Details" class="btn btn-secondary" onclick="getDetails(@item.Id)"><i class="fa fa-eye"></i></a></div>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+@section Scripts{
+    <script>
+        function getDetails(id) {
+            $.ajax({
+                type: "GET",
+                url: "LeaveRequest/DetailsAjax/" + id,
+                success: function (response) {
+                    setContent(response);
+                },
+                failure: function (response) {
+                    console.log(response.responseText);
+                },
+                error: function (response) {
+                    console.log(response.responseText);
+                }
+            });
+        }
+
+
+        function setContent(data) {
+
+            var content = `
+                    <table class="table table-striped">
+                    <tbody>
+                                    <tr> <td>Employee</td> <td>${data.user}</td> </tr>
+                                    <tr> <td>Period</td> <td>${data.fromDate} - ${data.toDate}</td> </tr>
+                                    <tr> <td>Leave Type</td> <td>${data.leaveType}</td> </tr>
+                                    <tr> <td>Comments</td> <td>${data.comments}</td> </tr>
+                                    <tr> <td>Approved By</td> <td>${data.approvedBy}</td> </tr>
+                                    <tr> <td>Approved On</td> <td>${data.approvedOn}</td> </tr>
+                                    <tr> <td>Status</td> <td>${data.status}</td> </tr>
+                                    <tr> <td>Requested On</td> <td>${data.createdAt}</td> </tr>
+                    </tbody>
+                    </table>
+                            `;
+            $('#modaltitle').text('Leave Details');
+            $("#modalbody").html(content);
+            $("#modal").modal('toggle');
+        }
+
+    </script>
+}

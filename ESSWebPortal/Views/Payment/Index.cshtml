@@ -1,0 +1,140 @@
+﻿@using ESSWebPortal.Core.ViewModel.Plan;
+@inject ISASettings settings;
+@model IEnumerable<PlanViewModel>
+@{
+    ViewData["Title"] = "Payment";
+    ViewData["islogin"] = true;
+    var defaultGateway = await settings.GetDefaultPaymentGateway();
+    var currencySymbol = await settings.GetCurrencySymbol();
+}
+<div class="row justify-content-end">
+    <div class="col">
+    </div>
+    <div class="col">
+        <form method="post" asp-controller="Auth" asp-action="Logout" class="mt-2 mb-2 float-end">
+            <button class="btn btn-danger d-flex flex-start w-100" type="submit">
+                <span class="me-2" data-feather="log-out"> </span>Log out
+            </button>
+        </form>
+    </div>
+</div>
+<div class="row justify-content-center mb-3">
+    <div class="card col-3">
+        <div class="card-header">
+            Choose how many employees you want?
+        </div>
+        <div class="card-body">
+            <input type="number" class="form-control mb-3" placeholder="Enter employees count" value="1" />
+            <a class="btn btn-primary" onclick="employeeCountBtnClick()">Confirm</a>
+        </div>
+    </div>
+</div>
+<div class="card p-3" id="plansDiv" style="display:none;">
+    <div class="card-header" id="titleTxt">
+        Choose Plan
+    </div>
+    <div class="row mb-7 align-items-center justify-content-center mt-3 mb-3 p-3">
+        @foreach (var plan in Model)
+        {
+            <div class="col">
+            <div class="card me-3 mb-3 p-3">
+                <img class="mb-4 d-dark-none" src="~/img/label.png" alt="" width="120" />
+                <div class="mb-2 pricing-column-title-box">
+                    <h3 class="mb-2">@plan.Name</h3>
+                    <p class="text-800 mb-0 pe-3">@plan.Description</p>
+                </div>
+                <div class="d-flex align-items-center mb-4">
+                        <h3 class="display-3 fw-bolder">@currencySymbol @Math.Round(plan.Price,0) </h3>
+                    <span class="fs--1">/ per employee</span>
+                </div>
+                @if (Constants.IsDemoMode)
+                {
+                        <a class="btn btn-lg w-100 mb-6 btn-outline-primary" id="@(plan.Id+"skipBtn")" asp-action="SkipPayment" asp-route-planId="@plan.Id">Choose & skip payment</a>
+                }
+                else
+                {
+                    @if (defaultGateway == PaymentGateway.Paypal)
+                    {
+                        <a class="btn btn-lg w-100 mb-6 btn-outline-primary" id="@(plan.Id+"paypalBtn")" asp-action="PaymentWithPaypal" asp-route-planId="@plan.Id" >Pay now (paypal)</a>
+                    }
+                    else
+                    {
+                        <a class="btn btn-lg w-100 mb-6 btn-outline-primary" id="@(plan.Id+"rzpBtn")" asp-action="PayWithRazorPay" asp-route-planId="@plan.Id">Pay now (Razorpay)</a>
+                    }
+                }
+                <h5 class="mb-4">What’s included</h5>
+                <ul class="fa-ul" style="--fa-li-margin: 1.5em;">
+                    <li class="text-body-secondary mb-2">
+                        <span class="fa-li">
+                            <span class="fas fa-check @(plan.IsTaskModuleEnabled ? "fa-check text-success": "fa-times text-danger")"></span>
+                        </span>
+                        @Html.DisplayNameFor(x => plan.IsTaskModuleEnabled)
+                    </li>
+                    <li class="text-body-secondary mb-2"><span class="fa-li"><span class="fas @(plan.IsProductModuleEnabled ? "fa-check text-success": "fa-times text-danger")"></span></span>@Html.DisplayNameFor(x => plan.IsProductModuleEnabled)</li>
+                    <li class="text-body-secondary mb-2"><span class="fa-li"><span class="fas @(plan.IsDynamicFormModuleEnabled ? "fa-check text-success": "fa-times text-danger")"></span></span>@Html.DisplayNameFor(x => plan.IsDynamicFormModuleEnabled)</li>
+                    <li class="text-body-secondary mb-2"><span class="fa-li"><span class="fas @(plan.IsNoticeModuleEnabled ? "fa-check text-success": "fa-times text-danger")"></span></span>@Html.DisplayNameFor(x => plan.IsNoticeModuleEnabled)</li>
+                    <li class="text-body-secondary mb-2"><span class="fa-li"><span class="fas @(plan.IsExpenseModuleEnabled ? "fa-check text-success": "fa-times text-danger")"></span></span>@Html.DisplayNameFor(x => plan.IsExpenseModuleEnabled)</li>
+                    <li class="text-body-secondary mb-2"><span class="fa-li"><span class="fas @(plan.IsLeaveModuleEnabled ? "fa-check text-success": "fa-times text-danger")"></span></span>@Html.DisplayNameFor(x => plan.IsLeaveModuleEnabled)</li>
+                    <li class="text-body-secondary mb-2"><span class="fa-li"><span class="fas @(plan.IsDocumentModuleEnabled ? "fa-check text-success": "fa-times text-danger")"></span></span>@Html.DisplayNameFor(x => plan.IsDocumentModuleEnabled)</li>
+                    <li class="text-body-secondary mb-2"><span class="fa-li"><span class="fas @(plan.IsChatModuleEnabled ? "fa-check text-success": "fa-times text-danger")"></span></span>@Html.DisplayNameFor(x => plan.IsChatModuleEnabled)</li>
+                    <li class="text-body-secondary mb-2"><span class="fa-li"><span class="fas @(plan.IsLoanModuleEnabled ? "fa-check text-success": "fa-times text-danger")"></span></span>@Html.DisplayNameFor(x => plan.IsLoanModuleEnabled)</li>
+                    <li class="text-body-secondary mb-2"><span class="fa-li"><span class="fas @(plan.IsPaymentCollectionModuleEnabled ? "fa-check text-success": "fa-times text-danger")"></span></span>@Html.DisplayNameFor(x => plan.IsPaymentCollectionModuleEnabled)</li>
+                    <li class="text-body-secondary mb-2"><span class="fa-li"><span class="fas @(plan.IsUidLoginModuleEnabled ? "fa-check text-success": "fa-times text-danger")"></span></span>@Html.DisplayNameFor(x => plan.IsUidLoginModuleEnabled)</li>
+                    <li class="text-body-secondary mb-2"><span class="fa-li"><span class="fas @(plan.IsClientVisitModuleEnabled ? "fa-check text-success": "fa-times text-danger")"></span></span>@Html.DisplayNameFor(x => plan.IsClientVisitModuleEnabled)</li>
+                    <li class="text-body-secondary mb-2"><span class="fa-li"><span class="fas @(plan.IsOfflineTrackingModuleEnabled ? "fa-check text-success": "fa-times text-danger")"></span></span>@Html.DisplayNameFor(x => plan.IsOfflineTrackingModuleEnabled)</li>
+                    <li class="text-body-secondary mb-2"><span class="fa-li"><span class="fas @(plan.IsDataImportExportModuleEnabled ? "fa-check text-success": "fa-times text-danger")"></span></span>@Html.DisplayNameFor(x => plan.IsDataImportExportModuleEnabled)</li>
+                    <li class="text-body-secondary mb-2"><span class="fa-li"><span class="fas @(plan.IsBreakModuleEnabled ? "fa-check text-success": "fa-times text-danger")"></span></span>@Html.DisplayNameFor(x => plan.IsBreakModuleEnabled)</li>
+                    <li class="text-body-secondary mb-2"><span class="fa-li"><span class="fas @(plan.IsGeofenceModuleEnabled ? "fa-check text-success": "fa-times text-danger")"></span></span>@Html.DisplayNameFor(x => plan.IsGeofenceModuleEnabled)</li>
+                    <li class="text-body-secondary mb-2"><span class="fa-li"><span class="fas @(plan.IsQrCodeAttendanceModuleEnabled ? "fa-check text-success": "fa-times text-danger")"></span></span>@Html.DisplayNameFor(x => plan.IsQrCodeAttendanceModuleEnabled)</li>
+                    <li class="text-body-secondary mb-2"><span class="fa-li"><span class="fas @(plan.IsDynamicQrCodeAttendanceEnabled ? "fa-check text-success": "fa-times text-danger")"></span></span>@Html.DisplayNameFor(x => plan.IsDynamicQrCodeAttendanceEnabled)</li>
+                    <li class="text-body-secondary mb-2"><span class="fa-li"><span class="fas @(plan.IsIpBasedAttendanceModuleEnabled ? "fa-check text-success": "fa-times text-danger")"></span></span>@Html.DisplayNameFor(x => plan.IsIpBasedAttendanceModuleEnabled)</li>
+                    <li class="text-body-secondary mb-2"><span class="fa-li"><span class="fas @(plan.IsSiteModuleEnabled ? "fa-check text-success": "fa-times text-danger")"></span></span>@Html.DisplayNameFor(x => plan.IsSiteModuleEnabled)</li>
+                </ul>
+            </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        var employeeCount = 0;
+        function employeeCountBtnClick() {
+            employeeCount = $("input[type=number]").val();
+            if (employeeCount > 0) {
+                $("#plansDiv").show();
+                calculateTotalPriceForEachPlan();
+            } else {
+                $('#plansDiv').hide();
+                toastr.error("Please enter valid employee count");
+            }
+        }
+
+        function calculateTotalPriceForEachPlan() {
+            var currencySymbol = '@currencySymbol';
+            var plans = @Html.Raw(Json.Serialize(Model));
+
+
+            for (var i = 0; i < plans.length; i++) {
+                var plan = plans[i];
+                var totalPrice = plan.price * employeeCount;
+
+                $('#titleTxt').text('Choose plan for ' + employeeCount + ' employees');
+
+                if ('@Constants.IsDemoMode') {
+                    $("#" + plan.id + "skipBtn").attr("href", $("#" + plan.id + "skipBtn").attr("href") + "&employeeCount=" + employeeCount);
+                }
+
+                $("#" + plan.id + "paypalBtn").text("Pay now " + currencySymbol + totalPrice);
+                //Add employeeCount in query
+                $("#" + plan.id + "paypalBtn").attr("href", $("#" + plan.id + "paypalBtn").attr("href") + "&employeeCount=" + employeeCount);
+                $("#" + plan.id + "rzpBtn").text("Pay now " + currencySymbol + totalPrice);
+                //Add employeeCount in query
+                $("#" + plan.id + "rzpBtn").attr("href", $("#" + plan.id + "rzpBtn").attr("href") + "&employeeCount=" + employeeCount);
+            }
+
+            toastr.info('Showing plan for ' + employeeCount + ' employees');
+
+        }
+    </script>
+}

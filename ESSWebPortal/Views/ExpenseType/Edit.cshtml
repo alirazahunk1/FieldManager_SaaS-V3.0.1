@@ -1,0 +1,45 @@
+﻿@model ESSDataAccess.Models.ExpenseTypeModel
+
+@{
+    ViewData["Title"] = "Edit";
+    ViewData["Back"] = true;
+}
+
+<hr />
+<form asp-action="Edit">
+    <div class="card">
+        <div class="card-body">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="CreatedAt" />
+            <input type="hidden" asp-for="UpdatedAt" />
+            <input type="hidden" asp-for="TenantId" />
+
+            <div class="form-group col-md-5 mb-3">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-5">
+                <label asp-for="IsImgRequired" class="control-label"></label>
+                <select asp-for="IsImgRequired" class="form-control">
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
+                </select>
+                <span asp-validation-for="IsImgRequired" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }

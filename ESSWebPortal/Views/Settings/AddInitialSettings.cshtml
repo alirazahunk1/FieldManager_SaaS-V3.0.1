@@ -1,0 +1,97 @@
+﻿@model SettingsViewModel
+@{
+    ViewData["Title"] = "Environment Settings";
+    ViewData["islogin"] = true;
+}
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<div class="row justify-content-center me-3 ms-3">
+<form enctype="multipart/form-data" asp-action="AddInitialSettings">
+    <div class="card shadow">
+        @if (ViewBag.error != null)
+        {
+            <div class="card-header">
+                @ViewBag.error
+            </div>
+        }
+        <div class="card-body">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h5 class="card-title">Please add basic settings</h5>
+                </div>
+                <div class="card-body">
+                    <div class="form-group row mb-3">
+                        <div class="form-group col-md-2">
+                            <label asp-for="EmployeeCodePrefix" class="control-label"></label>
+                                <input asp-for="EmployeeCodePrefix" class="form-control" />
+                                <span asp-validation-for="EmployeeCodePrefix" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label asp-for="OrderPrefix" class="control-label"></label>
+                                <input asp-for="OrderPrefix" class="form-control" />
+                                <span asp-validation-for="OrderPrefix" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label asp-for="Country" class="control-label"></label>
+                            <input asp-for="Country" class="form-control" />
+                            <span asp-validation-for="Country" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-2 mb-3">
+                            <label asp-for="PhoneCountryCode" class="control-label"></label>
+                            <input asp-for="PhoneCountryCode" class="form-control" />
+                            <span asp-validation-for="PhoneCountryCode" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-2 mb-3">
+                            <label asp-for="Currency" class="control-label"></label>
+                            <input asp-for="Currency" class="form-control" />
+                            <span asp-validation-for="Currency" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-2 mb-3">
+                            <label asp-for="CurrencySymbol" class="control-label"></label>
+                            <input asp-for="CurrencySymbol" class="form-control" />
+                            <span asp-validation-for="CurrencySymbol" class="text-danger"></span>
+                        </div>
+                        <hr />
+                        <h6>Map Settings(This will set the map center location in Timeline &amp; Card view)</h6>
+                       <div class="row mt-3">
+                            <div class="form-group col-md-2 mb-3">
+                                <label asp-for="CenterLatitude" class="control-label"></label>
+                                <input asp-for="CenterLatitude" class="form-control" />
+                                <span asp-validation-for="CenterLatitude" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-2 mb-3">
+                                <label asp-for="CenterLongitude" class="control-label"></label>
+                                <input asp-for="CenterLongitude" class="form-control" />
+                                <span asp-validation-for="CenterLongitude" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-2 mb-3">
+                                <label asp-for="MapZoomLevel" class="control-label"></label>
+                                <input asp-for="MapZoomLevel"class="form-control" />
+                                <span asp-validation-for="MapZoomLevel" class="text-danger"></span>
+                            </div>
+                       </div>
+                            <hr />
+                        <div class="form-group col-md-3 mb-3">
+                            <label asp-for="DistanceUnit" class="control-label"></label>
+                            <select class="form-control" asp-for="DistanceUnit" class="form-select">
+                                <option>KM</option>
+                                <option>Mi</option>
+                            </select>
+                            <span asp-validation-for="DistanceUnit" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary mt-3">Save & proceed</button>
+
+        </div>
+    </div>
+</form>
+</div>

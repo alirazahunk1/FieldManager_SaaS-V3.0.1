@@ -1,0 +1,445 @@
+﻿@model UpdateEmployeeVM
+
+@{
+    ViewData["Title"] = "Update Employee";
+    ViewData["Back"] = true;
+}
+
+@section Styles {
+    <link href="~/vendors/choices/choices.min.css" rel="stylesheet" />
+}
+<form enctype="multipart/form-data" asp-action="Edit" method="post">
+    <div class="card shadow">
+        <div class="card-body">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h6>Login Details</h6>                   
+                </div>
+                <div class="card-body">
+                    <div class="form-group row">
+                        <div class="form-group col-md-3 mb-3">
+                            <label asp-for="UserName" class="control-label"></label>
+                            <input asp-for="UserName" readonly class="form-control" />
+                            <span asp-validation-for="UserName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3 mb-3">
+                            <label asp-for="PhoneNumber" class="control-label"></label>
+                            <input asp-for="PhoneNumber" type="number" class="form-control" />
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3 mb-3">
+                            <label asp-for="Email" class="control-label"></label>
+                            <input asp-for="Email" type="email" class="form-control" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                     
+                    </div>
+                </div>
+            </div>
+
+            <div class="card card-primary mt-2">
+                <div class="card-header">
+                    <h6>Personal Details</h6>                   
+                </div>
+                <div class="card-body">
+                    <div class="form-group row">
+                        <div class="form-group col-md-3 mb-3">
+                            @if (string.IsNullOrEmpty(Model.ImgUrl))
+                            {
+                                <img class="profile-user-img rounded-circle"
+                                     width="100"
+                                     height="100"
+                                     src="/img/user.png"
+                                     alt="User profile picture">
+                            }
+                            else
+                            {
+                                <img class="profile-user-img rounded-circle"
+                                     width="100"
+                                     height="100"
+                                     src="@("/" + Model.ImgUrl)"
+                                     alt="User profile picture">
+                            }
+                            <label asp-for="File" class="control-label"></label>
+                            <input asp-for="File" type="file" class="form-control" />
+                            <span asp-validation-for="File" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3 mb-3">
+                           
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="form-group col-md-3 mb-3">
+                            <label asp-for="FirstName" class="control-label"></label>
+                            <input asp-for="FirstName" class="form-control" />
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3 mb-3">
+                            <label asp-for="LastName" class="control-label"></label>
+                            <input asp-for="LastName" class="form-control" />
+                            <span asp-validation-for="LastName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3 mb-3">
+                            <label asp-for="Gender" class="control-label"></label>
+                            <select asp-for="Gender" asp-items="@Html.GetEnumSelectList<UserGender>()" class="form-select mb-3"></select>
+                            <span asp-validation-for="Gender" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3 mb-3">
+                            <label asp-for="Dob" class="control-label"></label>
+                            <input asp-for="Dob" type="date" class="form-control" />
+                            <span asp-validation-for="Dob" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="form-group col-md-3 mb-3">
+                            <label asp-for="UniqueId" class="control-label"></label>
+                            <input asp-for="UniqueId" class="form-control" />
+                            <span asp-validation-for="UniqueId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3 mb-3">
+                            <label asp-for="AlternateNumber" class="control-label"></label>
+                            <input asp-for="AlternateNumber" type="number" class="form-control" />
+                            <span asp-validation-for="AlternateNumber" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-6 mb-3">
+                            <label asp-for="Address" class="control-label"></label>
+                            <input asp-for="Address" class="form-control" />
+                            <span asp-validation-for="Address" class="text-danger"></span>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="card card-primary mt-2">
+                <div class="card-header">
+                    <h6>Work Details</h6>
+                </div>
+                <div class="card-body">
+                    <div class="form-group row">
+                        <div class="form-group col-md-3 mb-3">
+                            <label asp-for="ParentId" class="control-label"></label>
+                            <select asp-for="ParentId" data-choices="data-choices" data-options='{"removeItemButton":true,"placeholder":true}' asp-items="@ViewBag.managers" class="form-select mb-3"></select>
+                            <span asp-validation-for="ParentId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3 mb-3">
+                            <label asp-for="ScheduleId" class="control-label"></label>
+                            <select asp-for="ScheduleId" data-choices="data-choices" data-options='{"removeItemButton":true,"placeholder":true}' asp-items="@ViewBag.schedules" class="form-select mb-3"></select>
+                            <span asp-validation-for="ScheduleId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3 mb-3">
+                            <label asp-for="TeamId" class="control-label"></label>
+                            <select asp-for="TeamId" data-choices="data-choices" data-options='{"removeItemButton":true,"placeholder":true}' asp-items="@ViewBag.teams" class="form-select mb-3"></select>
+                            <span asp-validation-for="TeamId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3 mb-3">
+                            <label asp-for="DateOfJoin" class="control-label"></label>
+                            <input asp-for="DateOfJoin" type="date" class="form-control" />
+                            <span asp-validation-for="DateOfJoin" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="form-group col-md-3 mb-3">
+                            <label asp-for="BaseSalary" class="control-label"></label>
+                            <input asp-for="BaseSalary" type="number" class="form-control" />
+                            <span asp-validation-for="BaseSalary" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3 mb-3">
+                            <label asp-for="Designation" class="control-label"></label>
+                            <input asp-for="Designation" class="form-control" />
+                            <span asp-validation-for="Designation" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3 mb-3">
+                            <label asp-for="PrimarySalesTarget" class="control-label"></label>
+                            <input asp-for="PrimarySalesTarget" class="form-control" />
+                            <span asp-validation-for="PrimarySalesTarget" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3 mb-3">
+                            <label asp-for="SecondarySalesTarget" class="control-label"></label>
+                            <input asp-for="SecondarySalesTarget" class="form-control" />
+                            <span asp-validation-for="SecondarySalesTarget" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3 mb-3">
+                            <label asp-for="AvailableLeaveCount" class="control-label"></label>
+                            <input asp-for="AvailableLeaveCount" class="form-control" />
+                            <span asp-validation-for="AvailableLeaveCount" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card mt-2">
+                <div class="card-header">
+                    <h6> Attendance Details</h6>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-outline-warning d-flex align-items-center" role="alert">
+                        <span class="fas fa-info-circle text-warning me-3"></span>
+                        <p class="mb-0 flex-1">
+                            <strong class="fw-bold">Important Note:</strong> <br />
+                            <span><strong class="fw-bold">None</strong> : Open attendance system without any restriction</span>
+                            <br />
+                            <span><strong class="fw-bold">Geofence</strong> : Allow attendance only from the selected geofence group</span>
+                            <br />
+                            <span><strong class="fw-bold">IP Address</strong> : Allow attendance only from the selected IP group</span>
+                            <br />
+                            <span><strong class="fw-bold">QR Code</strong> : Allow attendance only from the selected QR group</span>
+                            <br />
+                            <span><strong class="fw-bold">Dynamic QR Code</strong> : Allow attendance from dynamic QR device registered in the portal.</span>
+                        </p>
+                        <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    <div class="form-group row">
+                        <div class="form-group col-md-3 mb-3">
+                            <label asp-for="AttendanceType" class="control-label"></label>
+                            <select asp-for="AttendanceType" asp-items="@Html.GetEnumSelectList<EmployeeAttendanceTypeEnum>()" class="form-select mb-3"></select>
+                            <span asp-validation-for="AttendanceType" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3 mb-3" id="geofenceGroupId" style="display:none;">
+                            <label asp-for="GeofenceGroupId" class="control-label"></label>
+                            <select asp-for="GeofenceGroupId" class="form-select mb-3"></select>
+                            <span asp-validation-for="GeofenceGroupId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3 mb-3" id="ipGroupId" style="display:none;">
+                            <label asp-for="IpGroupId" class="control-label"></label>
+                            <select asp-for="IpGroupId" class="form-select mb-3"></select>
+                            <span asp-validation-for="IpGroupId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3 mb-3" id="qrGroupId" style="display:none;">
+                            <label asp-for="QrGroupId" class="control-label"></label>
+                            <select asp-for="QrGroupId" class="form-select mb-3"></select>
+                            <span asp-validation-for="QrGroupId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3 mb-3" id="dynamicQrId" style="display:none;">
+                            <label asp-for="DynamicQrId" class="control-label"></label>
+                            <select asp-for="DynamicQrId" class="form-select mb-3"></select>
+                            <span asp-validation-for="DynamicQrId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3 mb-3" id="siteId" style="display:none;">
+                            <label asp-for="SiteId" class="control-label"></label>
+                            <select asp-for="SiteId" class="form-select mb-3"></select>
+                            <span asp-validation-for="SiteId" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+
+</form>
+
+@section Scripts {
+    <script src="~/vendors/choices/choices.min.js"></script>
+    <script>
+        $(document).ready(function () {
+
+          var currentSelection =  $('#AttendanceType').val();
+
+             if (currentSelection == 1) {
+                $("#geofenceGroupId").show();
+                getGeofenceGroups();
+            }
+            else if (currentSelection == 2) {
+                $("#ipGroupId").show();
+                getIpGroups();
+            } else if (currentSelection == 3) {
+                $("#qrGroupId").show();
+                getQrGroups();
+            } else if (currentSelection == 4) {
+                $("#dynamicQrId").show();
+                getAllDynamicQrs();
+            } else if (currentSelection == 5) {
+                $("#siteId").show();
+                getSites();
+            }
+            else {
+                $("#ipGroupId").hide();
+                $("#geofenceGroupId").hide();
+                $("#qrGroupId").hide();
+                $("#dynamicQrId").hide();
+                $("#siteId").hide();
+            }
+
+
+            $('#AttendanceType').change(function () {
+                var value = this.value;
+                if (value == 1) {
+                    $("#ipGroupId").hide();
+                    $("#qrGroupId").hide();
+                    $("#dynamicQrId").hide();
+                    $("#siteId").hide();
+                    $("#geofenceGroupId").show();
+                    getGeofenceGroups();
+                }
+                else if (value == 2) {
+                    $("#geofenceGroupId").hide();
+                    $("#qrGroupId").hide();
+                    $("#dynamicQrId").hide();
+                    $("#siteId").hide();
+                    $("#ipGroupId").show();
+                    getIpGroups();
+                } else if (value == 3) {
+                    $("#ipGroupId").hide();
+                    $("#geofenceGroupId").hide();
+                    $("#dynamicQrId").hide();
+                    $("#siteId").hide();
+                    $("#qrGroupId").show();
+                    getQrGroups();
+                } else if (value == 4) {
+                    $("#ipGroupId").hide();
+                    $("#geofenceGroupId").hide();
+                    $("#qrGroupId").hide();
+                    $("#siteId").hide();
+                    $("#dynamicQrId").show();
+                    getDynamicQrs();
+                } else if (value == 5) {
+                    $("#ipGroupId").hide();
+                    $("#geofenceGroupId").hide();
+                    $("#qrGroupId").hide();
+                    $("#dynamicQrId").hide();
+                    $("#siteId").show();
+                    getSites();
+                }
+                else {
+                    $("#ipGroupId").hide();
+                    $("#geofenceGroupId").hide();
+                    $("#qrGroupId").hide();
+                    $("#dynamicQrId").hide();
+                }
+            });
+        });
+
+        function getGeofenceGroups() {
+            $.ajax({
+                url: "/Employee/GetGeofenceGroups",
+                type: "GET",
+                success: function (data) {
+                    if (data.length == 0) {
+                        toastr.info("No geofence found. Please create one first.");
+                    }
+                    var options = "";
+                    var selectedId = '@(Model != null ? Model.GeofenceGroupId : "")';
+
+                    $.each(data, function (key, value) {
+                        options += `<option ${selectedId == value.value ? "selected" : ""} value='${value.value}'>${value.text}</option>`;
+                    });
+                    $("#GeofenceGroupId").html(options);
+                }
+            });
+        }
+
+
+        function getIpGroups() {
+            $.ajax({
+                url: "/Employee/GetIpGroups",
+                type: "GET",
+                success: function (data) {
+                    if (data.length == 0) {
+                        toastr.info("No IP address found. Please create one first.");
+                    }
+                    var options = "";
+                    var selectedId = '@(Model != null ? Model.IpGroupId : "")';
+
+                    $.each(data, function (key, value) {
+                        options += `<option ${selectedId == value.value ? "selected" : ""} value='${value.value}'>${value.text}</option>`;
+                    });
+                    $("#IpGroupId").html(options);
+                }
+            });
+        }
+
+
+        function getQrGroups() {
+            $.ajax({
+                url: "/Employee/GetQrGroups",
+                type: "GET",
+                success: function (data) {
+                    if (data.length == 0) {
+                        toastr.info("No QR code found. Please create one first.");
+                    }
+                    var options = "";
+                    var selectedId = '@(Model != null ? Model.QrGroupId : "")';
+
+                    $.each(data, function (key, value) {
+                        options += `<option ${selectedId == value.value ? "selected" : ""} value='${value.value}'>${value.text}</option>`;
+                    });
+                    $("#QrGroupId").html(options);
+                }
+            });
+        }
+
+        function getDynamicQrs() {
+            $.ajax({
+                url: "/Employee/GetDynamicQrs",
+                type: "GET",
+                success: function (data) {
+                    if (data.length == 0) {
+                        toastr.info("No dynamic QR code found. Please create one first.");
+                    }
+                    var options = "";
+                    var selectedId = '@(Model != null ? Model.DynamicQrId : "")';
+
+                    $.each(data, function (key, value) {
+                        options += `<option ${selectedId == value.value ? "selected" : ""} value='${value.value}'>${value.text}</option>`;
+                    });
+                    $("#DynamicQrId").html(options);
+                }
+            });
+        }
+        function getAllDynamicQrs() {
+            $.ajax({
+                url: "/Employee/GetAllDynamicQrs",
+                type: "GET",
+                success: function (data) {
+                    if (data.length == 0) {
+                        toastr.info("No dynamic QR code found. Please create one first.");
+                    }
+                    var options = "";
+                    var selectedId = '@(Model != null ? Model.DynamicQrId : "")';
+
+                    $.each(data, function (key, value) {
+                        options += `<option ${selectedId == value.value ? "selected" : ""} value='${value.value}'>${value.text}</option>`;
+                    });
+                    $("#DynamicQrId").html(options);
+                }
+            });
+        }
+
+        function getSites() {
+            $.ajax({
+                url: "/Employee/GetSites",
+                type: "GET",
+                success: function (data) {
+                    if (data.length == 0) {
+                        toastr.info("No site found. Please create one first.");
+                    }
+                    var options = "";
+                    var selectedId = '@(Model != null ? Model.SiteId : "")';
+
+                    $.each(data, function (key, value) {
+                        options += `<option ${selectedId == value.value ? "selected" : ""} value='${value.value}'>${value.text}</option>`;
+                    });
+                    $("#SiteId").html(options);
+                }
+            });
+        }
+
+
+
+
+    </script>
+    
+    
+    
+    
+    
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+
+    }

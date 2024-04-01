@@ -1,0 +1,44 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@using CZ.WebCore.SuperAdmin.ViewModels
+@model ActivateVM;
+@{
+    ViewData["Title"] = "Activate";
+    ViewData["back"] = true;
+}
+<div class="row mb-3">
+    <div class="col">
+        <div class="float-start">
+            <h4 class="mt-2">@ViewData["Title"]</h4>
+        </div>
+    </div>
+    <div class="col">
+    </div>
+</div>
+<div class="card">
+    <div class="card-header">
+<h3 class="card-title">Activate @Model.UserName (@Model.Name)</h3>
+    </div>
+    <div class="card-body">
+        <form method="post">
+            <input type="hidden" asp-for="UserId" />
+            <input type="hidden" asp-for="TenantId" />
+            <input type="hidden" asp-for="UserName" />
+            <div class="form-group col-md-3 mb-3">
+                <label asp-for="PlanId" class="control-label"></label>
+                <select asp-for="PlanId" asp-items="@ViewBag.plans" class="form-select mb-3"></select>
+                <span asp-validation-for="PlanId" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-3 mb-3">
+                <label asp-for="Duration" class="control-label"></label>
+                <input asp-for="Duration" value="1" type="number" class="form-control" />
+                <span asp-validation-for="Duration" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-3 mb-3">
+                <label asp-for="EmployeesCount" class="control-label"></label>
+                <input asp-for="EmployeesCount" value="0" type="number" class="form-control" />
+                <span asp-validation-for="EmployeesCount" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">Activate now</button>
+        </form>
+    </div>
+</div>

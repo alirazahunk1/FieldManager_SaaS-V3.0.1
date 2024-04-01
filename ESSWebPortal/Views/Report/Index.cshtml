@@ -1,0 +1,228 @@
+﻿@{
+    ViewData["Title"] = "Reports";
+}
+@section Styles {
+    <link href="~/vendors/choices/choices.min.css" rel="stylesheet" />
+}
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col">
+                <div class="card card-primary shadow">
+                    <div class="card-header">Attendance Report as excel</div>
+                    <div class="card-body">
+                        <ul>
+                            <li>Attendance Overview</li>
+                            <li>Working Days & Hours</li>
+                            <li>Late comers/ Early Leavers</li>
+                            <li>Attendance Time & Location</li>
+                        </ul>
+                    </div>
+                    <div class="card-footer">
+                        <a onclick="openAttendanceModel()" class="btn btn-primary">Generate excel</a>
+                        <a asp-action="AttendanceReport" class="btn btn-primary">Get Raw Report</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card card-primary shadow">
+                    <div class="card-header">TimeLine Report</div>
+                    <div class="card-body">
+                        <ul>
+                            <li>Daily Timeline Report of User Activities</li>
+                            <li>In out time</li>
+                            <li>Status</li>
+                            <li>Total employees statistics</li>
+                        </ul>
+                    </div>
+                    <div class="card-footer"><a onclick="openTimeLineModel()" class="btn btn-primary">Generate</a> </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card card-primary shadow">
+                    <div class="card-header">Visits Report</div>
+                    <div class="card-body">
+                        <ul>
+                            <li>Monthly Visits Report</li>
+                            <li>Visit Date & time</li>
+                            <li>Status</li>
+                            <li>Total employees statistics</li>
+                        </ul>
+                    </div>
+                    <div class="card-footer"><a onclick="openVisitModel()" class="btn btn-primary">Generate</a> </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card card-primary shadow">
+                    <div class="card-header">More Coming</div>
+                    <div class="card-body">
+                        <ul>
+                            <li>Leave Reports</li>
+                            <li>Expense Reports</li>
+                            <li>Productivity Report</li>
+                            <li>and more...</li>
+                        </ul>
+                    </div>
+                    <div class="card-footer"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="attendanceReportModel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2">
+    <div class="modal-dialog modal-l" role="document">
+        <div class="modal-content p-3">
+            <h4 class="modal-title" id="myModalLabel2">Attendance Report</h4>
+            <div class="modal-body">
+                <form asp-action="GenerateAttendanceReport" method="get">
+                    <div class="form-group row justify-content-left mb-3">
+                        <label>Period </label>
+                        <input id="monthYear" name="monthYear" type="month" class="form-control" value="@DateTime.Now.ToString("yyyy-MM")" />
+                        <!-- /.input group -->
+                    </div>
+                    <input type="hidden" id="type" name="type" value="0" />
+                    @*  <!-- radio -->
+                    <div class="row justify-content-center mb-3">
+                    <select id="type" name="type" class="form-control" disabled>
+                    <option value="0">Teams Wise</option>
+                    </select>
+                    </div>*@
+
+                    <!--Teams-->
+                    <div class="row justify-content-center mb-3" id="teamsdiv">
+                        <select id="teams" name="teams" asp-items="ViewBag.teams" data-choices="data-choices" multiple="multiple" data-options='{"removeItemButton":true,"placeholder":true}'>
+                            <option value="0" selected>All Teams</option>
+                        </select>
+                    </div>
+                    @*    <!--Users-->
+                    <div class="input-group row justify-content-center mt-2" id="usersdiv" style="visibility:hidden">
+                    <select id="users" name="users" class="form-control select2" asp-items="ViewBag.users" multiple="multiple">
+                    <option value="0">All Users</option>
+                    </select>
+                    </div>*@
+                    <button class="btn btn-primary" type="submit">Generate Report</button>
+                </form>
+            </div>
+
+        </div><!-- modal-content -->
+    </div><!-- modal-dialog -->
+</div><!-- modal -->
+
+<div class="modal fade" id="visitReportModel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel3">
+    <div class="modal-dialog modal-l" role="document">
+        <div class="modal-content p-3">
+            <h4 class="modal-title" id="myModalLabel2">Visit Report</h4>
+            <div class="modal-body">
+                <form asp-action="GenerateVisitReport" method="get">
+                    <div class="col">
+                        <div class="form-group mb-3">
+                            <label>Period </label>
+                            <input id="monthYear" name="monthYear" type="month" class="form-control" value="@DateTime.Now.ToString("yyyy-MM")" />
+                            <!-- /.input group -->
+                        </div>
+                        <div class="form-group mb-3">
+                            <label>Select a Type </label>
+                            <select id="visitType" name="visitType" class="form-control">
+                                <option value="0" selected>Select a type</option>
+                                <option value="1">Team wise</option>
+                                <option value="2">Employee wise</option>
+                            </select>
+                        </div>
+                        <div class="form-group row mb-3" id="teamsdiv1" style="display:none;">
+                            <label>Select Teams </label>
+                            <select id="teamsdiv1" name="teams" class="form-control" asp-items="ViewBag.teams" data-choices="data-choices" multiple="multiple" data-options='{"removeItemButton":true,"placeholder":true}'>
+                                <option value="0" selected>All Teams</option>
+                            </select>
+                        </div>
+                        <div class="form-group mb-3" id="usersdiv1" style="display:none;">
+                            <label>Select User </label>
+                            <select id="usersdiv1" name="users" asp-items="ViewBag.users" data-choices="data-choices" multiple="multiple" data-options='{"removeItemButton":true,"placeholder":true}'>
+                                <option value="0" selected>All Users</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" type="submit">Generate Report</button>
+                </form>
+            </div>
+
+        </div><!-- modal-content -->
+    </div><!-- modal-dialog -->
+</div><!-- modal -->
+
+<div class="modal fade" id="timeLineModel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel4">
+    <div class="modal-dialog modal-l" role="document">
+        <div class="modal-content p-3">
+            <h4 class="modal-title" id="myModalLabel2">TimeLine Report</h4>
+            <div class="modal-body">
+                <form asp-action="TimeLineReport" method="get">
+                    <div class="col">
+                        <div class="form-group mb-3">
+                            <label>Period </label>
+                            <input id="date" name="date" type="month" class="form-control" value="@DateTime.Now.ToString("yyyy-MM")" />
+                            <!-- /.input group -->
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" type="submit">Generate Report</button>
+                </form>
+            </div>
+
+        </div><!-- modal-content -->
+    </div><!-- modal-dialog -->
+</div><!-- modal -->
+@section Scripts{
+
+    <script src="~/vendors/choices/choices.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            init();
+        });
+
+        function init() {
+
+            var CurrentDate = moment();
+
+            $("#type").change(function () {
+                var val = $(this).val();
+                if (val === '0') {
+                    $('#teamsdiv').css('visibility', 'visible');
+                    $('#usersdiv').css('visibility', 'hidden');
+                } else {
+                    $('#usersdiv').css('visibility', 'visible');
+                    $('#teamsdiv').css('visibility', 'hidden');
+                }
+            });
+
+            $("#visitType").change(function () {
+                var val = $(this).val();
+                if (val === '0') {
+                    $('#teamsdiv1').hide();
+                    $('#usersdiv1').hide();
+                } else if (val === '1') {
+                    $('#usersdiv1').hide();
+                    $('#teamsdiv1').show();
+                } else if (val === '2') {
+                    $('#usersdiv1').show();
+                    $('#teamsdiv1').hide();
+                }
+            });
+
+        }
+
+        function openAttendanceModel() {
+            $('#attendanceReportModel').modal('toggle');
+        }
+
+        function openTimeLineModel() {
+            $('#timeLineModel').modal('toggle');
+        }
+
+        function openVisitModel() {
+            $('#visitReportModel').modal('toggle');
+        }
+
+    </script>
+}

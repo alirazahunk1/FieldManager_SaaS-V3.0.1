@@ -1,0 +1,220 @@
+﻿@using ESSDataAccess.Enum
+@using ESSWebPortal.Core.ViewModel.SuperAdmin
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model UserDetailsVM
+@{
+    ViewData["Title"] = "User Details";
+    ViewData["back"] = true;
+}
+<div class="row fs--1">
+    <div class="col-md-3">
+        <div class="card card-primary card-outline">
+            <div class="card-body box-profile">
+                <div class="text-center">
+                    @if (string.IsNullOrEmpty(Model.Avatar))
+                    {
+                        <img class="profile-user-img rounded-circle"
+                             width="100"
+                             height="100"
+                             src="/img/user.png"
+                             alt="User profile picture">
+                    }
+                    else
+                    {
+                        <img class="profile-user-img rounded-circle"
+                             width="100"
+                             height="100"
+                             src="@("/" + Model.Avatar)"
+                             alt="User profile picture">
+                    }
+                </div>
+
+                <h6 class="profile-username text-center mt-1">
+                    @Model.UserName @if (Model.Status == UserStatus.Active)
+                    {
+                        <span class="badge bg-success">Active</span>
+                    }
+                    else if (Model.Status == UserStatus.InActive)
+                    {
+                        <span class="badge bg-warning">InActive</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger">@Model.Status</span>
+                    }
+                </h6>
+
+                <div class="row text-center mt-3">
+                    @if (Model.SubscriptionStatus != ESSDataAccess.Tenant.Models.SubscriptionStatusEnum.Active)
+                    {
+                        <div class="p-1">
+                            <a data-bs-toggle="tooltip" data-bs-placement="top" title="Activate User" class="btn btn-primary" asp-action="Activate" asp-route-userId="@Model.Id">
+                                Activate
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        @if (Model.Status == UserStatus.Active)
+                        {
+                            <a class="btn btn-block btn-danger" asp-action="Block" asp-route-userId="@Model.Id" asp-route-isFromView="true"><i class="fa fa-ban"></i><b> Block</b></a>
+                        }
+                        else
+                        {
+                            <a class="btn btn-block btn-success" asp-action="Block" asp-route-userId="@Model.Id" asp-route-isFromView="true"><i class="fa fa-check"></i><b> UnBlock</b></a>
+                        }
+
+                       
+                    }
+                    
+                </div>
+                <div class="row text-center mt-3">
+                    <a class="btn btn-block btn-info" asp-action="ResetPasswordBySAAdmin" asp-route-userId="@Model.Id"><i class="fa fa-key ml-1"></i> Reset Password</a>
+                </div>
+
+            </div>
+            <!-- /.card-body -->
+        </div><div class="card card-primary mt-2">
+            <div class="card-header">
+                <h5>Subscription Info</h5>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                @if (Model.OrderId != null)
+                {
+                    <strong>Subscription status</strong>
+                    <p class="text-muted">
+                        @Model.SubscriptionStatus
+                    </p>
+
+                    <hr>
+                    <strong>Order Id</strong>
+                    <p class="text-muted">
+                        @Model.OrderId
+                    </p>
+
+                    <hr>
+                    <strong>Plan started at</strong>
+                    <p class="text-muted">
+                        @Model.StartDate
+                    </p>
+                    <hr>
+
+                    <strong>Expires on</strong>
+
+                    <p class="text-muted">
+                        @Model.EndDate
+                    </p>
+                    <hr>
+
+                    <strong>Plan</strong>
+
+                    <p class="text-muted">
+                        @Model.Plan
+                    </p>
+                    <hr />
+                    <a class="btn btn-primary" asp-action="ChangePlan" asp-route-userId="@Model.Id">Change Plan</a>
+                }
+                else
+                {
+                    <p>No plan purchased</p>
+                }
+
+            </div>
+            <!-- /.card-body -->
+        </div>
+    </div>
+
+
+    <div class="col-md-9">
+        <div class="card shadow">
+            <div class="card-body">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h5>Login Details</h5>
+                    </div>
+                    <div class="card-body">
+                        <table id="example1" class="table table-bordered table-striped">
+                            <tbody>
+                                <tr>
+                                    <td><b>User Name</b></td>
+                                    <td>
+                                        @Model.UserName
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><b>Phone Number</b></td>
+                                    <td>
+                                        @Model.PhoneNumber
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><b>Email</b></td>
+                                    <td>
+                                        @Model.Email
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><b>Total Employees</b></td>
+                                    <td>
+                                        @Model.TotalEmployees
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><b>Available Employees</b></td>
+                                    <td>
+                                        @Model.AvailableEmployee
+                                    </td>
+                                </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card card-primary mt-2">
+                    <div class="card-header">
+                        <h5>Personal Details</h5>
+                    </div>
+                    <div class="card-body">
+                        <table id="example1" class="table table-bordered table-striped">
+                            <tbody>
+                                <tr>
+                                    <td><b>First Name</b></td>
+                                    <td>
+                                        @Model.FirstName
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><b>Last Name</b></td>
+                                    <td>
+                                        @Model.LastName
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><b>Gender</b></td>
+                                    <td>
+                                        @Model.Gender
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><b>Phone Number</b></td>
+                                    <td>
+                                        @Model.PhoneNumber
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><b>Email</b></td>
+                                    <td>
+                                        @Model.Email
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- /.col -->
+</div>

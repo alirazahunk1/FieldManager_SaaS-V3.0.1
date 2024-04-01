@@ -1,0 +1,269 @@
+﻿@using ESSWebPortal.Core.SuperAdmin
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@inject ISASettings _settings;
+@{
+    ViewData["Title"] = "Dashboard";
+    var currency = await _settings.GetCurrencySymbol();
+}
+
+<div class="row gx-6">
+    <div class="col-12 col-xl-6">
+        <div>
+            <div class="row align-items-center g-6 mb-3">
+                <div class="col-12 col-md-auto">
+                    <div class="card p-3">
+                        <div class="d-flex align-items-center">
+                            <span class="fa-stack" style="min-height: 46px;min-width: 46px;"><span class="fa-solid fa-square fa-stack-2x text-success-300" data-fa-transform="down-4 rotate--10 left-4"></span><span class="fa-solid fa-circle fa-stack-2x stack-circle text-success-100" data-fa-transform="up-4 right-3 grow-2"></span><span class="fa-stack-1x fa-solid fa-users text-success " data-fa-transform="shrink-2 up-8 right-6"></span></span>
+                            <div class="ms-3">
+                                <h4 class="mb-0" id="totaluserscount">
+                                    <div class="placeholder-glow">
+                                        <span class="placeholder" style="width:25px;"></span>
+                                    </div>
+                                </h4>
+                                <p class="text-800 fs--1 mb-0">Total Users</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-auto">
+                    <div class="card p-3">
+                        <div class="d-flex align-items-center">
+                            <span class="fa-stack" style="min-height: 46px;min-width: 46px;"><span class="fa-solid fa-square fa-stack-2x text-warning-300" data-fa-transform="down-4 rotate--10 left-4"></span><span class="fa-solid fa-circle fa-stack-2x stack-circle text-warning-100" data-fa-transform="up-4 right-3 grow-2"></span><span class="fa-stack-1x fa-solid fa-sign text-warning " data-fa-transform="shrink-2 up-8 right-6"></span></span>
+                            <div class="ms-3">
+                                <h4 class="mb-0" id="totalplanscount">
+                                    <div class="placeholder-glow">
+                                        <span class="placeholder" style="width:25px;"></span>
+                                    </div>
+                                </h4>
+                                <p class="text-800 fs--1 mb-0">Total Plans</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-auto">
+                    <div class="card p-3">
+                        <div class="d-flex align-items-center">
+                            <span class="fa-stack" style="min-height: 46px;min-width: 46px;"><span class="fa-solid fa-square fa-stack-2x text-danger-300" data-fa-transform="down-4 rotate--10 left-4"></span><span class="fa-solid fa-circle fa-stack-2x stack-circle text-danger-100" data-fa-transform="up-4 right-3 grow-2"></span><span class="fa-stack-1x fa-solid fa-money-bill text-danger " data-fa-transform="shrink-2 up-8 right-6"></span></span>
+                            <div class="ms-3">
+                                <h4 class="mb-0" id="subscripsionscount">
+                                    <div class="placeholder-glow">
+                                        <span class="placeholder" style="width:25px;"></span>
+                                    </div>
+                                </h4>
+                                <p class="text-800 fs--1 mb-0">Active Subscription</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-auto">
+                    <div class="card p-3">
+                        <div class="d-flex align-items-center">
+                            <span class="fa-stack" style="min-height: 46px;min-width: 46px;"><span class="fa-solid fa-square fa-stack-2x text-danger-300" data-fa-transform="down-4 rotate--10 left-4"></span><span class="fa-solid fa-circle fa-stack-2x stack-circle text-danger-100" data-fa-transform="up-4 right-3 grow-2"></span><span class="fa-stack-1x fa-solid fa-shopping-cart text-danger " data-fa-transform="shrink-2 up-8 right-6"></span></span>
+                            <div class="ms-3">
+                                <h4 class="mb-0" id="totalsales">
+                                    <div class="placeholder-glow">
+                                        <span class="placeholder" style="width:25px;"></span>
+                                    </div>
+                                </h4>
+                                <p class="text-800 fs--1 mb-0">Total Sales</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="p-1">
+                <p>Last 7 month sales</p>
+                <canvas id="barChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-xl-6">
+        <div class="mx-n4 mx-lg-n6 ms-xl-0 h-100">
+            <div class="card h-100 w-100" style="height:100%">
+                <div class="card-header">
+                    <h4 class="p-2">Recent orders</h4>
+                </div>
+                <div class="card-body h-100 w-100">
+                    <div class="table-responsive scrollbar">
+                        <table class="table table-sm fs--1 mb-0" id="ordertable">
+                            <thead>
+                                <tr>
+                                    <th class="sort">OrderId</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                    <th>Plan</th>
+                                    <th>Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orderTable">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- ChartJS -->
+    <script src="~/vendors/chart/Chart.min.js"></script>
+    <script>
+        var currency = '@currency';
+        $(document).ready(function () {
+            getOrders();
+            getCounts();
+            setupChart();
+        });
+
+        function setupChart() {
+            $.ajax({
+                type: "GET",
+                url: "SuperAdmin/GetSalesDataAjax",
+                success: function (response) {
+                    var data = response;
+                    console.log(data);
+                    renderChart(data.map(x => x.date), data.map(x => x.amount));
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        function renderChart(months, sales) {
+            var areaChartData = {
+                labels: months,
+                datasets: [
+                    {
+                        label: `Sales in ${currency}`,
+                        backgroundColor: 'rgba(39, 98, 245, 0.8)',
+                        borderColor: 'rgba(210, 214, 222, 1)',
+                        pointRadius: false,
+                        pointColor: 'rgba(210, 214, 222, 1)',
+                        pointStrokeColor: '#c1c7d1',
+                        pointHighlightFill: '#fff',
+                        pointHighlightStroke: 'rgba(220,220,220,1)',
+                        data: sales
+                    },
+                ]
+            }
+
+            var barChartCanvas = $('#barChart').get(0).getContext('2d')
+            var barChartData = $.extend(true, {}, areaChartData)
+            barChartData.datasets[0] = areaChartData.datasets[0]
+
+            var barChartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                datasetFill: false
+            }
+
+            new Chart(barChartCanvas, {
+                type: 'bar',
+                data: barChartData,
+                options: barChartOptions
+            })
+        }
+
+        function getOrders() {
+            $.ajax({
+                type: "GET",
+                url: "SuperAdmin/IndexAjax",
+                success: function (response) {
+                    var data = response;
+                    console.log(data);
+                    loadOrders(data);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        function getCounts() {
+            $.ajax({
+                type: "GET",
+                url: "SuperAdmin/GetCountAjax",
+                success: function (response) {
+                    var data = response;
+                    console.log(data);
+                    setCounts(data.totalSales, data.plans, data.subscriptions, data.totalTenants);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        function loadOrders(items) {
+            var selector = '#orderTable';
+
+            $(selector).html('');
+
+            items.forEach(function (item, index) {
+
+                var status = getOrderStatus(item.status);
+
+                var content = ` <tr>
+                                                   <td>${item.orderId}</td>
+                                                   <td>${status}</td>
+                                                   <td>${item.purchaseDate}</td>
+                                                   <td>${item.plan}</td>
+                                                   <td>${currency}${item.amount}</td>
+                                               </tr>`;
+                $(selector).append(content);
+            });
+
+            renderDataTable();
+        }
+
+        function setCounts(sales, plans, subscriptions, tenants) {
+
+            $('#totaluserscount').text(tenants);
+            $('#totalplanscount').text(plans);
+            $('#subscripsionscount').text(subscriptions);
+            $('#totalsales').html(currency + sales);
+        }
+
+        function getOrderStatus(status) {
+            switch (status) {
+                case 0:
+                    return '<span class="badge badge-phoenix badge-phoenix-primary">Created</span>';
+                    break;
+                case 1:
+                    return '<span class="badge badge-phoenix badge-phoenix-warning">Pending</span>';
+                    break;
+                case 2:
+                    return '<span class="badge badge-phoenix badge-phoenix-success">Success</span>';
+                    break;
+                default:
+                    return '<span class="badge badge-phoenix badge-phoenix-danger">Failed</span>';
+                    break;
+
+            }
+        }
+
+        function renderDataTable() {
+            var table = $('#ordertable').DataTable({
+                autoWidth: false,
+                lengthChange: false,
+                responsive: true,
+                scrollX: true,
+            });
+
+            table.buttons().container()
+                .appendTo('#datatable_wrapper .col-md-6:eq(0)');
+        }
+    </script>
+}

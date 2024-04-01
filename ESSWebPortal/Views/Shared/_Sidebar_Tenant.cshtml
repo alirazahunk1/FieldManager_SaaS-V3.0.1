@@ -1,0 +1,677 @@
+﻿@using Microsoft.Extensions.Configuration
+@using ESSWebPortal.TagHelpers
+@inject IConfiguration Configuration
+@inject IDbSettings _appSettings
+@{
+    var currentController = (ViewContext.RouteData.Values["controller"] != null) ? ViewContext.RouteData.Values["controller"].ToString() : null;
+    var currentAction = (ViewContext.RouteData.Values["action"] != null) ? ViewContext.RouteData.Values["action"].ToString() : null;
+    var sidebarMenu = Configuration.GetSection("sidebarMenu").GetChildren().ToArray();
+    var moduleSettings = await _appSettings.GetModuleSettings();
+    bool isEmployeeExpand = (currentController.Equals("Employee") && currentAction.Equals("Index") || currentController.Equals("Team") && currentAction.Equals("Index") || currentController.Equals("Chat") || currentController.Equals("Device") && currentAction.Equals("Index"));
+    bool isAttendanceExpand = (currentController.Equals("Shift") && currentAction.Equals("Index") || currentController.Equals("Holiday") && currentAction.Equals("Index") || currentController.Equals("Visit") && currentAction.Equals("Index") || currentController.Equals("IpGroup") && currentAction.Equals("Index") || currentController.Equals("GeofenceGroup") && currentAction.Equals("Index") || currentController.Equals("QrGroup") && currentAction.Equals("Index") || currentController.Equals("DynamicQrDevice") && currentAction.Equals("Index"));
+    bool isLeaveExpand = (currentController.Equals("LeaveRequest") && currentAction.Equals("Index") || currentController.Equals("LeaveType") && currentAction.Equals("Index"));
+    bool isExpenseExpand = (currentController.Equals("ExpenseRequest") && currentAction.Equals("Index") || currentController.Equals("ExpenseType") && currentAction.Equals("Index"));
+    bool isDocumentExpand = (currentController.Equals("DocumentRequest") && currentAction.Equals("Index") || currentController.Equals("DocumentType") && currentAction.Equals("Index"));
+    bool isProductOrderExpand = (currentController.Equals("Order") || currentController.Equals("Product") || currentController.Equals("ProductCategory"));
+    bool isFormExpand = (currentController.Equals("FormSubmission") || currentController.Equals("FormAssignment") || currentController.Equals("Form"));
+    bool isClientSiteExpand = (currentController.Equals("Client") || currentController.Equals("Site"));
+    bool isImportExportExpand = (currentController.Equals("ImportExport") && currentAction.Equals("Index"));
+}
+
+<nav class="navbar navbar-vertical navbar-expand-lg">
+    <div class="collapse navbar-collapse" id="navbarVerticalCollapse">
+        <div class="navbar-vertical-content">
+            <ul class="navbar-nav flex-column" id="navbarVerticalNav">
+                <li>
+                    <p class="navbar-vertical-label">
+                        Monitoring
+                    </p>
+                    <hr class="navbar-vertical-line" />
+                </li>
+                <li class="nav-item">
+                    <div class="nav-item-wrapper">
+                        <a class="nav-link label-1 @(currentController.Equals("Dashboard") && currentAction.Equals("Index") ? "active": "")" asp-controller="Dashboard" asp-action="Index" role="button" data-bs-toggle="" aria-expanded="false">
+                            <div class="d-flex align-items-center">
+                                <span class="nav-link-icon">
+                                    <span class="bi bi-house"></span>
+                                </span>
+                                <span class="nav-link-text-wrapper">
+                                    <span class="nav-link-text">Dashboard</span>
+                                </span>
+                            </div>
+                        </a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <div class="nav-item-wrapper">
+                        <a class="nav-link label-1 @(currentController.Equals("Dashboard") && currentAction.Equals("LiveLocation") ? "active": "")" asp-controller="Dashboard" asp-action="LiveLocation" role="button" data-bs-toggle="" aria-expanded="false">
+                            <div class="d-flex align-items-center">
+                                <span class="nav-link-icon">
+                                    <span class="bi bi-pin-map-fill"></span>
+                                </span>
+                                <span class="nav-link-text-wrapper">
+                                    <span class="nav-link-text">Live Location</span>
+                                </span>
+                            </div>
+                        </a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <div class="nav-item-wrapper">
+                        <a class="nav-link label-1 @(currentController.Equals("Dashboard") && currentAction.Equals("TimeLine") ? "active": "")" asp-controller="Dashboard" asp-action="TimeLine" role="button" data-bs-toggle="" aria-expanded="false">
+                            <div class="d-flex align-items-center">
+                                <span class="nav-link-icon">
+                                    <span class="fa fa-route"></span>
+                                </span>
+                                <span class="nav-link-text-wrapper">
+                                    <span class="nav-link-text">Time Line</span>
+                                </span>
+                            </div>
+                        </a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <div class="nav-item-wrapper">
+                        <a class="nav-link label-1 @(currentController.Equals("Dashboard") && currentAction.Equals("CardView") ? "active": "")" asp-controller="Dashboard" asp-action="CardView" role="button" data-bs-toggle="" aria-expanded="false">
+                            <div class="d-flex align-items-center">
+                                <span class="nav-link-icon">
+                                    <span class="bi bi-card-heading"></span>
+                                </span>
+                                <span class="nav-link-text-wrapper">
+                                    <span class="nav-link-text">Card View</span>
+                                </span>
+                            </div>
+                        </a>
+                    </div>
+                </li>
+                @if (moduleSettings.IsTaskModuleEnabled)
+                {
+                    <li class="nav-item">
+                        <div class="nav-item-wrapper">
+                            <a class="nav-link label-1 @(currentController.Equals("Task") && currentAction.Equals("TaskView") ? "active": "")" asp-controller="Task" asp-action="TaskView" role="button" data-bs-toggle="" aria-expanded="false">
+                                <div class="d-flex align-items-center">
+                                    <span class="nav-link-icon">
+                                        <span class="bi bi-card-checklist"></span>
+                                    </span>
+                                    <span class="nav-link-text-wrapper">
+                                        <span class="nav-link-text">Task View</span>
+                                    </span>
+                                </div>
+                            </a>
+                        </div>
+                    </li>
+                }
+                <!-- Employee Management -->
+                <div class="nav-item-wrapper">
+                    <a class="nav-link dropdown-indicator label-1" href="#nv-email" role="button" data-bs-toggle="collapse" aria-expanded="true" aria-controls="nv-email">
+                        <div class="d-flex align-items-center">
+                            <div class="dropdown-indicator-icon"><span class="fas fa-caret-right"></span></div><span class="nav-link-icon"> <i class="bi bi-people"></i></span><span class="nav-link-text">Employee Management</span>
+                        </div>
+                    </a>
+                    <div class="parent-wrapper label-1">
+                        <ul class="nav collapse parent @(isEmployeeExpand ? "show": "")" data-bs-parent="#navbarVerticalCollapse" id="nv-email">
+                            <li class="collapsed-nav-item-title d-none">
+                                Employee Management
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @(currentController.Equals("Employee") && currentAction.Equals("Index") ? "active": "")" asp-controller="Employee" asp-action="Index" data-bs-toggle="" aria-expanded="false">
+                                    <div class="d-flex align-items-center">
+                                        <span class="nav-link-text">Employees</span>
+                                    </div>
+                                </a>
+                                <!-- more inner pages-->
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @(currentController.Equals("Team") && currentAction.Equals("Index") ? "active": "")" asp-controller="Team" asp-action="Index" data-bs-toggle="" aria-expanded="false">
+                                    <div class="d-flex align-items-center">
+                                        <span class="nav-link-text">Teams</span>
+                                    </div>
+                                </a>
+                                <!-- more inner pages-->
+                            </li>
+                            @if (moduleSettings.IsChatModuleEnabled)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link @(currentController.Equals("Chat") ? "active": "")" asp-controller="Chat" asp-action="Index" data-bs-toggle="" aria-expanded="false">
+                                        <div class="d-flex align-items-center">
+                                            <span class="nav-link-text">Chats</span>
+                                        </div>
+                                    </a>
+                                    <!-- more inner pages-->
+                                </li>
+                            }
+                            <li class="nav-item">
+                                <a class="nav-link @(currentController.Equals("Device") && currentAction.Equals("Index") ? "active": "")" asp-controller="Device" asp-action="Index" data-bs-toggle="" aria-expanded="false">
+                                    <div class="d-flex align-items-center">
+                                        <span class="nav-link-text">Device Management</span>
+                                    </div>
+                                </a>
+                                <!-- more inner pages-->
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- Attendance-->
+                <div class="nav-item-wrapper">
+                    <a class="nav-link dropdown-indicator label-1" href="#nv-attendance" role="button" data-bs-toggle="collapse" aria-expanded="true" aria-controls="nv-attendance">
+                        <div class="d-flex align-items-center">
+                            <div class="dropdown-indicator-icon">
+                                <span class="fas fa-caret-right"></span>
+                            </div><span class="nav-link-icon">
+                                <span class="bi bi-calendar2-week"></span>
+                            </span>
+                            <span class="nav-link-text">Attendance Management</span>
+                        </div>
+                    </a>
+                    <div class="parent-wrapper label-1">
+                        <ul class="nav collapse parent @(isAttendanceExpand ? "show": "")" data-bs-parent="#navbarVerticalCollapse" id="nv-attendance">
+                            <li class="collapsed-nav-item-title d-none">
+                                Attendance Management
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @(currentController.Equals("Shift") && currentAction.Equals("Index") ? "active": "")" asp-controller="Shift" asp-action="Index" data-bs-toggle="" aria-expanded="false">
+                                    <div class="d-flex align-items-center">
+                                        <span class="nav-link-text">Shifts</span>
+                                    </div>
+                                </a>
+                                <!-- more inner pages-->
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @(currentController.Equals("Holiday") && currentAction.Equals("Index") ? "active": "")" asp-controller="Holiday" asp-action="Index" data-bs-toggle="" aria-expanded="false">
+                                    <div class="d-flex align-items-center">
+                                        <span class="nav-link-text">Holidays</span>
+                                    </div>
+                                </a>
+                                <!-- more inner pages-->
+                            </li>
+                            @if (moduleSettings.IsClientVisitModuleEnabled)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link @(currentController.Equals("Visit") && currentAction.Equals("Index") ? "active": "")" asp-controller="Visit" asp-action="Index" data-bs-toggle="" aria-expanded="false">
+                                        <div class="d-flex align-items-center">
+                                            <span class="nav-link-text">Visits</span>
+                                        </div>
+                                    </a>
+                                    <!-- more inner pages-->
+                                </li>
+                            }
+
+                            @if (moduleSettings.IsIpBasedAttendanceModuleEnabled)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link @(currentController.Equals("IpGroup") && currentAction.Equals("Index") ? "active": "")" asp-controller="IpGroup" asp-action="Index" data-bs-toggle="" aria-expanded="false">
+                                        <div class="d-flex align-items-center">
+                                            <span class="nav-link-text">IP Groups</span>
+                                        </div>
+                                    </a>
+                                    <!-- more inner pages-->
+                                </li>
+                            }
+
+                            @if (moduleSettings.IsGeofenceModuleEnabled)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link @(currentController.Equals("GeofenceGroup") && currentAction.Equals("Index") ? "active": "")" asp-controller="GeofenceGroup" asp-action="Index" data-bs-toggle="" aria-expanded="false">
+                                        <div class="d-flex align-items-center">
+                                            <span class="nav-link-text">Geofence Groups</span>
+                                        </div>
+                                    </a>
+                                    <!-- more inner pages-->
+                                </li>
+                            }
+
+                            @if (moduleSettings.IsQrCodeAttendanceModuleEnabled)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link @(currentController.Equals("QrGroup") && currentAction.Equals("Index") ? "active": "")" asp-controller="QrGroup" asp-action="Index" data-bs-toggle="" aria-expanded="false">
+                                        <div class="d-flex align-items-center">
+                                            <span class="nav-link-text">Qr Code Groups</span>
+                                        </div>
+                                    </a>
+                                    <!-- more inner pages-->
+                                </li>
+                            }
+
+                            @if (moduleSettings.IsDynamicQrCodeAttendanceEnabled)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link @(currentController.Equals("DynamicQrDevice") && currentAction.Equals("Index") ? "active": "")" asp-controller="DynamicQrDevice" asp-action="Index" data-bs-toggle="" aria-expanded="false">
+                                        <div class="d-flex align-items-center">
+                                            <span class="nav-link-text">Dynamic Qr Devices</span>
+                                        </div>
+                                    </a>
+                                    <!-- more inner pages-->
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+                @if (moduleSettings.IsProductModuleEnabled)
+                {
+                    <div class="nav-item-wrapper">
+                        <a class="nav-link dropdown-indicator label-1" href="#nv-product" role="button" data-bs-toggle="collapse" aria-expanded="true" aria-controls="nv-product">
+                            <div class="d-flex align-items-center">
+                                <div class="dropdown-indicator-icon">
+                                    <span class="fas fa-caret-right"></span>
+                                </div><span class="nav-link-icon">
+                                    <span class="bi bi-box-seam"></span>
+                                </span>
+                                <span class="nav-link-text">Products & Orders</span>
+                            </div>
+                        </a>
+                        <div class="parent-wrapper label-1">
+                            <ul class="nav collapse parent @(isProductOrderExpand ? "show": "")" data-bs-parent="#navbarVerticalCollapse" id="nv-product">
+                                <li class="collapsed-nav-item-title d-none">
+                                    Products & Orders
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link @(currentController.Equals("Order") ? "active": "")" asp-controller="Order" asp-action="Index" data-bs-toggle="" aria-expanded="false">
+                                        <div class="d-flex align-items-center">
+                                            <span class="nav-link-text">Orders</span>
+                                        </div>
+                                    </a>
+                                    <!-- more inner pages-->
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link @(currentController.Equals("Product") ? "active": "")" asp-controller="Product" asp-action="Index" data-bs-toggle="" aria-expanded="false">
+                                        <div class="d-flex align-items-center">
+                                            <span class="nav-link-text">Products</span>
+                                        </div>
+                                    </a>
+                                    <!-- more inner pages-->
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link @(currentController.Equals("ProductCategory") ? "active": "")" asp-controller="ProductCategory" asp-action="Index" data-bs-toggle="" aria-expanded="false">
+                                        <div class="d-flex align-items-center">
+                                            <span class="nav-link-text">Product Categories</span>
+                                        </div>
+                                    </a>
+                                    <!-- more inner pages-->
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                }
+                @if (moduleSettings.IsLeaveModuleEnabled)
+                {
+                    <div class="nav-item-wrapper">
+                        <a class="nav-link dropdown-indicator label-1" href="#nv-leave" role="button" data-bs-toggle="collapse" aria-expanded="true" aria-controls="nv-leave">
+                            <div class="d-flex align-items-center">
+                                <div class="dropdown-indicator-icon">
+                                    <span class="fas fa-caret-right"></span>
+                                </div><span class="nav-link-icon">
+                                    <span class="bi bi-calendar2-week"></span>
+                                </span>
+                                <span class="nav-link-text">Leave Management</span>
+                            </div>
+                        </a>
+                        <div class="parent-wrapper label-1">
+                            <ul class="nav collapse parent @(isLeaveExpand ? "show": "")" data-bs-parent="#navbarVerticalCollapse" id="nv-leave">
+                                <li class="collapsed-nav-item-title d-none">
+                                    Leave Management
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link @(currentController.Equals("LeaveRequest") ? "active": "")" asp-controller="LeaveRequest" asp-action="Index" data-bs-toggle="" aria-expanded="false">
+                                        <div class="d-flex align-items-center">
+                                            <span class="nav-link-text">Leave Requests</span>
+                                        </div>
+                                    </a>
+                                    <!-- more inner pages-->
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link @(currentController.Equals("LeaveType") ? "active": "")" asp-controller="LeaveType" asp-action="Index" data-bs-toggle="" aria-expanded="false">
+                                        <div class="d-flex align-items-center">
+                                            <span class="nav-link-text">Leave Types</span>
+                                        </div>
+                                    </a>
+                                    <!-- more inner pages-->
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                }
+                @if (moduleSettings.IsExpenseModuleEnabled)
+                {
+                    <div class="nav-item-wrapper">
+                        <a class="nav-link dropdown-indicator label-1" href="#nv-expense" role="button" data-bs-toggle="collapse" aria-expanded="true" aria-controls="nv-expense">
+                            <div class="d-flex align-items-center">
+                                <div class="dropdown-indicator-icon">
+                                    <span class="fas fa-caret-right"></span>
+                                </div><span class="nav-link-icon">
+                                    <i class="bi bi-cash-coin"></i>
+                                </span>
+                                <span class="nav-link-text">Expense Management</span>
+                            </div>
+                        </a>
+                        <div class="parent-wrapper label-1">
+                            <ul class="nav collapse parent @(isExpenseExpand ? "show": "")" data-bs-parent="#navbarVerticalCollapse" id="nv-expense">
+                                <li class="collapsed-nav-item-title d-none">
+                                    Expense Management
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link @(currentController.Equals("ExpenseRequest") ? "active": "")" asp-controller="ExpenseRequest" asp-action="Index" data-bs-toggle="" aria-expanded="false">
+                                        <div class="d-flex align-items-center">
+                                            <span class="nav-link-text">Expense Requests</span>
+                                        </div>
+                                    </a>
+                                    <!-- more inner pages-->
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link @(currentController.Equals("ExpenseType") ? "active": "")" asp-controller="ExpenseType" asp-action="Index" data-bs-toggle="" aria-expanded="false">
+                                        <div class="d-flex align-items-center">
+                                            <span class="nav-link-text">Expense Types</span>
+                                        </div>
+                                    </a>
+                                    <!-- more inner pages-->
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                }
+                @if (moduleSettings.IsDocumentModuleEnabled)
+                {
+                    <div class="nav-item-wrapper">
+                        <a class="nav-link dropdown-indicator label-1" href="#nv-document" role="button" data-bs-toggle="collapse" aria-expanded="true" aria-controls="nv-document">
+                            <div class="d-flex align-items-center">
+                                <div class="dropdown-indicator-icon">
+                                    <span class="fas fa-caret-right"></span>
+                                </div><span class="nav-link-icon">
+                                    <i class="bi bi-file-earmark-richtext"></i>
+                                </span>
+                                <span class="nav-link-text">Document Management</span>
+                            </div>
+                        </a>
+                        <div class="parent-wrapper label-1">
+                            <ul class="nav collapse parent @(isDocumentExpand ? "show": "")" data-bs-parent="#navbarVerticalCollapse" id="nv-document">
+                                <li class="collapsed-nav-item-title d-none">
+                                    Document Management
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link @(currentController.Equals("DocumentRequest") ? "active": "")" asp-controller="DocumentRequest" asp-action="Index" data-bs-toggle="" aria-expanded="false">
+                                        <div class="d-flex align-items-center">
+                                            <span class="nav-link-text">Document Requests</span>
+                                        </div>
+                                    </a>
+                                    <!-- more inner pages-->
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link @(currentController.Equals("DocumentType") ? "active": "")" asp-controller="DocumentType" asp-action="Index" data-bs-toggle="" aria-expanded="false">
+                                        <div class="d-flex align-items-center">
+                                            <span class="nav-link-text">Document Types</span>
+                                        </div>
+                                    </a>
+                                    <!-- more inner pages-->
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                }
+                @if (moduleSettings.IsDynamicFormModuleEnabled)
+                {
+                    <div class="nav-item-wrapper">
+                        <a class="nav-link dropdown-indicator label-1" href="#nv-form" role="button" data-bs-toggle="collapse" aria-expanded="true" aria-controls="nv-form">
+                            <div class="d-flex align-items-center">
+                                <div class="dropdown-indicator-icon">
+                                    <span class="fas fa-caret-right"></span>
+                                </div><span class="nav-link-icon">
+                                    <span class="bi bi-ui-checks"></span>
+                                </span>
+                                <span class="nav-link-text">Custom Forms</span>
+                            </div>
+                        </a>
+                        <div class="parent-wrapper label-1">
+                            <ul class="nav collapse parent @(isFormExpand ? "show": "")" data-bs-parent="#navbarVerticalCollapse" id="nv-form">
+                                <li class="collapsed-nav-item-title d-none">
+                                    Custom Forms
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link @(currentController.Equals("FormSubmission") ? "active": "")" asp-controller="FormSubmission" asp-action="Index" data-bs-toggle="" aria-expanded="false">
+                                        <div class="d-flex align-items-center">
+                                            <span class="nav-link-text">Form Submissions</span>
+                                        </div>
+                                    </a>
+                                    <!-- more inner pages-->
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link @(currentController.Equals("FormAssignment") ? "active": "")" asp-controller="FormAssignment" asp-action="Index" data-bs-toggle="" aria-expanded="false">
+                                        <div class="d-flex align-items-center">
+                                            <span class="nav-link-text">Form Assignments</span>
+                                        </div>
+                                    </a>
+                                    <!-- more inner pages-->
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link @(currentController.Equals("Form") ? "active": "")" asp-controller="Form" asp-action="Index" data-bs-toggle="" aria-expanded="false">
+                                        <div class="d-flex align-items-center">
+                                            <span class="nav-link-text">Forms</span>
+                                        </div>
+                                    </a>
+                                    <!-- more inner pages-->
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                }
+                @if (moduleSettings.IsTaskModuleEnabled)
+                {
+                    <li class="nav-item">
+                        <div class="nav-item-wrapper">
+                            <a class="nav-link label-1 @(currentController.Equals("Task") ? "active": "")" asp-controller="Task" asp-action="Index" role="button" data-bs-toggle="" aria-expanded="false">
+                                <div class="d-flex align-items-center">
+                                    <span class="nav-link-icon">
+                                        <span class="bi bi-card-checklist"></span>
+                                    </span>
+                                    <span class="nav-link-text-wrapper">
+                                        <span class="nav-link-text">Tasks</span>
+                                    </span>
+                                </div>
+                            </a>
+                        </div>
+                    </li>
+                }
+                @if (moduleSettings.IsLoanModuleEnabled)
+                {
+                    <li class="nav-item">
+                        <div class="nav-item-wrapper">
+                            <a class="nav-link label-1 @(currentController.Equals("LoanRequest") ? "active": "")" asp-controller="LoanRequest" asp-action="Index" role="button" data-bs-toggle="" aria-expanded="false">
+                                <div class="d-flex align-items-center">
+                                    <span class="nav-link-icon">
+                                        <span class="bi bi-cash-coin"></span>
+                                    </span>
+                                    <span class="nav-link-text-wrapper">
+                                        <span class="nav-link-text">Loan Requests</span>
+                                    </span>
+                                </div>
+                            </a>
+                        </div>
+                    </li>
+                }
+                @if (moduleSettings.IsNoticeModuleEnabled)
+                {
+                    <li class="nav-item">
+                        <div class="nav-item-wrapper">
+                            <a class="nav-link label-1 @(currentController.Equals("NoticeBoard") ? "active": "")" asp-controller="NoticeBoard" asp-action="Index" role="button" data-bs-toggle="" aria-expanded="false">
+                                <div class="d-flex align-items-center">
+                                    <span class="nav-link-icon">
+                                        <span class="bi bi-clipboard-data"></span>
+                                    </span>
+                                    <span class="nav-link-text-wrapper">
+                                        <span class="nav-link-text">Notice Board</span>
+                                    </span>
+                                </div>
+                            </a>
+                        </div>
+                    </li>
+                }
+                @if (moduleSettings.IsPaymentCollectionModuleEnabled)
+                {
+                    <li class="nav-item">
+                        <div class="nav-item-wrapper">
+                            <a class="nav-link label-1 @(currentController.Equals("PaymentCollection") ? "active": "")" asp-controller="PaymentCollection" asp-action="Index" role="button" data-bs-toggle="" aria-expanded="false">
+                                <div class="d-flex align-items-center">
+                                    <span class="nav-link-icon">
+                                        <span class="bi bi-cash-stack"></span>
+                                    </span>
+                                    <span class="nav-link-text-wrapper">
+                                        <span class="nav-link-text">Payment Collection</span>
+                                    </span>
+                                </div>
+                            </a>
+                        </div>
+                    </li>
+                }
+                <!--Clients & Sites-->
+                <div class="nav-item-wrapper">
+                    <a class="nav-link dropdown-indicator label-1" href="#nv-client" role="button" data-bs-toggle="collapse" aria-expanded="true" aria-controls="nv-client">
+                        <div class="d-flex align-items-center">
+                            <div class="dropdown-indicator-icon">
+                                <span class="fas fa-caret-right"></span>
+                            </div><span class="nav-link-icon">
+                                <span class="bi bi-building-check"></span>
+                            </span>
+                            <span class="nav-link-text">Clients & Sites</span>
+                        </div>
+                    </a>
+                    <div class="parent-wrapper label-1">
+                        <ul class="nav collapse parent @(isClientSiteExpand ? "show": "")" data-bs-parent="#navbarVerticalCollapse" id="nv-client">
+                            <li class="collapsed-nav-item-title d-none">
+                                Clients & Sites
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @(currentController.Equals("Client") && currentAction.Equals("Index") ? "active": "")" asp-controller="Client" asp-action="Index" data-bs-toggle="" aria-expanded="false">
+                                    <div class="d-flex align-items-center">
+                                        <span class="nav-link-text">Clients</span>
+                                    </div>
+                                </a>
+                                <!-- more inner pages-->
+                            </li>
+                            @if (moduleSettings.IsSiteModuleEnabled)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link @(currentController.Equals("Site") && currentAction.Equals("Index") ? "active": "")" asp-controller="Site" asp-action="Index" data-bs-toggle="" aria-expanded="false">
+                                        <div class="d-flex align-items-center">
+                                            <span class="nav-link-text">Sites</span>
+                                        </div>
+                                    </a>
+                                    <!-- more inner pages-->
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+                <!--Clients & Sites-->
+                <li>
+                    <p class="navbar-vertical-label">
+                        Utilities
+                    </p>
+                    <hr class="navbar-vertical-line" />
+                </li>
+                @if (moduleSettings.IsDataImportExportModuleEnabled)
+                {
+                    <li class="nav-item">
+                        <div class="nav-item-wrapper">
+                            <a class="nav-link label-1 @(isImportExportExpand ? "active": "")" asp-controller="ImportExport" asp-action="Index" role="button" data-bs-toggle="" aria-expanded="false">
+                                <div class="d-flex align-items-center">
+                                    <span class="nav-link-icon">
+                                        <span class="fa fa-right-left"></span>
+                                    </span>
+                                    <span class="nav-link-text-wrapper">
+                                        <span class="nav-link-text">Import/Export</span>
+                                    </span>
+                                </div>
+                            </a>
+                        </div>
+                    </li>
+
+                }
+                <li class="nav-item">
+                    <div class="nav-item-wrapper">
+                        <a class="nav-link label-1 @(currentController.Equals("Notification") && currentAction.Equals("Index") ? "active": "")" asp-controller="Notification" asp-action="Index" role="button" data-bs-toggle="" aria-expanded="false">
+                            <div class="d-flex align-items-center">
+                                <span class="nav-link-icon">
+                                    <span class="fa fa-bell"></span>
+                                </span>
+                                <span class="nav-link-text-wrapper">
+                                    <span class="nav-link-text">Notifications</span>
+                                </span>
+                            </div>
+                        </a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <div class="nav-item-wrapper">
+                        <a class="nav-link label-1 @(currentController.Equals("Report") && currentAction.Equals("Index") ? "active": "")" asp-controller="Report" asp-action="Index" role="button" data-bs-toggle="" aria-expanded="false">
+                            <div class="d-flex align-items-center">
+                                <span class="nav-link-icon">
+                                    <span class="bi bi-file-earmark-spreadsheet-fill"></span>
+                                </span>
+                                <span class="nav-link-text-wrapper">
+                                    <span class="nav-link-text">Reports</span>
+                                </span>
+                            </div>
+                        </a>
+                    </div>
+                </li>
+                <li>
+                    <p class="navbar-vertical-label">
+                        Other
+                    </p>
+                    <hr class="navbar-vertical-line" />
+                </li>
+
+                <li class="nav-item">
+                    <div class="nav-item-wrapper">
+                        <a class="nav-link label-1 @(currentController.Equals("Support") && currentAction.Equals("Index") ? "active": "")" asp-controller="Support" asp-action="Index" role="button" data-bs-toggle="" aria-expanded="false">
+                            <div class="d-flex align-items-center">
+                                <span class="nav-link-icon">
+                                    <span class="bi bi-info-circle-fill"></span>
+                                </span>
+                                <span class="nav-link-text-wrapper">
+                                    <span class="nav-link-text">Support</span>
+                                </span>
+                            </div>
+                        </a>
+                    </div>
+                </li>
+                @*   <li class="nav-item">
+                <div class="nav-item-wrapper">
+                <a class="nav-link label-1 @(currentController.Equals("Calendar") && currentAction.Equals("Index") ? "active": "")" asp-controller="Calendar" asp-action="Index" role="button" data-bs-toggle="" aria-expanded="false">
+                <div class="d-flex align-items-center">
+                <span class="nav-link-icon">
+                <span class="bi bi-calendar-event-fill"></span>
+                </span>
+                <span class="nav-link-text-wrapper">
+                <span class="nav-link-text">Calendar</span>
+                </span>
+                </div>
+                </a>
+                </div>
+                </li> *@
+
+                <li>
+                    <p class="navbar-vertical-label">
+                        Portal Management
+                    </p>
+                    <hr class="navbar-vertical-line" />
+                </li>
+                <li class="nav-item">
+                    <div class="nav-item-wrapper">
+                        <a class="nav-link label-1 @(currentController.Equals("Account") && currentAction.Equals("UsersList") ? "active": "")" asp-controller="Account" asp-action="UsersList" role="button" data-bs-toggle="" aria-expanded="false">
+                            <div class="d-flex align-items-center">
+                                <span class="nav-link-icon">
+                                    <span class="fa fa-users"></span>
+                                </span>
+                                <span class="nav-link-text-wrapper">
+                                    <span class="nav-link-text">Users</span>
+                                </span>
+                            </div>
+                        </a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="navbar-vertical-footer">
+        <button class="btn navbar-vertical-toggle border-0 fw-semi-bold w-100 white-space-nowrap d-flex align-items-center"><span class="uil uil-left-arrow-to-left fs-0"></span><span class="uil uil-arrow-from-right fs-0"></span><span class="navbar-vertical-footer-text ms-2">Collapsed View</span></button>
+    </div>
+</nav>

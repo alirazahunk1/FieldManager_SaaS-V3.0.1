@@ -1,0 +1,59 @@
+﻿@using ESSDataAccess.Models.Qr
+@model IEnumerable<QrCodeModel>
+<div class="card">
+    <div class="card-header">
+        <h5> QR Codes</h5>
+    </div>
+    <div class="card-body">
+        @if (Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped" >
+                    <thead>
+                        <tr>
+                            <td>@Html.DisplayNameFor(x => x.Id)</td>
+                            <td>@Html.DisplayNameFor(x => x.QrCode)</td>
+                            <td>@Html.DisplayNameFor(x => x.Name)</td>
+                            <td>@Html.DisplayNameFor(x => x.Description)</td>
+                            <td>@Html.DisplayNameFor(x => x.IsEnabled)</td>
+                            <td>@Html.DisplayNameFor(x => x.CreatedAt)</td>
+                            <td>Action</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="ps-2">@item.Id</td>
+                                <td>@item.QrCode</td>
+                                <td>@item.Name</td>
+                                <td>@item.Description</td>
+                                <td>
+                                    <div class="form-check form-switch">
+                                        @if (item.IsEnabled)
+                                        {
+                                            <input class="form-check-input" type="checkbox" checked onchange="changeStatusN(@item.Id)" />
+                                        }
+                                        else
+                                        {
+                                            <input class="form-check-input" type="checkbox" onchange="changeStatusN(@item.Id)" />
+                                        }
+                                    </div>
+                                </td>
+                                <td>@item.CreatedAt</td>
+                                <td>
+                                    <a class="btn btn-sm btn-phoenix-primary p-2" data-bs-toggle="tooltip" data-bs-placement="left" title="Download QR Code" asp-controller="QrGroup" asp-action="DownloadQR" asp-route-codeId="@item.Id"><i class="bi bi-download"></i></a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+        }
+        else
+        {
+            <p>No QR Codes Added!</p>
+        }
+    </div>
+</div>

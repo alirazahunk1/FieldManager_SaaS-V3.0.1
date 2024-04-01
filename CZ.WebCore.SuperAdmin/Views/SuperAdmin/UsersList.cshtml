@@ -1,0 +1,123 @@
+﻿@using ESSDataAccess.Enum
+@using ESSWebPortal.Core.ViewModel.SuperAdmin
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model IEnumerable<UserVM>
+@{
+    ViewData["Title"] = "Users";
+}
+<div class="row mb-3">
+    <div class="col">
+        <div class="float-start">
+            <h4 class="mt-2">@ViewData["Title"]</h4>
+        </div>
+    </div>
+    <div class="col">
+    </div>
+</div>
+<div class="card fs--1">
+    <!-- /.card-header -->
+    <div class="card-body">
+        <table id="datatable1" class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>User Name</th>
+                    <th>Phone Number</th>
+                    <th>Email</th>
+                    <th>Gender</th>
+                    <th>Address</th>
+                    <th>Registered On</th>
+                    <th>Status</th>
+                    <th>Subscription Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>@item.FirstName</td>
+                        <td>@item.LastName</td>
+                        <td>@item.UserName</td>
+                        <td>@item.PhoneNumber</td>
+                        <td>@item.Email</td>
+                        <td>@item.Gender</td>
+                        <td>@item.Address</td>
+                        <td>@item.CreatedAt</td>
+                        <td>
+                            @if (item.Status == UserStatus.Active)
+                            {
+                                <span class="badge bg-success">Active</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-warning">@item.Status</span>
+
+                            }
+                        </td>
+                        <td>
+                            @if (item.SubscriptionStatus == ESSDataAccess.Tenant.Models.SubscriptionStatusEnum.Active)
+                            {
+                                <span class="badge bg-success">Active</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-warning">@item.SubscriptionStatus</span>
+                            }
+                        </td>
+                        <td>
+                            <div class="d-flex flex-row">
+                                @if(item.SubscriptionStatus != ESSDataAccess.Tenant.Models.SubscriptionStatusEnum.Active)
+                                {
+                                    <div class="p-1">
+                                        <a data-bs-toggle="tooltip" data-bs-placement="top" title="Activate User" class="btn btn-primary" asp-action="Activate" asp-route-userId="@item.Id">
+                                            Activate
+                                        </a>
+                                    </div>
+                                }
+                                <div class="p-1"><a data-bs-toggle="tooltip" data-bs-placement="top" title="Details" class="btn btn-secondary" asp-action="UserDetails" asp-route-id="@item.Id"><i class="fa fa-eye"></i></a></div>
+                                @if(item.SubscriptionStatus == ESSDataAccess.Tenant.Models.SubscriptionStatusEnum.Active)
+                                {
+                                    @if (item.Status == UserStatus.Active)
+                                    {
+                                        <div class="p-1"><a data-bs-toggle="tooltip" data-bs-placement="top" title="Block User" class="btn btn-success" asp-action="Block" asp-route-userId="@item.Id"><i class="fa fa-toggle-on"></i></a></div>
+
+                                    }
+                                    else
+                                    {
+                                        <div class="p-1"><a data-bs-toggle="tooltip" data-bs-placement="top" title="Unblock User" class="btn btn-danger" asp-action="Block" asp-route-userId="@item.Id"><i class="fa fa-toggle-off"></i></a></div>
+                                    }
+                                }
+                                @*<div class="p-1"><a class="btn btn-warning" asp-action="ResetPasswordByAdmin" asp-route-userId="@item.Id"><i class="fa fa-key ml-1"></i></a></div>*@
+                            </div>
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <!-- /.card-body -->
+</div>
+<!-- /.card -->
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var table = $('#datatable1').DataTable({
+                autoWidth: true,
+                lengthChange: true,
+                responsive: false,
+                scrollX: true,
+                buttons: ["copy", "csv", "excel", "pdf", "print"]
+            });
+
+            table.buttons().container()
+                .appendTo('#datatable_wrapper .col-md-6:eq(0)');
+        });
+
+    </script>
+}

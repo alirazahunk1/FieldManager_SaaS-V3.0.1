@@ -1,0 +1,209 @@
+﻿@model IEnumerable<EmployeeVM>
+@inject IDbSettings _settings;
+@{
+    ViewData["Title"] = "Employees";
+    ViewData["Create"] = true;
+    var employeePrefix = await _settings.GetEmployeeCode();
+}
+@section Styles{
+    <style>
+        .profile-user-img {
+            border: 1px solid #adb5bd;
+            margin: 0 auto;
+            padding: 3px;
+            width: 50px;
+            height:50px;
+        }
+    </style>
+}
+<div class="row mb-3">
+    <div class="col">
+        <div class="float-start">
+            <h4 class="mt-2">@ViewData["Title"]</h4>
+        </div>
+    </div>
+    <div class="col">
+        <div class="float-end">
+           
+            <a asp-action="Create" class="btn btn-phoenix-primary"><span class="fa fa-plus-circle fa-fw me-2"></span>Create new</a>
+        </div>
+    </div>
+</div>
+<div class="row justify-content-center mb-3">
+    <div class="col-12 col-md-4 col-sm-12 col-xl-3 mb-3">
+        <div class="card shadow radius-10">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="">
+                        <p class="mb-1">Total Employees</p>
+                        <h4 class="mb-0 text-pink">
+                            @ViewData["totalcount"]
+                        </h4>
+                    </div>
+                    <div class="ms-auto fs-2 text-pink">
+                        <i class="bi bi-people"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-4 col-sm-12 col-xl-3 mb-3">
+        <div class="card shadow radius-10">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="">
+                        <p class="mb-1">Active Employees</p>
+                        <h4 class="mb-0 text-success">
+                            @ViewData["activecount"]
+                        </h4>
+                    </div>
+                    <div class="ms-auto fs-2 text-success">
+                        <i class="bi bi-person-check"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-4 col-sm-12 col-xl-3 mb-3">
+        <div class="card shadow radius-10">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="">
+                        <p class="mb-1">Inactive Employees</p>
+                        <h4 class="mb-0 text-warning">
+                            @ViewData["inactivecount"]
+                        </h4>
+                    </div>
+                    <div class="ms-auto fs-2 text-warning">
+                        <i class="bi bi-person-dash"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card shadow">
+    <div class="card-body">
+        <table id="datatables" class="table">
+            <thead>
+                <tr>
+                    <th class="p-2">
+                        @Html.DisplayNameFor(model => model.Id)
+                    </th>
+                    <th>
+                        Employee Code
+                    </th>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Attendance Type
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.UserName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.PhoneNumber)
+                    </th>
+                    <th>
+                        Team
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Gender)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Status)
+                    </th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="p-2">
+                            @Html.DisplayFor(modelItem => item.Id)
+                        </td>
+                        <td>
+                            @employeePrefix-@item.Id
+                        </td>
+                        <td>
+                            @if (string.IsNullOrEmpty(item.ImgUrl))
+                            {
+                                <img class="profile-user-img rounded-circle"
+                                     src="/img/user.png"
+                                     alt="User profile picture">
+                            }
+                            else
+                            {
+                                <img class="profile-user-img rounded-circle"
+                                     src="@("/" + item.ImgUrl)"
+                                     alt="User profile picture">
+                            }  @item.GetFullName()
+                        </td>
+                        <td>
+                            <span class="badge badge-phoenix badge-phoenix-warning"> @Html.DisplayFor(modelItem => item.EmployeeRestrictionType)</span>
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.UserName)
+                        </td>                       
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PhoneNumber)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.TeamName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Gender)
+                        </td>
+                        <td>
+                            @if (item.Status == UserStatus.Active)
+                            {
+                                <span class="badge bg-success">Active</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-warning">@item.Status</span>
+                            }
+                        </td>
+                        <td>
+                            <div class="d-flex flex-row">
+                                <div class="p-1"><a data-bs-toggle="tooltip" data-bs-placement="top" title="Details" class="btn btn-phoenix-secondary" asp-action="View" asp-route-userId="@item.Id"><i class="fa fa-eye"></i></a></div>
+                                @if (item.Status == UserStatus.Active)
+                                {
+                                    <div class="p-1"><a data-bs-toggle="tooltip" data-bs-placement="top" title="Disable Employee" class="btn btn-phoenix-success" asp-action="Block" asp-route-userId="@item.Id"><i class="fa fa-toggle-on"></i></a></div>
+
+                                }
+                                else
+                                {
+                                    <div class="p-1"><a data-bs-toggle="tooltip" data-bs-placement="top" title="Enable Employee" class="btn btn-phoenix-danger" asp-action="Block" asp-route-userId="@item.Id"><i class="fa fa-toggle-off"></i></a></div>
+                                }
+
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+
+        $(document).ready(function () {
+
+            var table = $('#datatables').DataTable({
+                autoWidth: false,
+                lengthChange: true,
+                responsive: false,
+                scrollX: true,
+                buttons: ["copy", "csv", "excel", "pdf", "print"]
+            });
+
+            table.buttons().container()
+                .appendTo('#datatable_wrapper .col-md-6:eq(0)');
+        });
+
+    </script>
+}

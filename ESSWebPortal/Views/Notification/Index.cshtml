@@ -1,0 +1,46 @@
+﻿@model IEnumerable<NotificationVM>
+@{
+    ViewData["Title"] = "Notifications";
+    ViewData["create"] = true;
+}
+<div class="card">
+    <div class="card-header">
+        <div class="float-start">
+            <h4>@ViewData["Title"]</h4>
+        </div>
+        <div class="float-end">
+            <a asp-action="Create" class="btn btn-outline-primary shadow"><i class="fa fa-plus-circle fa-fw me-1"></i> Create new</a>
+        </div>
+    </div>
+    <div class="card-body">        
+        <table class="table table-striped" id="datatable">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Id)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Title)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Type)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.CreatedAt)
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>@item.Title</td>
+                        <td><span class="badge bg-primary">@item.Type</span></td>
+                        <td>@item.CreatedAt.ToString("dd/MM/yyyy hh:mm tt")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

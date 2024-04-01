@@ -1,0 +1,93 @@
+﻿@model ExpenseApproveVM
+@inject IDbSettings _settings
+@{
+    ViewData["Title"] = "Approve";
+    ViewData["Back"] = true;
+}
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Approve">
+            <div class="card">
+                <div class="card-body">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <input type="hidden" asp-for="RequestId" />
+                        <input type="hidden" asp-for="EmployeeName" />
+                        <input type="hidden" asp-for="ForDate" />
+                        <input type="hidden" asp-for="ClaimedAmount" />
+                        <input type="hidden" asp-for="Remarks" />
+                        <input type="hidden" asp-for="CreatedAt" />
+                        <input type="hidden" asp-for="IsConveyance" />
+                        @if (Model.IsConveyance)
+                        {
+                            <div class="form-group mb-3">
+                                <label asp-for="ApprovedDistance" class="control-label"></label>
+                                <input asp-for="ApprovedDistance" class="form-control" />
+                                <span asp-validation-for="ApprovedDistance" class="text-danger"></span>
+                            </div>
+                        }
+                        <div class="form-group mb-3">
+                            <label asp-for="ApprovedAmount" class="control-label"></label>
+                            <input asp-for="ApprovedAmount" class="form-control" />
+                            <span asp-validation-for="ApprovedAmount" class="text-danger"></span>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label asp-for="ApproverRemarks" class="control-label"></label>
+                            <input asp-for="ApproverRemarks" class="form-control" />
+                            <span asp-validation-for="ApproverRemarks" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="form-group">
+                            <input type="submit" value="Approve & Save" class="btn btn-primary" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                Details
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered table-striped">
+                    <tbody>
+                        <tr>
+                            <td><strong>Exployee Name</strong></td>
+                            <td>@Model.EmployeeName</td>
+                        </tr>
+                        <tr>
+                            <td><strong>For Date</strong></td>
+                            <td>@Model.ForDate</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Claimed Amount</strong></td>
+                            <td>@await _settings.GetCurrencySymbol()@Model.ClaimedAmount</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Remarks</strong></td>
+                            <td>@Model.Remarks</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Created On</strong></td>
+                            <td>@Model.CreatedAt</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }
+
+

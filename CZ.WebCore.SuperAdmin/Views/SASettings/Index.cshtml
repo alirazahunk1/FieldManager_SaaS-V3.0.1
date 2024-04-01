@@ -1,0 +1,383 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@using ESSCommon.Core.SharedModels;
+@using ESSDataAccess
+@using ESSDataAccess.Models
+@model SASettingsVM
+
+@{
+    ViewData["Title"] = "Settings";
+}
+<div class="card fs--1">
+    <div class="card-body">
+        <div class="d-flex align-items-start">
+            <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical" style="width:30%">
+                <button class="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">Basic Settings</button>
+                <button class="nav-link" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false">SMS Settings</button>
+                <button class="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#v-pills-messages" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">Dashboard Settings</button>
+                <button class="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Mobile App Settings</button>
+                <button class="nav-link" id="v-pills-map-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-map-settings" type="button" role="tab" aria-controls="v-pills-map-settings" aria-selected="false">Payment Gateway Settings</button>
+            </div>
+            <div class="tab-content w-100" id="v-pills-tabContent">
+                <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
+                    <form class="form-horizontal" asp-action="SaveAppSettings" method="post">
+                        <div class="form-group row mb-3">
+                            <label for="inputName" class="col-sm-3 col-form-label">App Name</label>
+                            <div class="col-sm-9">
+                                <input class="form-control" asp-for="AppName" placeholder="App Name">
+                            </div>
+                        </div>
+                        <div class="form-group row mb-3">
+                            <label for="inputName" class="col-sm-3 col-form-label">App Version</label>
+                            <div class="col-sm-9">
+                                <input class="form-control" asp-for="AppVersion" placeholder="App Version">
+                            </div>
+                        </div>
+                        <div class="form-group row mb-3">
+                            <label for="inputName" class="col-sm-3 col-form-label">Country Code</label>
+                            <div class="col-sm-9">
+                                <input class="form-control" asp-for="Country" placeholder="Country Code">
+                            </div>
+                        </div>
+                        <div class="form-group row mb-3">
+                            <label for="inputName" class="col-sm-3 col-form-label">Country Phone Code</label>
+                            <div class="col-sm-9">
+                                <input class="form-control" asp-for="PhoneCountryCode" placeholder="Country Phone Code">
+                            </div>
+                        </div>
+                        <div class="form-group row mb-3">
+                            <label for="inputName" class="col-sm-3 col-form-label">Currency</label>
+                            <div class="col-sm-9">
+                                <input class="form-control" asp-for="Currency" placeholder="Currency">
+                            </div>
+                        </div>
+                        <div class="form-group row mb-3">
+                            <label for="inputName" class="col-sm-3 col-form-label">Currency Symbol</label>
+                            <div class="col-sm-9">
+                                <input class="form-control" asp-for="CurrencySymbol" placeholder="Currency Symbol">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="offset-sm-3 col-sm-10">
+                                <button type="submit" class="btn btn-primary px-4">Save Changes</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+                    <form class="form-horizontal" asp-action="SaveSMSSettings" method="post">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h4 class="card-title">Twilio Settings</h4>
+                                    </div>
+                                    @if (!Constants.IsDemoMode)
+                                    {
+                                        <div class="col-md-6 d-flex justify-content-end">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" asp-for="TwilioIsEnabled">
+                                                <label class="custom-control-label" asp-for="TwilioIsEnabled">Status</label>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+
+                            </div>
+                            <div class="card-body">
+                                <div id="twilioDiv">
+                                    <div class="form-group row mb-3">
+                                        <label for="inputName" class="col-sm-2 col-form-label">From Number</label>
+                                        <div class="col-sm-10">
+                                            <input class="form-control" asp-for="TwilioFromNumber" placeholder="From Number">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row mb-3">
+                                        <label for="inputName" class="col-sm-2 col-form-label">Account Sid</label>
+                                        <div class="col-sm-10">
+                                            <input class="form-control" asp-for="TwilioAccountSid" placeholder="Account Sid">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row mb-3">
+                                        <label for="inputName" class="col-sm-2 col-form-label">Auth Token</label>
+                                        <div class="col-sm-10">
+                                            <input class="form-control" asp-for="TwilioAuthToken" placeholder="Auth Token">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row mb-3">
+                                        <div class="offset-sm-2 col-sm-10">
+                                            <button type="submit" class="btn btn-primary px-4">Save Changes</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="twilioDisDiv">
+                                    <p>Twilio is disabled!</p>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">
+                    <form class="form-horizontal" asp-action="SaveDashboardSettings" method="post">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title">Dashboard Settings</h4>
+                            </div>
+                            <div class="card-body">
+                                <div>
+                                    <div class="form-group row mb-3">
+                                        <label for="OfflineCheckTimeType" class="col-sm-2 col-form-label">Offline Check Time Type</label>
+                                        <div class="col-sm-10">
+                                            <select class="form-control" asp-for="OfflineCheckTimeType" name="OfflineCheckTimeType" id="OfflineCheckTimeType">
+                                                <option>Seconds</option>
+                                                <option>Minutes</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row mb-3">
+                                        <label for="inputName" class="col-sm-2 col-form-label">Offline Check Time</label>
+                                        <div class="col-sm-10">
+                                            <input class="form-control" asp-for="OfflineCheckTime" placeholder="Offline Check Time">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row mb-3">
+                                        <div class="offset-sm-2 col-sm-10">
+                                            <button type="submit" class="btn btn-primary px-4">Save Changes</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">
+                    <form class="form-horizontal" asp-action="SaveMobileAppSettings" method="post">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title">Mobile App Settings</h4>
+                            </div>
+                            <div class="card-body">
+                                <div>
+                                    <div class="form-group row mb-3">
+                                        <label for="inputName" class="col-sm-2 col-form-label">Mobile App Version</label>
+                                        <div class="col-sm-10">
+                                            <input class="form-control" asp-for="MAppVersion" placeholder="Mobile App Version">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row mb-3">
+                                        <label for="inputName" class="col-sm-2 col-form-label">Api Base Url</label>
+                                        <div class="col-sm-10">
+                                            <input class="form-control" asp-for="ApiBaseUrl" placeholder="Api Base Url">
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <label for="inputName" class="col-sm-6 col-form-label">Web Base Url</label>
+                                        <div class="col-sm-6">
+                                            <input class="form-control" asp-for="WebBaseUrl" placeholder="Web Base Url">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row mb-3">
+                                        <label for="inputName" class="col-sm-2 col-form-label">Privacy Policy Link</label>
+                                        <div class="col-sm-10">
+                                            <input class="form-control" asp-for="MPrivacyPolicyLink" placeholder="Privacy Policy Link">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row mb-3">
+                                        <label for="LocationUpdateIntervalType" class="col-sm-2 col-form-label">Location Update Interval Type</label>
+                                        <div class="col-sm-10">
+                                            <select class="form-control" asp-for="MLocationUpdateIntervalType">
+
+                                                <option> Seconds</option>
+
+                                                <option>Minutes</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="inputName" class="col-sm-2 col-form-label">Location Update Interval</label>
+                                        <div class="col-sm-10">
+                                            <input class="form-control" asp-for="MLocationUpdateInterval" placeholder="Location Update Interval">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="offset-sm-2 col-sm-10">
+                                            <button type="submit" class="btn btn-primary px-4">Save Changes</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="tab-pane fade" id="v-pills-map-settings" role="tabpanel" aria-labelledby="v-pills-map-settings-tab">
+                    @if (Constants.IsDemoMode)
+                    {
+                        <p class="text-danger align-content-center p-1">Note: You cannot edit Payment Gateway Setting settings in demo mode.</p>
+                    }
+                    else
+                    {
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title">Payment Gateway Setting</h4>
+                            </div>
+                            <div class="card-body">
+
+                                <div class="form-group row mb-3">
+                                    <label for="inputName" class="col-sm-2 col-form-label">Default Payment Gateway</label>
+                                    <div class="col-sm-10">
+                                        <select class="form-control" asp-for="PaymentGateway" asp-items="@Html.GetEnumSelectList<PaymentGateway>()"></select>
+                                    </div>
+                                </div>
+
+                                <div id="razorpaydiv" style="display:none;">
+                                    <form class="form-horizontal" asp-action="SaveRazorPaySettings" method="post">
+                                        <div class="form-group row mb-3">
+                                            <label for="inputName" class="col-sm-2 col-form-label">RazorPay Key Id</label>
+                                            <div class="col-sm-10">
+                                                <input class="form-control" asp-for="RazorPayKeyId" placeholder="RazorPay Key Id">
+                                            </div>
+                                        </div> 
+                                        <div class="form-group row mb-3">
+                                            <label for="inputName" class="col-sm-2 col-form-label">RazorPay Key Secret</label>
+                                            <div class="col-sm-10">
+                                                <input class="form-control" asp-for="RazorPayKeySecret" placeholder="RazorPay Key Secret">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="offset-sm-2 col-sm-10">
+                                                <button type="submit" class="btn btn-primary px-4">Save Changes</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <div id="paypaldiv" style="display:none;">
+                                    <form class="form-horizontal" asp-action="SavePaypalSettings" method="post">
+                                        <div class="form-group row mb-3">
+                                            <label for="inputName" class="col-sm-2 col-form-label">Mode</label>
+                                            <div class="col-sm-10">
+                                                <select class="form-control" asp-for="PaypalMode" asp-items="@Html.GetEnumSelectList<PaypalModeEnum>()"></select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row mb-3">
+                                            <label for="inputName" class="col-sm-2 col-form-label">Client Id</label>
+                                            <div class="col-sm-10">
+                                                <input class="form-control" asp-for="PaypalClientId" placeholder="Paypal Client Id">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row mb-3">
+                                            <label for="inputName" class="col-sm-2 col-form-label">Clent Secret</label>
+                                            <div class="col-sm-10">
+                                                <input class="form-control" asp-for="PaypalClientSecret" placeholder="Paypal Client Secret">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="offset-sm-2 col-sm-10">
+                                                <button type="submit" class="btn btn-primary px-4">Save Changes</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+
+            if ($('#TwilioIsEnabled').is(":checked")) {
+                $('#twilioDiv').show();
+                $('#twilioDisDiv').hide();
+            } else {
+                $('#twilioDiv').hide();
+                $('#twilioDisDiv').show();
+            }
+
+            handlePaymentGateways();
+
+            $('#TwilioIsEnabled').change(function () {
+                if (this.checked) {
+                    $('#twilioDisDiv').hide();
+                    $('#twilioDiv').fadeIn();
+                    updateTwilioStatus(true);
+                } else {
+                    $('#twilioDiv').hide();
+                    $('#twilioDisDiv').fadeIn();
+                    updateTwilioStatus(false);
+                }
+            });
+
+        })
+
+
+        function handlePaymentGateways(){
+            var selected = $('#PaymentGateway').val();
+            if(selected === '0'){
+                $('#paypaldiv').show();
+                $('#razorpaydiv').hide();
+            }else{
+                $('#paypaldiv').hide();
+                $('#razorpaydiv').show();
+            }
+
+            $('#PaymentGateway').change(function () {
+                if (this.value === '0') {
+                    $('#paypaldiv').show();
+                    $('#razorpaydiv').hide();
+                   
+                } else {
+                    $('#paypaldiv').hide();
+                    $('#razorpaydiv').show();
+                }
+                changePaymentGateway(this.value);
+            });
+        }
+
+        function updateTwilioStatus(status) {
+            $.ajax({
+                type: "POST",
+                url: "/SASettings/UpdateTwilioStatus",
+                data: { "status": status },
+                success: function (response) {
+                    console.log(response);
+                },
+                failure: function (response) {
+                    log(response.responseText);
+                },
+                error: function (response) {
+                    log(response.responseText);
+                }
+
+            });
+        }
+
+
+        function changePaymentGateway(gateway) {
+            $.ajax({
+                type: "POST",
+                url: "/SASettings/ChangeDefaultPaymentGateway",
+                data: { "gateway": gateway },
+                success: function (response) {
+                    console.log(response);
+                },
+                failure: function (response) {
+                    log(response.responseText);
+                },
+                error: function (response) {
+                    log(response.responseText);
+                }
+
+            });
+        }
+    </script>
+}

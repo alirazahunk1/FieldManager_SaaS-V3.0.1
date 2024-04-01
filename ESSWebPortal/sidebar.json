@@ -1,0 +1,163 @@
+﻿{
+  "sidebarMenu": [
+    {
+      "text": "Monitoring",
+      "is_header": true,
+      "icon": "fa fa-binoculars"
+    },
+    {
+      "controller": "Dashboard",
+      "action": "Index",
+      "icon": "bi bi-house-fill",
+      "text": "Dashboard"
+    },
+    {
+      "controller": "Dashboard",
+      "action": "LiveLocation",
+      "icon": "bi bi-pin-map-fill",
+      "text": "Live Location"
+    },
+    {
+      "controller": "Dashboard",
+      "action": "TimeLine",
+      "icon": "fa fa-route",
+      "text": "Time Line"
+    },
+    {
+      "controller": "Dashboard",
+      "action": "CardView",
+      "icon": "bi bi-card-heading",
+      "text": "Card View"
+    },
+    {
+      "text": "Employee Management",
+      "is_header": true,
+      "icon": "bi bi-person-lines-fill"
+    },
+    {
+      "controller": "Employee",
+      "action": "List",
+      "icon": "fa fa-users",
+      "text": "Employees"
+    },
+    {
+      "controller": "Shift",
+      "action": "Index",
+      "icon": "fa fa-calendar",
+      "text": "Shifts"
+    },
+    {
+      "controller": "Team",
+      "action": "Index",
+      "icon": "fa fa-sitemap",
+      "text": "Teams"
+    },
+    {
+      "text": "Attendance",
+      "is_header": true,
+      "icon": "fa fa-calendar-alt"
+    },
+    {
+      "controller": "Holiday",
+      "action": "Index",
+      "icon": "fa fa-user-times",
+      "text": "Public Holidays"
+    },
+    {
+      "controller": "Visit",
+      "action": "Index",
+      "icon": "fa fa-glasses",
+      "text": "Visits"
+    },
+    {
+      "text": "Leave Management",
+      "is_header": true,
+      "icon": "fa fa-sign-out-alt"
+    },
+    {
+      "controller": "LeaveRequest",
+      "action": "Index",
+      "icon": "fa fa-list",
+      "text": "Leave Requests"
+    },
+    {
+      "controller": "LeaveType",
+      "action": "Index",
+      "icon": "bi bi-list-check",
+      "text": "Leave Type"
+    },
+    {
+      "text": "Expense Management",
+      "is_header": true,
+      "icon": "fa fa-money-bill"
+    },
+    {
+      "controller": "ExpenseRequest",
+      "action": "Index",
+      "icon": "fa fa-money-bill",
+      "text": "Expense Requests"
+    },
+    {
+      "controller": "ExpenseType",
+      "action": "Index",
+      "icon": "fa fa-coins",
+      "text": "Expense Type"
+    },
+    {
+      "controller": "Device",
+      "action": "Index",
+      "icon": "fa fa-mobile-alt",
+      "text": "Device Management"
+    },
+    {
+      "text": "Other",
+      "is_header": true,
+      "icon": "fa fa-money-bill"
+    },
+    {
+      "controller": "Chat",
+      "action": "Index",
+      "icon": "bi bi-chat-dots-fill",
+      "text": "Chat"
+    },
+    {
+      "controller": "Client",
+      "action": "Index",
+      "icon": "fa fa-building",
+      "text": "Clients"
+    },
+    {
+      "controller": "Report",
+      "action": "Index",
+      "icon": "bi bi-file-earmark-spreadsheet-fill",
+      "text": "Reports"
+    },
+
+    {
+      "text": "Portal Management",
+      "is_header": true
+    },
+    {
+      "controller": "Account",
+      "action": "UsersList",
+      "icon": "fa fa-users",
+      "text": "Portal Users"
+    },
+    {
+      "text": "Other",
+      "is_header": true
+    },
+    {
+      "controller": "Notification",
+      "action": "Index",
+      "icon": "fa fa-bell",
+      "text": "Notifications"
+    },
+    {
+      "controller": "Support",
+      "action": "Index",
+      "icon": "bi bi-info-circle-fill",
+      "text": "Support"
+    }
+  ]
+}

@@ -1,0 +1,145 @@
+﻿@model AttendanceRVM
+@{
+    ViewData["Title"] = Model.Name ?? "Attendance Report";
+    var now = DateTime.Now;
+}
+@section Styles {
+    <link href="~/vendors/choices/choices.min.css" rel="stylesheet" />
+}
+<div class="card">
+    <div class="card-header">
+        <form class="row" method="get" action="AttendanceReport">
+            <div class="col-md-4">
+                <input id="date" name="date" type="month" class="form-control" value="@ViewBag.date" />
+            </div>
+            <div class="col-md-4">
+                <select class="form-control select2" data-choices="data-choices" data-options='{"removeItemButton":true,"placeholder":true}' id="employeeId" name="employeeId" asp-items="@ViewBag.employees">
+                    <option value="">Select an employee</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-primary">Generate Report</button>
+            </div>
+        </form>
+    </div>
+    <div class="card-body">
+        <table id="datatable" class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        Id
+                    </th>
+                    <th>
+                        Date
+                    </th>
+                    <th>
+                        P/A
+                    </th>
+                    <th>
+                        In Time
+                    </th>
+                    <th>
+                        Out Time
+                    </th>
+                    <th>
+                        Working Hours
+                    </th>
+                    <th>
+                        Remarks
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Items.Any())
+                {
+                    @foreach (var item in Model.Items)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Id)
+                            </td>
+                            <td>
+                                @item.Date.DayOfWeek @item.Date.ToString("dd-MMM-yy")
+                            </td>
+                            <td>
+                                @if (!(item.Date > now))
+                                {
+                                    @if (item.Remarks.Equals("weekoff"))
+                                    {
+                                        <p>W/O</p>
+                                    }
+                                    else
+                                    {
+                                        @if (item.IsPresent)
+                                        {
+                                            <p>P</p>
+                                        }
+                                        else
+                                        {
+                                            <p>A</p>
+                                        }
+                                    }
+                                }
+                            </td>
+                            <td>
+                                @item.InTime
+                            </td>
+                            <td>
+                                @item.OutTime
+                            </td>
+                            <td>
+                                @item.WorkingHours
+                            </td>
+                            <td>
+                                @item.Remarks
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/vendors/choices/choices.min.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            $(function () {
+                $("#datatable").DataTable({
+                    "responsive": true, "lengthChange": false, "autoWidth": false,
+                    "pageLength": 31,
+                    "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+                }).buttons().container().appendTo('#datatable_wrapper .col-md-6:eq(0)');
+
+            });
+
+
+            //$("#date").datepicker();
+
+            //var qDate = '2018-08-01';
+
+            //$('.date').datepicker({
+            //    dateFormat: 'dd-mm-yy'
+            //}).datepicker("setDate", new Date(qDate));
+
+
+            //var date = new Date(@(ViewData["date"]));
+            //$('#date').val(date);
+
+            $('#employeeId').on('change', function () {
+                console.log(this.value);
+            });
+
+            $('#date').change(function () {
+                console.log('date');
+            });
+        });
+
+        function getData() {
+
+        }
+
+    </script>
+    }

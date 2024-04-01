@@ -1,0 +1,138 @@
+﻿@model ESSWebPortal.Models.Auth.LoginViewModel
+@inject ISASettings _settings;
+@{
+    ViewData["Title"] = "Log in";
+    ViewData["islogin"] = true;
+    var appName = await _settings.GetAppName();
+}
+
+
+<div class="container-fluid bg-300 dark__bg-1200">
+    <div class="bg-holder bg-auth-card-overlay" style="background-image:url(../../../assets/img/bg/37.png);">
+    </div>
+    <!--/.bg-holder-->
+
+    <div class="row flex-center position-relative min-vh-100 g-0 py-5">
+        <div class="col-11 col-sm-10 col-xl-8">
+            <div class="card border border-200 auth-card">
+                <div class="card-body pe-md-0">
+                    <div class="row align-items-center gx-0 gy-7">
+                        <div class="col-auto bg-100 dark__bg-1100 rounded-3 position-relative overflow-hidden auth-title-box">
+                            <div class="bg-holder" style="background-image:url(../../../assets/img/bg/38.png);">
+                            </div>
+                            <!--/.bg-holder-->
+
+                            <div class="position-relative px-4 px-lg-7 pt-7 pb-7 pb-sm-5 text-center text-md-start pb-lg-7 pb-md-7">
+                                <h3 class="mb-3 text-black fs-1">With @appName</h3>
+                                <p class="text-700">Start your Field Force Management Business today with @appName</p>
+                                <ul class="list-unstyled mb-0 w-max-content w-md-auto mx-auto">
+                                    <li class="d-flex align-items-center"><span class="uil uil-check-circle text-success me-2"></span><span class="text-700 fw-semi-bold">Employee Management</span></li>
+                                    <li class="d-flex align-items-center"><span class="uil uil-check-circle text-success me-2"></span><span class="text-700 fw-semi-bold">Attendance (Geofence, IP, QR, Site and more)</span></li>
+                                    <li class="d-flex align-items-center"><span class="uil uil-check-circle text-success me-2"></span><span class="text-700 fw-semi-bold">Leaves</span></li>
+                                    <li class="d-flex align-items-center"><span class="uil uil-check-circle text-success me-2"></span><span class="text-700 fw-semi-bold">Expenses</span></li>
+                                    <li class="d-flex align-items-center"><span class="uil uil-check-circle text-success me-2"></span><span class="text-700 fw-semi-bold">Travel</span></li>
+                                    <li class="d-flex align-items-center"><span class="uil uil-check-circle text-success me-2"></span><span class="text-700 fw-semi-bold">Payslip</span></li>
+                                    <li class="d-flex align-items-center"><span class="uil uil-check-circle text-success me-2"></span><span class="text-700 fw-semi-bold">Team Chat</span></li>
+                                    <li class="d-flex align-items-center"><span class="uil uil-check-circle text-success me-2"></span><span class="text-700 fw-semi-bold">Excel Reports</span></li>
+                                    <li class="d-flex align-items-center"><span class="uil uil-check-circle text-success me-2"></span><span class="text-700 fw-semi-bold">Task System</span></li>
+                                    <li class="d-flex align-items-center"><span class="uil uil-check-circle text-success me-2"></span><span class="text-700 fw-semi-bold">Offline Tracking</span></li>
+                                    <li class="d-flex align-items-center"><span class="uil uil-check-circle text-success me-2"></span><span class="text-700 fw-semi-bold">Product &amp; Ordering</span></li>
+                                    <li class="d-flex align-items-center"><span class="uil uil-check-circle text-success me-2"></span><span class="text-700 fw-semi-bold">Custom Form Builder</span></li>
+                                    <li class="d-flex align-items-center"><span class="uil uil-check-circle text-success me-2"></span><span class="text-700 fw-semi-bold">Payment Collection</span></li>
+                                    <li class="d-flex align-items-center"><span class="uil uil-check-circle text-success me-2"></span><span class="text-700 fw-semi-bold">Document Requests</span></li>
+                                    <li class="d-flex align-items-center"><span class="uil uil-check-circle text-success me-2"></span><span class="text-700 fw-semi-bold">and more..</span></li>
+                                </ul>
+                            </div>
+                            <div class="position-relative z-index--1 mb-6 d-none d-md-block text-center mt-md-15"><img class="auth-title-box-img d-dark-none" src="../../../assets/img/spot-illustrations/auth.png" alt="" /><img class="auth-title-box-img d-light-none" src="../../../assets/img/spot-illustrations/auth-dark.png" alt="" /></div>
+                        </div>
+                        <div class="col mx-auto">
+                            <div class="auth-form-box">
+                                <form class="form-body" method="post">
+                                    <div class="text-center mb-7">
+                                        <a class="d-flex flex-center text-decoration-none mb-4">
+                                            <div class="d-flex align-items-center fw-bolder fs-5 d-inline-block">
+                                                <img src="~/img/app_logo.png" alt="Field Manager" width="58" />
+                                            </div>
+                                            <h3 class="ms-1 text-uppercase">@appName @("V" + await _settings.GetAppVersion())</h3>
+                                        </a>
+                                        <h3 class="text-1000">Log In</h3>
+                                        <p class="text-700">
+                                            @if (Constants.IsDemoMode)
+                                            {
+                                            <p class="text-danger align-content-start p-1">Note: For testing employee on mobile app please create a new account in this portal and use that in the mobile device.</p>
+                                            }
+                                            else
+                                            {
+                                            <span>Verify your identity to access the portal</span>
+                                            }
+                                        </p>
+                                    </div>
+                                    @if (Constants.IsDemoMode)
+                                    {
+                                        <div class="mb-3 text-start">
+                                            <label class="form-label">Select a user</label>
+                                            <select class="form-select" id="userselect" name="userselect">
+                                                <option value="0">Please select a user</option>
+                                                <option value="1">Super Admin</option>
+                                                <option value="2">1 Tenant Admin</option>
+                                                <option value="3">2 Tenant Admin</option>
+                                            </select>
+                                        </div>
+                                    }
+                                    <div class="mb-3 text-start">
+                                        <label class="form-label" asp-for="UserName"></label>
+                                        <div class="form-icon-container">
+                                            <input class="form-control form-icon-input" asp-for="UserName" placeholder="Please enter your email" /><span class="fas fa-user text-900 fs--1 form-icon"></span>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 text-start">
+                                        <label class="form-label" asp-for="Password"></label>
+                                        <div class="form-icon-container">
+                                            <input class="form-control form-icon-input" asp-for="Password" type="password" placeholder="please enter your password" /><span class="fas fa-key text-900 fs--1 form-icon"></span>
+                                        </div>
+                                    </div>
+                                    <div class="row flex-between-center mb-7">
+                                        <div class="col-auto">
+                                            <div class="form-check mb-0">
+                                                <input class="form-check-input" asp-for="RememberMe" type="checkbox" />
+                                                <label class="form-check-label mb-0" asp-for="RememberMe">Remember me</label>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <button type="submit" class="btn btn-primary w-100 mb-3">Login</button>
+                                    <div class="text-center"><a class="fs--1 fw-bold" asp-action="Register">Create an account</a></div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+       $(document).ready(function(){
+            $("#userselect").change(function () {
+                var selectedid = this.value;
+                console.log(selectedid);
+                if (selectedid === "1") {
+                    $('#UserName').val("superadmin");
+                    $('#Password').val("123456");
+                } else if (selectedid === "2") {
+                    $('#UserName').val("1tenantadmin");
+                    $('#Password').val("123456");
+                }else if (selectedid === "3") {
+                    $('#UserName').val("2tenantadmin");
+                    $('#Password').val("123456");
+                } else {
+                    $('#UserName').val("");
+                    $('#Password').val("");
+                }
+            });
+       
+       });
+    </script>
+}

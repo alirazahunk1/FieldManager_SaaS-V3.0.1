@@ -1,0 +1,92 @@
+﻿@model SettingsViewModel
+
+@{
+    ViewData["Title"] = "Settings";
+}
+
+<div class="card">
+    <div class="card-body">
+        <div class="d-flex align-items-start">
+            <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical" style="width:30%">
+                <button class="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">Basic Settings</button>
+                <button class="nav-link" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false">SMS Settings</button>
+            </div>
+            <div class="tab-content w-100" id="v-pills-tabContent">
+                <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
+                    <form class="form-horizontal" asp-action="SaveAppSettings" method="post">
+                        <div class="form-group row mb-3">
+                            <label for="inputName" class="col-sm-3 col-form-label">Country Code</label>
+                            <div class="col-sm-9">
+                                <input class="form-control" asp-for="Country" placeholder="Country Code">
+                            </div>
+                        </div>
+                        <div class="form-group row mb-3">
+                            <label for="inputName" class="col-sm-3 col-form-label">Country Phone Code</label>
+                            <div class="col-sm-9">
+                                <input class="form-control" asp-for="PhoneCountryCode" placeholder="Country Phone Code">
+                            </div>
+                        </div>
+                        <div class="form-group row mb-3">
+                            <label for="inputName" class="col-sm-3 col-form-label">Currency</label>
+                            <div class="col-sm-9">
+                                <input class="form-control" asp-for="Currency" placeholder="Currency">
+                            </div>
+                        </div>
+                        <div class="form-group row mb-3">
+                            <label for="inputName" class="col-sm-3 col-form-label">Currency Symbol</label>
+                            <div class="col-sm-9">
+                                <input class="form-control" asp-for="CurrencySymbol" placeholder="Currency Symbol">
+                            </div>
+                        </div>
+                        <div class="form-group row mb-3">
+                            <label for="inputName" class="col-sm-3 col-form-label">Distance Unit</label>
+                            <div class="col-sm-9">
+                                <select class="form-control" asp-for="DistanceUnit" name="DistanceUnit" id="DistanceUnit">
+                                    <option>KM</option>
+                                    <option>Mi</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="offset-sm-3 col-sm-10">
+                                <button type="submit" class="btn btn-primary px-4">Save Changes</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+                    <div class="card">
+                        <div class="card-header">
+                            <h6>Map Settings</h6>
+                        </div>
+                        <div class="card-body">
+                            <form class="form-horizontal" asp-action="SaveMapSettings" method="post">
+                                <div class="col-md-12">
+                                    <div class="row mb-3">
+                                        <label for="inputName" class="col-sm-6 col-form-label">Latitude</label>
+                                        <div class="col-sm-6">
+                                            <input class="form-control" asp-for="CenterLatitude" placeholder="Latitude">
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label for="inputName" class="col-sm-6 col-form-label">Longitude</label>
+                                        <div class="col-sm-6">
+                                            <input class="form-control" asp-for="CenterLongitude" placeholder="Longitude">
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label for="inputName" class="col-sm-6 col-form-label">Map Zoom Level</label>
+                                        <div class="col-sm-6">
+                                            <input class="form-control" asp-for="MapZoomLevel" placeholder="Map Zoom Level">
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary px-4">Save Changes</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

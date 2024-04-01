@@ -1,0 +1,114 @@
+﻿@model IEnumerable<VisitModel>
+@inject IDbSettings _settings;
+@{
+    ViewData["Title"] = "Visits";
+    var apiBaseUrl = await _settings.GetApiBaseUrl();
+}
+
+@section Styles {
+    <link href="~/vendors/choices/choices.min.css" rel="stylesheet" />
+}
+<div class="card shadow">
+    <div class="card-header py-3">
+        <div class="float-start">
+            <h5 class="mt-2"> @ViewData["Title"]</h5>
+        </div>
+        <form method="get">
+            <div class="row m-0">
+                <div class="col-md-2">
+                    <div class="input-group date">
+                        <input type="date" class="form-control datetimepicker-input" id="date" name="date" value="@(ViewData["Date"] ?? DateTime.Now.Date.ToString("yyyy-MM-dd"))" />
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <select class="form-control" data-choices="data-choices" data-options='{"removeItemButton":true,"placeholder":true}' id="emp" name="emp" asp-items="@ViewBag.employees" style="width:100%;">
+                        <option value="">Select an employee</option>
+                    </select>
+                </div>
+                <div class="col-md-2 col-6">
+                    <button type="submit" class="btn btn-primary">Filter</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="card-body">
+        <table id="datatable" class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Id)
+                    <th>
+                        Employee
+                    </th>
+                    <th>
+                            @Html.DisplayNameFor(model => model.Client.Name)
+                    </th>
+                    <th>
+                        Location
+                    </th>
+                    <th>
+                        Address
+                    </th>
+                    <th>
+                            @Html.DisplayNameFor(model => model.Remarks)
+                    </th>
+                    <th>
+                            @Html.DisplayNameFor(model => model.ImgUrl)
+                    </th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Id)
+                        </td>
+                        <td>
+                            @item.Attendance.Employee.GetFullName()
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Client.Name)
+                        </td>
+                        <td>
+                            <a href="@("https://www.google.com/maps/search/?api=1&query="+item.Latitude+","+item.Longitude)" target="_blank"><i class="fa fa-share"></i> Open in maps</a>
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Address)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Remarks)
+                        </td>
+                        <td>
+                            @if (string.IsNullOrEmpty(apiBaseUrl))
+                            {
+                                <p>Api url not set</p>
+                            }
+                            else
+
+                            {
+                                <img height="100" src="@(apiBaseUrl  + item.ImgUrl)">
+                            }
+
+                        </td>
+                        <td class="d-flex flex-row">
+                            <div class="p-1"><a data-bs-toggle="tooltip" data-bs-placement="top" title="Delete" class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id" onclick="return confirm('Are you sure you want to delete?');"><i class="fa fa-trash"></i></a></div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/vendors/choices/choices.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("img").click(function () { this.requestFullscreen() })
+        });
+    </script>
+}
+
+

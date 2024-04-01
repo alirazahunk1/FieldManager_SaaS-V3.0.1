@@ -1,0 +1,1829 @@
+﻿@using ESSCommon.Core.SharedModels.Settings
+@using ESSWebPortal.AddonHelpers
+@using ESSWebPortal.ViewModels.Addon
+@model ModuleSettingsDto
+@inject ApiModuleHelper apiModuleHelper;
+@{
+    ViewData["Title"] = "Addons";
+}
+@{
+    ViewData["Title"] = "Module Settings";
+
+    var apiResult = await apiModuleHelper.GetApiModuleStatus();
+
+    var apiModuleStatus = apiResult.IsSuccess ? ModuleHelper.GetApiModuleStatus(apiResult.Data) : null;
+}
+<div class="row mb-3">
+    <div class="col">
+        <div class="float-start">
+            <h4 class="mt-2">@ViewData["Title"]</h4>
+        </div>
+    </div>
+    <div class="col">
+    </div>
+</div>
+@if (!apiResult.IsSuccess)
+{
+    <div class="alert alert-outline-danger d-flex align-items-center" role="alert">
+        <span class="fas fa-info-circle text-danger me-3"></span>
+        <p class="mb-0 flex-1 fw-bold">Unable to connect with API service, please check the API base url in settings or api project.</p>
+        <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+<div class="mb-2">
+    <div class="alert alert-outline-warning d-flex align-items-center" role="alert">
+        <span class="fas fa-info-circle text-warning me-3"></span>
+        <p class="mb-0 flex-1 fw-bold">We have over 20+ premium modules</p>
+        <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div class="row">
+        <div class="col-xl-3 col-xxl-3 pt-3">
+            <div class="card border @(Model.IsDocumentModuleEnabled ? "border-success" : "border-danger") h-100 w-100 overflow-hidden shadow-lg">
+                <div class="card-body px-5 position-relative">
+                    <h3 class="mb-5">Document Management</h3>
+                    <p class="text-body-tertiary fw-semibold">Create and manage document types and requests from employees.</p>
+
+                    <div class="badge badge-phoenix fs-10 badge-phoenix-warning mb-4">
+                        <span class="fw-bold">Premium Addon</span>
+                        <span class="fa-solid fa-award ms-1"></span>
+                    </div>
+                    @if (!apiResult.IsSuccess)
+                    {
+                        <p class="text-danger">Unable to get API status. Error in API Service!</p>
+                    }
+                    else
+                    {
+                        @if (!ModuleHelper.CheckModuleExists(ModuleEnum.DocumentRequest) || !apiModuleStatus.IsDocumentRequestModuleExists)
+                        {
+                            <div class="row text-center">
+                                <p>@(!ModuleHelper.CheckModuleExists(ModuleEnum.DocumentRequest) ? "Web" : "") @(!apiModuleStatus.IsDocumentRequestModuleExists ? " API" : "") Module not installed</p>
+                                <a class="btn btn-block btn-phoenix-success me-1 mb-1  text-center" href="@Constants.WebAddonsLinks.DocumentRequest" target="_blank">Buy Now</a>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="form-check form-switch mt-2">
+                                <input class="form-check-input" type="checkbox" asp-for="IsDocumentModuleEnabled" />
+                                <label class="form-check-label" asp-for="IsDocumentModuleEnabled">Status</label>
+                            </div>
+                            <div class="card shadow p-2">
+                                <div class="row mt-2">
+                                    <div class="col">
+                                        <p class="text-body-tertiary fw-semibold"><i class="fa fa-bolt"></i> Admin</p>
+                                    </div>
+                                    <div class="col text-end">
+                                        <p class="text-body-tertiary fw-semibold">@(ModuleHelper.GetModuleVersionString(ModuleEnum.DocumentRequest))</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <p class="text-body-tertiary fw-semibold"><i class="fa fa-bolt"></i> API</p>
+                                    </div>
+                                    <div class="col text-end">
+                                        <p class="text-body-tertiary fw-semibold">@(ModuleHelper.GetApiModuleVersionString(apiResult.Data, ApiModuleEnum.DocumentRequest))</p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+
+                @if (Constants.IsDemoMode)
+                {
+                    <a class="btn btn-block btn-phoenix-success me-1 ms-1 mb-1  text-center" href="@Constants.WebAddonsLinks.DocumentRequest" target="_blank">Buy Now</a>
+                }
+                <div class="card-footer border-0 py-0 px-5 z-1">
+                    <p class="text-body-tertiary fw-semibold">View Tutorial on how to use this feature <a href="#">Click here </a>at <br class="d-none d-xxl-block" />Youtube.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-xxl-3 pt-3">
+            <div class="card border @(Model.IsProductModuleEnabled ? "border-success" : "border-danger") h-100 w-100 overflow-hidden shadow-lg">
+                <div class="card-body px-5 position-relative">
+                    <h3 class="mb-5">Product &amp; Order System</h3>
+                    <p class="text-body-tertiary fw-semibold">Create and manager products categories, products and employee can place order against a client.</p>
+
+                    <div class="badge badge-phoenix fs-10 badge-phoenix-warning mb-4">
+                        <span class="fw-bold">Premium Addon</span>
+                        <span class="fa-solid fa-award ms-1"></span>
+                    </div>
+                    @if (!apiResult.IsSuccess)
+                    {
+                        <p class="text-danger">Unable to get API status. Error in API Service!</p>
+                    }
+                    else
+                    {
+                        @if (!ModuleHelper.CheckModuleExists(ModuleEnum.ProductOrder) || !apiModuleStatus.IsProductOrderModuleExists)
+                        {
+                            <div class="row text-center">
+                                <p>@(!ModuleHelper.CheckModuleExists(ModuleEnum.ProductOrder) ? "Web" : "") @(!apiModuleStatus.IsProductOrderModuleExists ? " API" : "") Module not installed</p>
+                                <a class="btn btn-block btn-phoenix-success me-1 mb-1  text-center" href="@Constants.WebAddonsLinks.ProductOrder" target="_blank">Buy Now</a>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="form-check form-switch mt-2">
+                                <input class="form-check-input" type="checkbox" asp-for="IsProductModuleEnabled" />
+                                <label class="form-check-label" asp-for="IsProductModuleEnabled">Status</label>
+                            </div>
+                            <div class="card shadow p-2">
+                                <div class="row mt-2">
+                                    <div class="col">
+                                        <p class="text-body-tertiary fw-semibold"><i class="fa fa-bolt"></i> Admin</p>
+                                    </div>
+                                    <div class="col text-end">
+                                        <p class="text-body-tertiary fw-semibold">@(ModuleHelper.GetModuleVersionString(ModuleEnum.ProductOrder))</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <p class="text-body-tertiary fw-semibold"><i class="fa fa-bolt"></i> API</p>
+                                    </div>
+                                    <div class="col text-end">
+                                        <p class="text-body-tertiary fw-semibold">@(ModuleHelper.GetApiModuleVersionString(apiResult.Data, ApiModuleEnum.ProductOrder))</p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+                @if (Constants.IsDemoMode)
+                {
+                    <a class="btn btn-block btn-phoenix-success me-1 ms-1 mb-1  text-center" href="@Constants.WebAddonsLinks.ProductOrder" target="_blank">Buy Now</a>
+                }
+                <div class="card-footer border-0 py-0 px-5 z-1">
+                    <p class="text-body-tertiary fw-semibold">View Tutorial on how to use this feature <a href="#">Click here </a>at <br class="d-none d-xxl-block" />Youtube.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-xxl-3 pt-3">
+            <div class="card border @(Model.IsDynamicFormModuleEnabled ? "border-success" : "border-danger") h-100 w-100 overflow-hidden shadow-lg">
+                <div class="card-body px-5 position-relative">
+                    <h3 class="mb-5">Custom Forms</h3>
+                    <p class="text-body-tertiary fw-semibold">Create a custom forms with unlimited fields and options(text,number,dropdown,yes,no) and assign to employees to collect data.</p>
+
+                    <div class="badge badge-phoenix fs-10 badge-phoenix-warning mb-4">
+                        <span class="fw-bold">Premium Addon</span>
+                        <span class="fa-solid fa-award ms-1"></span>
+                    </div>
+                    @if (!apiResult.IsSuccess)
+                    {
+                        <p class="text-danger">Unable to get API status. Error in API Service!</p>
+                    }
+                    else
+                    {
+                        @if (!ModuleHelper.CheckModuleExists(ModuleEnum.DynamicForms) || !apiModuleStatus.IsDynamicFormsExists)
+                        {
+                            <div class="row text-center">
+                                <p>@(!ModuleHelper.CheckModuleExists(ModuleEnum.DynamicForms) ? "Web" : "") @(!apiModuleStatus.IsDynamicFormsExists ? " API" : "") Module not installed</p>
+                                <a class="btn btn-block btn-phoenix-success me-1 mb-1  text-center" href="@Constants.WebAddonsLinks.CustomForms" target="_blank">Buy Now</a>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="form-check form-switch mt-2">
+                                <input class="form-check-input" type="checkbox" asp-for="IsDynamicFormModuleEnabled" />
+                                <label class="form-check-label" asp-for="IsDynamicFormModuleEnabled">Status</label>
+                            </div>
+                            <div class="card shadow p-2">
+                                <div class="row mt-2">
+                                    <div class="col">
+                                        <p class="text-body-tertiary fw-semibold"><i class="fa fa-bolt"></i> Admin</p>
+                                    </div>
+                                    <div class="col text-end">
+                                        <p class="text-body-tertiary fw-semibold">@(ModuleHelper.GetModuleVersionString(ModuleEnum.DynamicForms))</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <p class="text-body-tertiary fw-semibold"><i class="fa fa-bolt"></i> API</p>
+                                    </div>
+                                    <div class="col text-end">
+                                        <p class="text-body-tertiary fw-semibold">@(ModuleHelper.GetApiModuleVersionString(apiResult.Data, ApiModuleEnum.DynamicForms))</p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+                @if (Constants.IsDemoMode)
+                {
+                    <a class="btn btn-block btn-phoenix-success me-1 ms-1 mb-1  text-center" href="@Constants.WebAddonsLinks.CustomForms" target="_blank">Buy Now</a>
+                }
+                <div class="card-footer border-0 py-0 px-5 z-1">
+                    <p class="text-body-tertiary fw-semibold">View Tutorial on how to use this feature <a href="#">Click here </a>at <br class="d-none d-xxl-block" />Youtube.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-xxl-3 pt-3">
+            <div class="card border @(Model.IsTaskModuleEnabled ? "border-success" : "border-danger") h-100 w-100 overflow-hidden shadow-lg">
+                <div class="card-body px-5 position-relative">
+                    <h3 class="mb-5">Task System</h3>
+                    <p class="text-body-tertiary fw-semibold">Create location based tasks and assign to employees. Employee can start, hold and update task details.</p>
+
+                    <div class="badge badge-phoenix fs-10 badge-phoenix-warning mb-4">
+                        <span class="fw-bold">Premium Addon</span>
+                        <span class="fa-solid fa-award ms-1"></span>
+                    </div>
+                    @if (!apiResult.IsSuccess)
+                    {
+                        <p class="text-danger">Unable to get API status. Error in API Service!</p>
+                    }
+                    else
+                    {
+                        @if (!ModuleHelper.CheckModuleExists(ModuleEnum.TaskSystem) || !apiModuleStatus.IsTaskExists)
+                        {
+                            <div class="row text-center">
+                                <p>@(!ModuleHelper.CheckModuleExists(ModuleEnum.TaskSystem) ? "Web" : "") @(!apiModuleStatus.IsTaskExists ? " API" : "") Module not installed</p>
+                                <a class="btn btn-block btn-phoenix-success me-1 mb-1  text-center" href="@Constants.WebAddonsLinks.TaskSystem" target="_blank">Buy Now</a>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="form-check form-switch mt-2">
+                                <input class="form-check-input" type="checkbox" asp-for="IsTaskModuleEnabled" />
+                                <label class="form-check-label" asp-for="IsTaskModuleEnabled">Status</label>
+                            </div>
+                            <div class="card shadow p-2">
+                                <div class="row mt-2">
+                                    <div class="col">
+                                        <p class="text-body-tertiary fw-semibold"><i class="fa fa-bolt"></i> Admin</p>
+                                    </div>
+                                    <div class="col text-end">
+                                        <p class="text-body-tertiary fw-semibold">@(ModuleHelper.GetModuleVersionString(ModuleEnum.TaskSystem))</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <p class="text-body-tertiary fw-semibold"><i class="fa fa-bolt"></i> API</p>
+                                    </div>
+                                    <div class="col text-end">
+                                        <p class="text-body-tertiary fw-semibold">@(ModuleHelper.GetApiModuleVersionString(apiResult.Data, ApiModuleEnum.TaskSystem))</p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+                @if (Constants.IsDemoMode)
+                {
+                    <a class="btn btn-block btn-phoenix-success me-1 ms-1 mb-1  text-center" href="@Constants.WebAddonsLinks.TaskSystem" target="_blank">Buy Now</a>
+                }
+                <div class="card-footer border-0 py-0 px-5 z-1">
+                    <p class="text-body-tertiary fw-semibold">View Tutorial on how to use this feature <a href="#">Click here </a>at <br class="d-none d-xxl-block" />Youtube.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-xxl-3 pt-3">
+            <div class="card border @(Model.IsNoticeModuleEnabled ? "border-success" : "border-danger") h-100 w-100 overflow-hidden shadow-lg">
+                <div class="card-body px-5 position-relative">
+                    <h3 class="mb-5">Notice Board</h3>
+                    <p class="text-body-tertiary fw-semibold">A global notice board to pass information and notify employees.</p>
+
+                    <div class="badge badge-phoenix fs-10 badge-phoenix-warning mb-4">
+                        <span class="fw-bold">Premium Addon</span>
+                        <span class="fa-solid fa-award ms-1"></span>
+                    </div>
+                    @if (!apiResult.IsSuccess)
+                    {
+                        <p class="text-danger">Unable to get API status. Error in API Service!</p>
+                    }
+                    else
+                    {
+                        @if (!ModuleHelper.CheckModuleExists(ModuleEnum.NoticeBoard) || !apiModuleStatus.IsNoticeBoardExists)
+                        {
+                            <div class="row text-center">
+                                <p>@(!ModuleHelper.CheckModuleExists(ModuleEnum.NoticeBoard) ? "Web" : "") @(!apiModuleStatus.IsNoticeBoardExists ? " API" : "") Module not installed</p>
+                                <a class="btn btn-block btn-phoenix-success me-1 mb-1  text-center" href="@Constants.WebAddonsLinks.NoticeBoard" target="_blank">Buy Now</a>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="form-check form-switch mt-2">
+                                <input class="form-check-input" type="checkbox" asp-for="IsNoticeModuleEnabled" />
+                                <label class="form-check-label" asp-for="IsNoticeModuleEnabled">Status</label>
+                            </div>
+                            <div class="card shadow p-2">
+                                <div class="row mt-2">
+                                    <div class="col">
+                                        <p class="text-body-tertiary fw-semibold"><i class="fa fa-bolt"></i> Admin</p>
+                                    </div>
+                                    <div class="col text-end">
+                                        <p class="text-body-tertiary fw-semibold">@(ModuleHelper.GetModuleVersionString(ModuleEnum.NoticeBoard))</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <p class="text-body-tertiary fw-semibold"><i class="fa fa-bolt"></i> API</p>
+                                    </div>
+                                    <div class="col text-end">
+                                        <p class="text-body-tertiary fw-semibold">@(ModuleHelper.GetApiModuleVersionString(apiResult.Data, ApiModuleEnum.NoticeBoard))</p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+                @if (Constants.IsDemoMode)
+                {
+                    <a class="btn btn-block btn-phoenix-success me-1 ms-1 mb-1  text-center" href="@Constants.WebAddonsLinks.NoticeBoard" target="_blank">Buy Now</a>
+                }
+                <div class="card-footer border-0 py-0 px-5 z-1">
+                    <p class="text-body-tertiary fw-semibold">View Tutorial on how to use this feature <a href="#">Click here </a>at <br class="d-none d-xxl-block" />Youtube.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-xxl-3 pt-3">
+            <div class="card border @(Model.IsLoanModuleEnabled ? "border-success" : "border-danger") h-100 w-100 overflow-hidden shadow-lg">
+                <div class="card-body px-5 position-relative">
+                    <h3 class="mb-5">Loan Management</h3>
+                    <p class="text-body-tertiary fw-semibold">Employee loan management and approvals.</p>
+
+                    <div class="badge badge-phoenix fs-10 badge-phoenix-warning mb-4">
+                        <span class="fw-bold">Premium Addon</span>
+                        <span class="fa-solid fa-award ms-1"></span>
+                    </div>
+                    @if (!apiResult.IsSuccess)
+                    {
+                        <p class="text-danger">Unable to get API status. Error in API Service!</p>
+                    }
+                    else
+                    {
+                        @if (!ModuleHelper.CheckModuleExists(ModuleEnum.LoanRequest) || !apiModuleStatus.IsLoanRequestExists)
+                        {
+                            <div class="row text-center">
+                                <p>@(!ModuleHelper.CheckModuleExists(ModuleEnum.LoanRequest) ? "Web" : "") @(!apiModuleStatus.IsLoanRequestExists ? " API" : "") Module not installed</p>
+                                <a class="btn btn-block btn-phoenix-success me-1 mb-1  text-center" href="@Constants.WebAddonsLinks.LoanManagement" target="_blank">Buy Now</a>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="form-check form-switch mt-2">
+                                <input class="form-check-input" type="checkbox" asp-for="IsLoanModuleEnabled" />
+                                <label class="form-check-label" asp-for="IsLoanModuleEnabled">Status</label>
+                            </div>
+                            <div class="card shadow p-2">
+                                <div class="row mt-2">
+                                    <div class="col">
+                                        <p class="text-body-tertiary fw-semibold"><i class="fa fa-bolt"></i> Admin</p>
+                                    </div>
+                                    <div class="col text-end">
+                                        <p class="text-body-tertiary fw-semibold">@(ModuleHelper.GetModuleVersionString(ModuleEnum.LoanRequest))</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <p class="text-body-tertiary fw-semibold"><i class="fa fa-bolt"></i> API</p>
+                                    </div>
+                                    <div class="col text-end">
+                                        <p class="text-body-tertiary fw-semibold">@(ModuleHelper.GetApiModuleVersionString(apiResult.Data, ApiModuleEnum.LoanRequest))</p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+                @if (Constants.IsDemoMode)
+                {
+                    <a class="btn btn-block btn-phoenix-success me-1 ms-1 mb-1  text-center" href="@Constants.WebAddonsLinks.LoanManagement" target="_blank">Buy Now</a>
+                }
+                <div class="card-footer border-0 py-0 px-5 z-1">
+                    <p class="text-body-tertiary fw-semibold">View Tutorial on how to use this feature <a href="#">Click here </a>at <br class="d-none d-xxl-block" />Youtube.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-xxl-3 pt-3">
+            <div class="card border @(Model.IsPaymentCollectionModuleEnabled ? "border-success" : "border-danger") h-100 w-100 overflow-hidden shadow-lg">
+                <div class="card-body px-5 position-relative">
+                    <h3 class="mb-5">Payment Collection</h3>
+                    <p class="text-body-tertiary fw-semibold">Payment Collection entries from field employees.</p>
+
+                    <div class="badge badge-phoenix fs-10 badge-phoenix-warning mb-4">
+                        <span class="fw-bold">Premium Addon</span>
+                        <span class="fa-solid fa-award ms-1"></span>
+                    </div>
+                    @if (!apiResult.IsSuccess)
+                    {
+                        <p class="text-danger">Unable to get API status. Error in API Service!</p>
+                    }
+                    else
+                    {
+                        @if (!ModuleHelper.CheckModuleExists(ModuleEnum.PaymentCollection) || !apiModuleStatus.IsPaymentCollectionExists)
+                        {
+                            <div class="row text-center">
+                                <p>@(!ModuleHelper.CheckModuleExists(ModuleEnum.PaymentCollection) ? "Web" : "") @(!apiModuleStatus.IsPaymentCollectionExists ? " API" : "") Module not installed</p>
+                                <a class="btn btn-block btn-phoenix-success me-1 mb-1  text-center" href="@Constants.WebAddonsLinks.PaymentCollection" target="_blank">Buy Now</a>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="form-check form-switch mt-2">
+                                <input class="form-check-input" type="checkbox" asp-for="IsPaymentCollectionModuleEnabled" />
+                                <label class="form-check-label" asp-for="IsPaymentCollectionModuleEnabled">Status</label>
+                            </div>
+                            <div class="card shadow p-2">
+                                <div class="row mt-2">
+                                    <div class="col">
+                                        <p class="text-body-tertiary fw-semibold"><i class="fa fa-bolt"></i> Admin</p>
+                                    </div>
+                                    <div class="col text-end">
+                                        <p class="text-body-tertiary fw-semibold">@(ModuleHelper.GetModuleVersionString(ModuleEnum.PaymentCollection))</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <p class="text-body-tertiary fw-semibold"><i class="fa fa-bolt"></i> API</p>
+                                    </div>
+                                    <div class="col text-end">
+                                        <p class="text-body-tertiary fw-semibold">@(ModuleHelper.GetApiModuleVersionString(apiResult.Data, ApiModuleEnum.PaymentCollection))</p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+                @if (Constants.IsDemoMode)
+                {
+                    <a class="btn btn-block btn-phoenix-success me-1 ms-1 mb-1  text-center" href="@Constants.WebAddonsLinks.PaymentCollection" target="_blank">Buy Now</a>
+                }
+                <div class="card-footer border-0 py-0 px-5 z-1">
+                    <p class="text-body-tertiary fw-semibold">View Tutorial on how to use this feature <a href="#">Click here </a>at <br class="d-none d-xxl-block" />Youtube.</p>
+                </div>
+            </div>
+        </div>@*
+        <div class="col-xl-3 col-xxl-3 pt-3">
+        <div class="card border @(Model.IsAiChatModuleEnabled ? "border-success" : "border-danger") h-100 w-100 overflow-hidden shadow-lg">
+        <div class="card-body px-5 position-relative">
+        <h3 class="mb-5">Ai Chat</h3>
+        <p class="text-body-tertiary fw-semibold">Ai Chat in admin panel <strong>Powered by ChatGPT</strong>.</p>
+
+        <div class="badge badge-phoenix fs-10 badge-phoenix-warning mb-4">
+        <span class="fw-bold">Premium Addon</span>
+        <span class="fa-solid fa-award ms-1"></span>
+        </div>
+        <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" asp-for="IsAiChatModuleEnabled" />
+        <label class="form-check-label" asp-for="IsAiChatModuleEnabled">Status</label>
+        </div>
+        </div>
+        <div class="card-footer border-0 py-0 px-5 z-1">
+        <p class="text-body-tertiary fw-semibold">View Tutorial on how to use this feature <a href="#">Click here </a>at <br class="d-none d-xxl-block" />Youtube.</p>
+        </div>
+        </div>
+        </div> *@
+        <div class="col-xl-3 col-xxl-3 pt-3">
+            <div class="card border @(Model.IsOfflineTrackingModuleEnabled ? "border-success" : "border-danger") h-100 w-100 overflow-hidden shadow-lg">
+                <div class="card-body px-5 position-relative">
+                    <h3 class="mb-5">Offline Tracking</h3>
+                    <p class="text-body-tertiary fw-semibold">Offline Tracking for employee mobile application.</p>
+
+                    <div class="badge badge-phoenix fs-10 badge-phoenix-warning mb-4">
+                        <span class="fw-bold">Premium Addon</span>
+                        <span class="fa-solid fa-award ms-1"></span>
+                    </div>
+                    @if (apiResult.IsSuccess)
+                    {
+                        @if (!ModuleHelper.CheckApiModuleExists(apiResult.Data, ApiModuleEnum.OfflineTracking))
+                        {
+                            <div class="row text-center">
+                                <p>Module not installed</p>
+                                <a class="btn btn-block btn-phoenix-success me-1 mb-1  text-center" href="@Constants.WebAddonsLinks.OfflineTracking" target="_blank">Buy Now</a>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="form-check form-switch mt-2">
+                                <input class="form-check-input" type="checkbox" asp-for="IsOfflineTrackingModuleEnabled" />
+                                <label class="form-check-label" asp-for="IsOfflineTrackingModuleEnabled">Status</label>
+                            </div>
+                            <div class="card shadow p-2">
+                                <div class="row mt-3">
+                                    <div class="col">
+                                        <p class="text-body-tertiary fw-semibold"><i class="fa fa-bolt"></i> API</p>
+                                    </div>
+                                    <div class="col text-end">
+                                        <p class="text-body-tertiary fw-semibold">@(ModuleHelper.GetApiModuleVersionString(apiResult.Data, ApiModuleEnum.OfflineTracking))</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                        }
+                    }
+                    else
+                    {
+                        <p class="text-danger">Unable to get API status. Error in API Service!</p>
+                    }
+                </div>
+                @if(Constants.IsDemoMode)
+                {
+                    <a class="btn btn-block btn-phoenix-success me-1 ms-1 mb-1  text-center" href="@Constants.WebAddonsLinks.OfflineTracking" target="_blank">Buy Now</a>
+                }
+                <div class="card-footer border-0 py-0 px-5 z-1">
+                    <p class="text-body-tertiary fw-semibold">View Tutorial on how to use this feature <a href="#">Click here </a>at <br class="d-none d-xxl-block" />Youtube.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-xxl-3 pt-3">
+            <div class="card border @(Model.IsGeofenceModuleEnabled ? "border-success" : "border-danger") h-100 w-100 overflow-hidden shadow-lg">
+                <div class="card-body px-5 position-relative">
+                    <h3 class="mb-5">Geofence Based Attendance</h3>
+                    <p class="text-body-tertiary fw-semibold">Create geofence group and add locations under it and assign it to employees for Geofence based attendance.</p>
+
+                    <div class="badge badge-phoenix fs-10 badge-phoenix-warning mb-4">
+                        <span class="fw-bold">Premium Addon</span>
+                        <span class="fa-solid fa-award ms-1"></span>
+                    </div>
+                    @if (!apiResult.IsSuccess)
+                    {
+                        <p class="text-danger">Unable to get API status. Error in API Service!</p>
+                    }
+                    else
+                    {
+                        @if (!ModuleHelper.CheckModuleExists(ModuleEnum.Geofence) || !apiModuleStatus.IsGeofenceExists)
+                        {
+                            <div class="row text-center">
+                                <p>@(!ModuleHelper.CheckModuleExists(ModuleEnum.Geofence) ? "Web" : "") @(!apiModuleStatus.IsGeofenceExists ? " API" : "") Module not installed</p>
+                                <a class="btn btn-block btn-phoenix-success me-1 mb-1  text-center" href="@Constants.WebAddonsLinks.GeofenceAttendance" target="_blank">Buy Now</a>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="form-check form-switch mt-2">
+                                <input class="form-check-input" type="checkbox" asp-for="IsGeofenceModuleEnabled" />
+                                <label class="form-check-label" asp-for="IsGeofenceModuleEnabled">Status</label>
+                            </div>
+                            <div class="card shadow p-2">
+                                <div class="row mt-2">
+                                    <div class="col">
+                                        <p class="text-body-tertiary fw-semibold"><i class="fa fa-bolt"></i> Admin</p>
+                                    </div>
+                                    <div class="col text-end">
+                                        <p class="text-body-tertiary fw-semibold">@(ModuleHelper.GetModuleVersionString(ModuleEnum.Geofence))</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <p class="text-body-tertiary fw-semibold"><i class="fa fa-bolt"></i> API</p>
+                                    </div>
+                                    <div class="col text-end">
+                                        <p class="text-body-tertiary fw-semibold">@(ModuleHelper.GetApiModuleVersionString(apiResult.Data, ApiModuleEnum.Geofence))</p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+                @if (Constants.IsDemoMode)
+                {
+                    <a class="btn btn-block btn-phoenix-success me-1 ms-1 mb-1  text-center" href="@Constants.WebAddonsLinks.GeofenceAttendance" target="_blank">Buy Now</a>
+                }
+                <div class="card-footer border-0 py-0 px-5 z-1">
+                    <p class="text-body-tertiary fw-semibold">View Tutorial on how to use this feature <a href="#">Click here </a>at <br class="d-none d-xxl-block" />Youtube.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-xxl-3 pt-3">
+            <div class="card border @(Model.IsIpBasedAttendanceModuleEnabled ? "border-success" : "border-danger") h-100 w-100 overflow-hidden shadow-lg">
+                <div class="card-body px-5 position-relative">
+                    <h3 class="mb-5">IP Based Attendance</h3>
+                    <p class="text-body-tertiary fw-semibold">Create IP address group and add ip addresses under it and assign it to employees for IP Address Based Attendance.</p>
+
+                    <div class="badge badge-phoenix fs-10 badge-phoenix-warning mb-4">
+                        <span class="fw-bold">Premium Addon</span>
+                        <span class="fa-solid fa-award ms-1"></span>
+                    </div>
+                    @if (!apiResult.IsSuccess)
+                    {
+                        <p class="text-danger">Unable to get API status. Error in API Service!</p>
+                    }
+                    else
+                    {
+                        @if (!ModuleHelper.CheckModuleExists(ModuleEnum.IpAddressAttendance) || !apiModuleStatus.IsIpAddressExists)
+                        {
+                            <div class="row text-center">
+                                <p>@(!ModuleHelper.CheckModuleExists(ModuleEnum.IpAddressAttendance) ? "Web" : "") @(!apiModuleStatus.IsIpAddressExists ? " API" : "") Module not installed</p>
+                                <a class="btn btn-block btn-phoenix-success me-1 mb-1  text-center" href="@Constants.WebAddonsLinks.IpAddressAttendance" target="_blank">Buy Now</a>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="form-check form-switch mt-2">
+                                <input class="form-check-input" type="checkbox" asp-for="IsIpBasedAttendanceModuleEnabled" />
+                                <label class="form-check-label" asp-for="IsIpBasedAttendanceModuleEnabled">Status</label>
+                            </div>
+                            <div class="card shadow p-2">
+                                <div class="row mt-2">
+                                    <div class="col">
+                                        <p class="text-body-tertiary fw-semibold"><i class="fa fa-bolt"></i> Admin</p>
+                                    </div>
+                                    <div class="col text-end">
+                                        <p class="text-body-tertiary fw-semibold">@(ModuleHelper.GetModuleVersionString(ModuleEnum.IpAddressAttendance))</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <p class="text-body-tertiary fw-semibold"><i class="fa fa-bolt"></i> API</p>
+                                    </div>
+                                    <div class="col text-end">
+                                        <p class="text-body-tertiary fw-semibold">@(ModuleHelper.GetApiModuleVersionString(apiResult.Data, ApiModuleEnum.IpAddressAttendance))</p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+                @if (Constants.IsDemoMode)
+                {
+                    <a class="btn btn-block btn-phoenix-success me-1 ms-1 mb-1  text-center" href="@Constants.WebAddonsLinks.IpAddressAttendance" target="_blank">Buy Now</a>
+                }
+                <div class="card-footer border-0 py-0 px-5 z-1">
+                    <p class="text-body-tertiary fw-semibold">View Tutorial on how to use this feature <a href="#">Click here </a>at <br class="d-none d-xxl-block" />Youtube.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-xxl-3 pt-3">
+            <div class="card border @(Model.IsUidLoginModuleEnabled ? "border-success" : "border-danger") h-100 w-100 overflow-hidden shadow-lg">
+                <div class="card-body px-5 position-relative">
+                    <h3 class="mb-5">UID Based Login</h3>
+                    <p class="text-body-tertiary fw-semibold">Login employees based on device UID.</p>
+
+                    <div class="badge badge-phoenix fs-10 badge-phoenix-warning mb-4">
+                        <span class="fw-bold">Premium Addon</span>
+                        <span class="fa-solid fa-award ms-1"></span>
+                    </div>
+                    @if (apiResult.IsSuccess)
+                    {
+                        @if (!ModuleHelper.CheckApiModuleExists(apiResult.Data, ApiModuleEnum.UidLogin))
+                        {
+                            <div class="row text-center">
+                                <p>Module not installed</p>
+                                <a class="btn btn-block btn-phoenix-success me-1 mb-1  text-center" href="@Constants.WebAddonsLinks.UidLogin" target="_blank">Buy Now</a>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="form-check form-switch mt-2">
+                                <input class="form-check-input" type="checkbox" asp-for="IsUidLoginModuleEnabled" />
+                                <label class="form-check-label" asp-for="IsUidLoginModuleEnabled">Status</label>
+                            </div>
+                            <div class="card shadow p-2">
+                                <div class="row mt-3">
+                                    <div class="col">
+                                        <p class="text-body-tertiary fw-semibold"><i class="fa fa-bolt"></i> API</p>
+                                    </div>
+                                    <div class="col text-end">
+                                        <p class="text-body-tertiary fw-semibold">@(ModuleHelper.GetApiModuleVersionString(apiResult.Data, ApiModuleEnum.UidLogin))</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                        }
+                    }
+                    else
+                    {
+                        <p class="text-danger">Unable to get API status. Error in API Service!</p>
+                    }
+                </div>
+                @if (Constants.IsDemoMode)
+                {
+                    <a class="btn btn-block btn-phoenix-success me-1 ms-1 mb-1  text-center" href="@Constants.WebAddonsLinks.UidLogin" target="_blank">Buy Now</a>
+                }
+                <div class="card-footer border-0 py-0 px-5 z-1">
+                    <p class="text-body-tertiary fw-semibold">View Tutorial on how to use this feature <a href="#">Click here </a>at <br class="d-none d-xxl-block" />Youtube.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-xxl-3 pt-3">
+            <div class="card border @(Model.IsDataImportExportModuleEnabled ? "border-success" : "border-danger") h-100 w-100 overflow-hidden shadow-lg">
+                <div class="card-body px-5 position-relative">
+                    <h3 class="mb-5">Data Import / Export</h3>
+                    <p class="text-body-tertiary fw-semibold">Excel import of Employees, Sales target, teams, shifts, holidays, products, categories, .</p>
+
+                    <div class="badge badge-phoenix fs-10 badge-phoenix-warning mb-4">
+                        <span class="fw-bold">Premium Addon</span>
+                        <span class="fa-solid fa-award ms-1"></span>
+                    </div>
+                    @if (!ModuleHelper.CheckModuleExists(ModuleEnum.DataImportExport))
+                    {
+                        <div class="row text-center">
+                            <p>Module not installed</p>
+                            <a class="btn btn-block btn-phoenix-success me-1 mb-1  text-center" href="@Constants.WebAddonsLinks.DataImportExport" target="_blank">Buy Now</a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="form-check form-switch mt-2">
+                            <input class="form-check-input" type="checkbox" asp-for="IsDataImportExportModuleEnabled" />
+                            <label class="form-check-label" asp-for="IsDataImportExportModuleEnabled">Status</label>
+                        </div>
+                        <div class="card shadow p-2">
+                            <div class="row mt-3">
+                                <div class="col">
+                                    <p class="text-body-tertiary fw-semibold"><i class="fa fa-bolt"></i> Admin</p>
+                                </div>
+                                <div class="col text-end">
+                                    <p class="text-body-tertiary fw-semibold">@(ModuleHelper.GetModuleVersionString(ModuleEnum.DataImportExport))</p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+                @if(Constants.IsDemoMode)
+                {
+                    <a class="btn btn-block btn-phoenix-success me-1 ms-1 mb-1  text-center" href="@Constants.WebAddonsLinks.DataImportExport" target="_blank">Buy Now</a>
+                }
+                <div class="card-footer border-0 py-0 px-5 z-1">
+                    <p class="text-body-tertiary fw-semibold">View Tutorial on how to use this feature <a href="#">Click here </a>at <br class="d-none d-xxl-block" />Youtube.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-xxl-3 pt-3">
+            <div class="card border @(Model.IsSiteModuleEnabled ? "border-success" : "border-danger") h-100 w-100 overflow-hidden shadow-lg">
+                <div class="card-body px-5 position-relative">
+                    <h3 class="mb-5">Sites &amp; Attendances</h3>
+                    <p class="text-body-tertiary fw-semibold">Create client sites and enable qr code, geofence, and ip address based attendance based on a site</p>
+
+                    <div class="badge badge-phoenix fs-10 badge-phoenix-warning mb-4">
+                        <span class="fw-bold">Premium Addon</span>
+                        <span class="fa-solid fa-award ms-1"></span>
+                    </div>
+                    @if (!ModuleHelper.CheckModuleExists(ModuleEnum.Site))
+                    {
+                        <div class="row text-center">
+                            <p>Module not installed</p>
+                            <a class="btn btn-block btn-phoenix-success me-1 mb-1  text-center" href="@Constants.WebAddonsLinks.SiteAttendance" target="_blank">Buy Now</a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="form-check form-switch mt-2">
+                            <input class="form-check-input" type="checkbox" asp-for="IsSiteModuleEnabled" />
+                            <label class="form-check-label" asp-for="IsSiteModuleEnabled">Status</label>
+                        </div>
+                        <div class="card shadow p-2">
+                            <div class="row mt-3">
+                                <div class="col">
+                                    <p class="text-body-tertiary fw-semibold"><i class="fa fa-bolt"></i> Admin</p>
+                                </div>
+                                <div class="col text-end">
+                                    <p class="text-body-tertiary fw-semibold">@(ModuleHelper.GetModuleVersionString(ModuleEnum.Site))</p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+                @if(Constants.IsDemoMode)
+                {
+                    <a class="btn btn-block btn-phoenix-success me-1 ms-1 mb-1  text-center" href="@Constants.WebAddonsLinks.SiteAttendance" target="_blank">Buy Now</a>
+                }
+                <div class="card-footer border-0 py-0 px-5 z-1">
+                    <p class="text-body-tertiary fw-semibold">View Tutorial on how to use this feature <a href="#">Click here </a>at <br class="d-none d-xxl-block" />Youtube.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-xxl-3 pt-3">
+            <div class="card border @(Model.IsQrCodeAttendanceModuleEnabled ? "border-success" : "border-danger") h-100 w-100 overflow-hidden shadow-lg">
+                <div class="card-body px-5 position-relative">
+                    <h3 class="mb-5">Static QR Code Based Attendance</h3>
+                    <p class="text-body-tertiary fw-semibold">Static QR Code based attendance for site based attendances.</p>
+
+                    <div class="badge badge-phoenix fs-10 badge-phoenix-warning mb-4">
+                        <span class="fw-bold">Premium Addon</span>
+                        <span class="fa-solid fa-award ms-1"></span>
+                    </div>
+                    @if (!apiResult.IsSuccess)
+                    {
+                        <p class="text-danger">Unable to get API status. Error in API Service!</p>
+                    }
+                    else
+                    {
+                        @if (!ModuleHelper.CheckModuleExists(ModuleEnum.QrCodeAttendance) || !apiModuleStatus.IsQrAttendanceExists)
+                        {
+                            <div class="row text-center">
+                                <p>@(!ModuleHelper.CheckModuleExists(ModuleEnum.QrCodeAttendance) ? "Web" : "") @(!apiModuleStatus.IsQrAttendanceExists ? " API" : "") Module not installed</p>
+                                <a class="btn btn-block btn-phoenix-success me-1 mb-1  text-center" href="@Constants.WebAddonsLinks.QrAttendance" target="_blank">Buy Now</a>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="form-check form-switch mt-2">
+                                <input class="form-check-input" type="checkbox" asp-for="IsQrCodeAttendanceModuleEnabled" />
+                                <label class="form-check-label" asp-for="IsQrCodeAttendanceModuleEnabled">Status</label>
+                            </div>
+                            <div class="card shadow p-2">
+                                <div class="row mt-2">
+                                    <div class="col">
+                                        <p class="text-body-tertiary fw-semibold"><i class="fa fa-bolt"></i> Admin</p>
+                                    </div>
+                                    <div class="col text-end">
+                                        <p class="text-body-tertiary fw-semibold">@(ModuleHelper.GetModuleVersionString(ModuleEnum.QrCodeAttendance))</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <p class="text-body-tertiary fw-semibold"><i class="fa fa-bolt"></i> API</p>
+                                    </div>
+                                    <div class="col text-end">
+                                        <p class="text-body-tertiary fw-semibold">@(ModuleHelper.GetApiModuleVersionString(apiResult.Data, ApiModuleEnum.QrCodeAttendance))</p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+                @if (Constants.IsDemoMode)
+                {
+                    <a class="btn btn-block btn-phoenix-success me-1 ms-1 mb-1  text-center" href="@Constants.WebAddonsLinks.QrAttendance" target="_blank">Buy Now</a>
+                }
+                <div class="card-footer border-0 py-0 px-5 z-1">
+                    <p class="text-body-tertiary fw-semibold">View Tutorial on how to use this feature <a href="#">Click here </a>at <br class="d-none d-xxl-block" />Youtube.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-xxl-3 pt-3">
+            <div class="card border @(Model.IsDynamicQrCodeAttendanceEnabled ? "border-success" : "border-danger") h-100 w-100 overflow-hidden shadow-lg">
+                <div class="card-body px-5 position-relative">
+                    <h3 class="mb-5">Dynamic QR Code Based Attendance</h3>
+                    <p class="text-body-tertiary fw-semibold">Dynamic QR Code based attendance for site based attendances.</p>
+
+                    <div class="badge badge-phoenix fs-10 badge-phoenix-warning mb-4">
+                        <span class="fw-bold">Premium Addon</span>
+                        <span class="fa-solid fa-award ms-1"></span>
+                    </div>
+                    @if (!apiResult.IsSuccess)
+                    {
+                        <p class="text-danger">Unable to get API status. Error in API Service!</p>
+                    }
+                    else
+                    {
+                        @if (!ModuleHelper.CheckModuleExists(ModuleEnum.DynamicQrAttendance) || !apiModuleStatus.IsDynamicQrExists)
+                        {
+                            <div class="row text-center">
+                                <p>@(!ModuleHelper.CheckModuleExists(ModuleEnum.DynamicQrAttendance) ? "Web" : "") @(!apiModuleStatus.IsDynamicQrExists ? " API" : "") Module not installed</p>
+                                <a class="btn btn-block btn-phoenix-success me-1 mb-1  text-center" href="@Constants.WebAddonsLinks.DynamicQrAttendance" target="_blank">Buy Now</a>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="form-check form-switch mt-2">
+                                <input class="form-check-input" type="checkbox" asp-for="IsDynamicQrCodeAttendanceEnabled" />
+                                <label class="form-check-label" asp-for="IsDynamicQrCodeAttendanceEnabled">Status</label>
+                            </div>
+                            <div class="card shadow p-2">
+                                <div class="row mt-2">
+                                    <div class="col">
+                                        <p class="text-body-tertiary fw-semibold"><i class="fa fa-bolt"></i> Admin</p>
+                                    </div>
+                                    <div class="col text-end">
+                                        <p class="text-body-tertiary fw-semibold">@(ModuleHelper.GetModuleVersionString(ModuleEnum.DynamicQrAttendance))</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <p class="text-body-tertiary fw-semibold"><i class="fa fa-bolt"></i> API</p>
+                                    </div>
+                                    <div class="col text-end">
+                                        <p class="text-body-tertiary fw-semibold">@(ModuleHelper.GetApiModuleVersionString(apiResult.Data, ApiModuleEnum.DynamicQrAttendance))</p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+                @if(Constants.IsDemoMode)
+                {
+                    <a class="btn btn-block btn-phoenix-success me-1 ms-1 mb-1  text-center" href="@Constants.WebAddonsLinks.DynamicQrAttendance" target="_blank">Buy Now</a>
+                }
+                <div class="card-footer border-0 py-0 px-5 z-1">
+                    <p class="text-body-tertiary fw-semibold">View Tutorial on how to use this feature <a href="#">Click here </a>at <br class="d-none d-xxl-block" />Youtube.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-xxl-3 pt-3">
+            <div class="card border @(Model.IsBreakModuleEnabled ? "border-success" : "border-danger") h-100 w-100 overflow-hidden shadow-lg">
+                <div class="card-body px-5 position-relative">
+                    <h3 class="mb-5">Break System</h3>
+                    <p class="text-body-tertiary fw-semibold">Enable disable breaks for employees.</p>
+
+                    <div class="badge badge-phoenix fs-10 badge-phoenix-warning mb-4">
+                        <span class="fw-bold">Premium Addon</span>
+                        <span class="fa-solid fa-award ms-1"></span>
+                    </div>
+                    @if (apiResult.IsSuccess)
+                    {
+                        @if (!apiModuleStatus.IsBreakExists)
+                        {
+                            <div class="row text-center">
+                                <p>Module not installed</p>
+                                <a class="btn btn-block btn-phoenix-success me-1 mb-1  text-center" href="@Constants.WebAddonsLinks.BreakSystem" target="_blank">Buy Now</a>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="form-check form-switch mt-2">
+                                <input class="form-check-input" type="checkbox" asp-for="IsBreakModuleEnabled" />
+                                <label class="form-check-label" asp-for="IsBreakModuleEnabled">Status</label>
+                            </div>
+                            <div class="card shadow p-2">
+                                <div class="row mt-3">
+                                    <div class="col">
+                                        <p class="text-body-tertiary fw-semibold"><i class="fa fa-bolt"></i> API</p>
+                                    </div>
+                                    <div class="col text-end">
+                                        <p class="text-body-tertiary fw-semibold">@(ModuleHelper.GetApiModuleVersionString(apiResult.Data, ApiModuleEnum.Break))</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                        }
+                    }
+                    else
+                    {
+                        <p class="text-danger">Unable to get API status. Error in API Service!</p>
+                    }
+                </div>
+                @if (Constants.IsDemoMode)
+                {
+                    <a class="btn btn-block btn-phoenix-success me-1 ms-1 mb-1  text-center" href="@Constants.WebAddonsLinks.BreakSystem" target="_blank">Buy Now</a>
+                }
+                <div class="card-footer border-0 py-0 px-5 z-1">
+                    <p class="text-body-tertiary fw-semibold">View Tutorial on how to use this feature <a href="#">Click here </a>at <br class="d-none d-xxl-block" />Youtube.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!--Free addons-->
+<div class="mb-2">
+    <div class="d-flex mb-5 pt-8">
+        <span class="fa-stack me-2 ms-n1">
+            <i class="fas fa-circle fa-stack-2x text-primary"></i>
+            <i class="fa-inverse fa-stack-1x text-primary-subtle fas fa-percentage"></i>
+        </span>
+        <div class="col">
+            <h3 class="mb-0 text-primary position-relative fw-bold">
+                <span class="bg-body pe-2">Included Modules</span>
+                @*   <span class="border border-primary-lighter position-absolute top-50 translate-middle-y w-100 start-0 z-n1"></span> *@
+            </h3>
+            <p class="mb-0">12+ included modules.</p>
+        </div>
+    </div>
+    <div class="px-3 mb-3">
+        <div class="row">
+            <div class="col-xl-3 col-xxl-3 pt-3">
+                <div class="card border @(Model.IsClientVisitModuleEnabled ? "border-success" : "border-danger") h-100 w-100 overflow-hidden shadow-lg">
+                    <div class="card-body px-5 position-relative">
+                        <h3 class="mb-5">Client Visits</h3>
+                        <p class="text-body-tertiary fw-semibold">Mark client visits with location information and proof and you can generate excel reports for visits as well.</p>
+
+                        <div class="badge badge-phoenix fs-10 badge-phoenix-success mb-4">
+                            <span class="fw-bold">Included</span>
+                            <span class="fa-solid fa-award ms-1"></span>
+                        </div>
+                        <div class="form-check form-switch mt-2">
+                            <input class="form-check-input" type="checkbox" asp-for="IsClientVisitModuleEnabled" />
+                            <label class="form-check-label" asp-for="IsClientVisitModuleEnabled">Status</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-xxl-3 pt-3">
+                <div class="card border @(Model.IsChatModuleEnabled ? "border-success" : "border-danger") h-100 w-100 overflow-hidden shadow-lg">
+                    <div class="card-body px-5 position-relative">
+                        <h3 class="mb-5">Chat System</h3>
+                        <p class="text-body-tertiary fw-semibold">Chat with teammates, supports text, image.</p>
+
+                        <div class="badge badge-phoenix fs-10 badge-phoenix-success mb-4">
+                            <span class="fw-bold">Included</span>
+                            <span class="fa-solid fa-award ms-1"></span>
+                        </div>
+                        <div class="form-check form-switch mt-2">
+                            <input class="form-check-input" type="checkbox" asp-for="IsChatModuleEnabled" />
+                            <label class="form-check-label" asp-for="IsChatModuleEnabled">Status</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-xxl-3 pt-3">
+                <div class="card border @(Model.IsLeaveModuleEnabled ? "border-success" : "border-danger") h-100 w-100 overflow-hidden shadow-lg">
+                    <div class="card-body px-5 position-relative">
+                        <h3 class="mb-5">Leave Management</h3>
+                        <p class="text-body-tertiary fw-semibold">Employee leave request management and approvals.</p>
+
+                        <div class="badge badge-phoenix fs-10 badge-phoenix-success mb-4">
+                            <span class="fw-bold">Included</span>
+                            <span class="fa-solid fa-award ms-1"></span>
+                        </div>
+                        <div class="form-check form-switch mt-2">
+                            <input class="form-check-input" type="checkbox" asp-for="IsLeaveModuleEnabled" />
+                            <label class="form-check-label" asp-for="IsLeaveModuleEnabled">Status</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-xxl-3 pt-3">
+                <div class="card border @(Model.IsExpenseModuleEnabled ? "border-success" : "border-danger") h-100 w-100 overflow-hidden shadow-lg">
+                    <div class="card-body px-5 position-relative">
+                        <h3 class="mb-5">Expense Management</h3>
+                        <p class="text-body-tertiary fw-semibold">Employee expense request management and approvals.</p>
+
+                        <div class="badge badge-phoenix fs-10 badge-phoenix-success mb-4">
+                            <span class="fw-bold">Included</span>
+                            <span class="fa-solid fa-award ms-1"></span>
+                        </div>
+                        <div class="form-check form-switch mt-2">
+                            <input class="form-check-input" type="checkbox" asp-for="IsExpenseModuleEnabled" />
+                            <label class="form-check-label" asp-for="IsExpenseModuleEnabled">Status</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-xxl-3 pt-3">
+                <div class="card border @(Model.IsBiometricVerificationModuleEnabled ? "border-success" : "border-danger") h-100 w-100 overflow-hidden shadow-lg">
+                    <div class="card-body px-5 position-relative">
+                        <h3 class="mb-5">Biometric verification for In Out</h3>
+                        <p class="text-body-tertiary fw-semibold">Employee has to verify with fingerprint / face id to check in and out.</p>
+
+                        <div class="badge badge-phoenix fs-10 badge-phoenix-success mb-4">
+                            <span class="fw-bold">Included</span>
+                            <span class="fa-solid fa-award ms-1"></span>
+                        </div>
+                        <div class="form-check form-switch mt-2">
+                            <input class="form-check-input" type="checkbox" asp-for="IsBiometricVerificationModuleEnabled" />
+                            <label class="form-check-label" asp-for="IsBiometricVerificationModuleEnabled">Status</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-xxl-3 pt-3">
+                <div class="card border border-success h-100 w-100 overflow-hidden shadow-lg">
+                    <div class="card-body px-5 position-relative">
+                        <h3 class="mb-5">Monitoring Tools</h3>
+                        <p class="text-body-tertiary fw-semibold">Card View, Map Live Location View, Time Line View.</p>
+
+                        <div class="badge badge-phoenix fs-10 badge-phoenix-success mb-4">
+                            <span class="fw-bold">Included</span>
+                            <span class="fa-solid fa-award ms-1"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-xxl-3 pt-3">
+                <div class="card border border-success h-100 w-100 overflow-hidden shadow-lg">
+                    <div class="card-body px-5 position-relative">
+                        <h3 class="mb-5">Device Verification System</h3>
+                        <p class="text-body-tertiary fw-semibold">Employee device registration and verification system based on UID. <strong>Supports Android &amp; IOS.</strong></p>
+
+                        <div class="badge badge-phoenix fs-10 badge-phoenix-success mb-4">
+                            <span class="fw-bold">Included</span>
+                            <span class="fa-solid fa-award ms-1"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-xxl-3 pt-3">
+                <div class="card border border-success h-100 w-100 overflow-hidden shadow-lg">
+                    <div class="card-body px-5 position-relative">
+                        <h3 class="mb-5">Teams</h3>
+                        <p class="text-body-tertiary fw-semibold">Create teams and add employees under it for chats and more.</p>
+
+                        <div class="badge badge-phoenix fs-10 badge-phoenix-success mb-4">
+                            <span class="fw-bold">Included</span>
+                            <span class="fa-solid fa-award ms-1"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-xxl-3 pt-3">
+                <div class="card border border-success h-100 w-100 overflow-hidden shadow-lg">
+                    <div class="card-body px-5 position-relative">
+                        <h3 class="mb-5">Shift Management</h3>
+                        <p class="text-body-tertiary fw-semibold">Create many shifts and assign to employees.</p>
+
+                        <div class="badge badge-phoenix fs-10 badge-phoenix-success mb-4">
+                            <span class="fw-bold">Included</span>
+                            <span class="fa-solid fa-award ms-1"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-xxl-3 pt-3">
+                <div class="card border border-success h-100 w-100 overflow-hidden shadow-lg">
+                    <div class="card-body px-5 position-relative">
+                        <h3 class="mb-5">Holiday Management</h3>
+                        <p class="text-body-tertiary fw-semibold">Create and manage holidays.</p>
+
+                        <div class="badge badge-phoenix fs-10 badge-phoenix-success mb-4">
+                            <span class="fw-bold">Included</span>
+                            <span class="fa-solid fa-award ms-1"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-xxl-3 pt-3">
+                <div class="card border border-success h-100 w-100 overflow-hidden shadow-lg">
+                    <div class="card-body px-5 position-relative">
+                        <h3 class="mb-5">Client Management</h3>
+                        <p class="text-body-tertiary fw-semibold">Create clients.</p>
+
+                        <div class="badge badge-phoenix fs-10 badge-phoenix-success mb-4">
+                            <span class="fw-bold">Included</span>
+                            <span class="fa-solid fa-award ms-1"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-xxl-3 pt-3">
+                <div class="card border border-success h-100 w-100 overflow-hidden shadow-lg">
+                    <div class="card-body px-5 position-relative">
+                        <h3 class="mb-5">Attendance Management</h3>
+                        <p class="text-body-tertiary fw-semibold">Check in out and tracking.</p>
+
+                        <div class="badge badge-phoenix fs-10 badge-phoenix-success mb-4">
+                            <span class="fw-bold">Included</span>
+                            <span class="fa-solid fa-award ms-1"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-xxl-3 pt-3">
+                <div class="card border border-success h-100 w-100 overflow-hidden shadow-lg">
+                    <div class="card-body px-5 position-relative">
+                        <h3 class="mb-5">Realtime Tracking System</h3>
+                        <p class="text-body-tertiary fw-semibold">Employee realtime tracking <strong>Supports Android &amp; IOS</strong>.</p>
+
+                        <div class="badge badge-phoenix fs-10 badge-phoenix-success mb-4">
+                            <span class="fw-bold">Included</span>
+                            <span class="fa-solid fa-award ms-1"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-xxl-3 pt-3">
+                <div class="card border border-success h-100 w-100 overflow-hidden shadow-lg">
+                    <div class="card-body px-5 position-relative">
+                        <h3 class="mb-5">Realtime Notification System</h3>
+                        <p class="text-body-tertiary fw-semibold">All types of notifications.</p>
+
+                        <div class="badge badge-phoenix fs-10 badge-phoenix-success mb-4">
+                            <span class="fw-bold">Included</span>
+                            <span class="fa-solid fa-award ms-1"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--End free addon-->
+
+<div class="mb-3">
+    <div class="d-flex mb-5 pt-8">
+        <span class="fa-stack me-2 ms-n1">
+            <i class="fas fa-circle fa-stack-2x text-primary"></i>
+            <i class="fa-inverse fa-stack-1x text-primary-subtle fas fa-percentage"></i>
+        </span>
+        <div class="col">
+            <h3 class="mb-0 text-primary position-relative fw-bold">
+                <span class="bg-body pe-2">Upcoming Modules</span>
+                @*   <span class="border border-primary-lighter position-absolute top-50 translate-middle-y w-100 start-0 z-n1"></span> *@
+            </h3>
+            <p class="mb-0">more useful modules coming soon.</p>
+        </div>
+    </div>
+
+    <div class="px-3 mb-3">
+        <div class="row">
+            <div class="col-xl-3 col-xxl-3 pt-3">
+                <div class="card border border-success h-100 w-100 overflow-hidden shadow-lg">
+                    <div class="card-body px-5 position-relative">
+                        <h3 class="mb-5">Sales Targets</h3>
+                        <p class="text-body-tertiary fw-semibold">Set Monthly sales targets for employees.</p>
+
+                        <div class="badge badge-phoenix fs-10 badge-phoenix-warning mb-4">
+                            <span class="fw-bold">Coming Soon</span>
+                            <span class="fa-solid fa-award ms-1"></span>
+                        </div>
+                    </div>
+                </div>
+            </div> 
+            <div class="col-xl-3 col-xxl-3 pt-3">
+                <div class="card border border-success h-100 w-100 overflow-hidden shadow-lg">
+                    <div class="card-body px-5 position-relative">
+                        <h3 class="mb-5">Facial Recognition based attendance</h3>
+                        <p class="text-body-tertiary fw-semibold">Check in / out using employees face.</p>
+
+                        <div class="badge badge-phoenix fs-10 badge-phoenix-warning mb-4">
+                            <span class="fw-bold">Coming Soon</span>
+                            <span class="fa-solid fa-award ms-1"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-xxl-3 pt-3">
+                <div class="card border border-success h-100 w-100 overflow-hidden shadow-lg">
+                    <div class="card-body px-5 position-relative">
+                        <h3 class="mb-5">SOS</h3>
+                        <p class="text-body-tertiary fw-semibold">SOS alert for emergency situations.</p>
+
+                        <div class="badge badge-phoenix fs-10 badge-phoenix-warning mb-4">
+                            <span class="fw-bold">Coming Soon</span>
+                            <span class="fa-solid fa-award ms-1"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-xxl-3 pt-3">
+                <div class="card border border-success h-100 w-100 overflow-hidden shadow-lg">
+                    <div class="card-body px-5 position-relative">
+                        <h3 class="mb-5">Contract Management &amp; Staffs</h3>
+                        <p class="text-body-tertiary fw-semibold">Create and manage contracts for clients and add employees under it.</p>
+
+                        <div class="badge badge-phoenix fs-10 badge-phoenix-warning mb-4">
+                            <span class="fw-bold">Coming Soon</span>
+                            <span class="fa-solid fa-award ms-1"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-xxl-3 pt-3">
+                <div class="card border border-success h-100 w-100 overflow-hidden shadow-lg">
+                    <div class="card-body px-5 position-relative">
+                        <h3 class="mb-5">Digital ID Card</h3>
+                        <p class="text-body-tertiary fw-semibold">Employee can access their official digital ID from mobile app.</p>
+
+                        <div class="badge badge-phoenix fs-10 badge-phoenix-warning mb-4">
+                            <span class="fw-bold">Coming Soon</span>
+                            <span class="fa-solid fa-award ms-1"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-xxl-3 pt-3">
+                <div class="card border border-success h-100 w-100 overflow-hidden shadow-lg">
+                    <div class="card-body px-5 position-relative">
+                        <h3 class="mb-5">Ai Chat</h3>
+                        <p class="text-body-tertiary fw-semibold">Ai Chat in admin panel <strong>Powered by ChatGPT</strong>.</p>
+
+                        <div class="badge badge-phoenix fs-10 badge-phoenix-warning mb-4">
+                            <span class="fw-bold">Coming Soon</span>
+                            <span class="fa-solid fa-award ms-1"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-xxl-3 pt-3">
+                <div class="card border border-success h-100 w-100 overflow-hidden shadow-lg">
+                    <div class="card-body px-5 position-relative">
+                        <h3 class="mb-5">CZ HR Core Integration</h3>
+                        <p class="text-body-tertiary fw-semibold">Sync employees, shifts, leaves, expense, attendance and clients and more to our HRMS Solution.</p>
+
+                        <div class="badge badge-phoenix fs-10 badge-phoenix-warning mb-4">
+                            <span class="fw-bold">Coming Soon</span>
+                            <span class="fa-solid fa-award ms-1"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-xxl-3 pt-3">
+                <div class="card border border-success h-100 w-100 overflow-hidden shadow-lg">
+                    <div class="card-body px-5 position-relative">
+                        <h3 class="mb-5">More coming soon...</h3>
+                        <p class="text-body-tertiary fw-semibold"></p>
+
+                        <div class="badge badge-phoenix fs-10 badge-phoenix-warning mb-4">
+                            <span class="fw-bold">Coming Soon</span>
+                            <span class="fa-solid fa-award ms-1"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#IsLeaveModuleEnabled').change(function () {
+                changeLeaveModuleStatus();
+            });
+
+            $('#IsExpenseModuleEnabled').change(function () {
+                changeExpenseModuleStatus();
+            });
+
+            $('#IsDocumentModuleEnabled').change(function () {
+                changeDocumentModuleStatus();
+            });
+
+            $('#IsChatModuleEnabled').change(function () {
+                changeChatModuleStatus();
+            });
+
+            $('#IsProductModuleEnabled').change(function () {
+                changeProductModuleStatus();
+            });
+
+            $('#IsDynamicFormModuleEnabled').change(function () {
+                changeDynamicFormModuleStatus();
+            });
+
+            $('#IsTaskModuleEnabled').change(function () {
+                changeTaskModuleStatus();
+            });
+
+            $('#IsNoticeModuleEnabled').change(function () {
+                changeNoticeModuleStatus();
+            });
+
+            $('#IsLoanModuleEnabled').change(function () {
+                changeLoanModuleStatus();
+            });
+
+            $('#IsPaymentCollectionModuleEnabled').change(function () {
+                changePaymentCollectionModuleStatus();
+            });
+
+            $('#IsAiChatModuleEnabled').change(function () {
+                changeAiChatModuleStatus();
+            });
+
+            $('#IsOfflineTrackingModuleEnabled').change(function () {
+                changeOfflineTrackingModuleStatus();
+            });
+
+            $('#IsGeofenceModuleEnabled').change(function () {
+                changeGeofenceTrackingModuleStatus();
+            });
+
+            $('#IsIpBasedAttendanceModuleEnabled').change(function () {
+                changeIpBasedAttendanceModuleStatus();
+            });
+
+            $('#IsUidLoginModuleEnabled').change(function () {
+                changeUidLoginModuleStatus();
+            });
+
+            $('#IsDataImportExportModuleEnabled').change(function () {
+                changeDataImportExportModuleStatus();
+            });
+
+            $('#IsSiteModuleEnabled').change(function () {
+                changeSiteModuleStatus();
+            });
+
+            $('#IsQrCodeAttendanceModuleEnabled').change(function () {
+                changeQrCodeAttendanceModuleStatus();
+            });
+
+            $('#IsBreakModuleEnabled').change(function () {
+                changeBreakModuleStatus();
+            });
+
+            $('#IsClientVisitModuleEnabled').change(function () {
+                changeClientVisitModuleStatus();
+            });
+
+            $('#IsDynamicQrCodeAttendanceEnabled').change(function () {
+                changeDynamicQrCodeAttendanceModuleStatus();
+            });
+
+            $('#IsBiometricVerificationModuleEnabled').change(function () {
+                changeBiometricVerificationRequired();
+            });
+
+        });
+
+
+
+
+        function changeClientVisitModuleStatus() {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ChangeClientVisitModuleStatus")',
+                success: function (response) {
+                    console.log(response);
+                    toastr.info('Client Visit module status updated');
+                    redirectToIndex();
+                },
+                failure: function (response) {
+                    console.log(response.responseText);
+                },
+                error: function (response) {
+                    toastr.error(response.responseText);
+                }
+
+            });
+        }
+
+        function changeBreakModuleStatus() {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ChangeBreakModuleStatus")',
+                success: function (response) {
+                    console.log(response);
+                    toastr.info('Break module status updated');
+                    redirectToIndex();
+                },
+                failure: function (response) {
+                    console.log(response.responseText);
+                },
+                error: function (response) {
+                    toastr.error(response.responseText);
+                }
+
+            });
+        }
+
+        function changeQrCodeAttendanceModuleStatus() {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ChangeQrCodeAttendanceModuleStatus")',
+                success: function (response) {
+                    console.log(response);
+                    toastr.info('Qr Code Attendance status updated');
+                    redirectToIndex();
+                },
+                failure: function (response) {
+                    console.log(response.responseText);
+                },
+                error: function (response) {
+                    toastr.error(response.responseText);
+                }
+
+            });
+        }
+
+        function changeSiteModuleStatus() {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ChangeSiteModuleStatus")',
+                success: function (response) {
+                    console.log(response);
+                    toastr.info('Site module status updated');
+                    redirectToIndex();
+                },
+                failure: function (response) {
+                    console.log(response.responseText);
+                },
+                error: function (response) {
+                    toastr.error(response.responseText);
+                }
+
+            });
+        }
+
+        function changeDataImportExportModuleStatus() {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ChangeDataImportExportModuleStatus")',
+                success: function (response) {
+                    console.log(response);
+                    toastr.info('Data Import Export module status updated');
+                    redirectToIndex();
+                },
+                failure: function (response) {
+                    console.log(response.responseText);
+                },
+                error: function (response) {
+                    toastr.error(response.responseText);
+                }
+
+            });
+        }
+
+        function changeUidLoginModuleStatus() {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ChangeUidLoginModuleStatus")',
+                success: function (response) {
+                    console.log(response);
+                    toastr.info('Uid Login module status updated');
+                    redirectToIndex();
+                },
+                failure: function (response) {
+                    console.log(response.responseText);
+                },
+                error: function (response) {
+                    toastr.error(response.responseText);
+                }
+
+            });
+        }
+
+
+
+        function changeIpBasedAttendanceModuleStatus() {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ChangeIpBasedAttendanceModuleStatus")',
+                success: function (response) {
+                    console.log(response);
+                    toastr.info('IP Address Based Attendance module status updated');
+                    redirectToIndex();
+                },
+                failure: function (response) {
+                    console.log(response.responseText);
+                },
+                error: function (response) {
+                    toastr.error(response.responseText);
+                }
+
+            });
+        }
+
+        function changeGeofenceTrackingModuleStatus() {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ChangeGeofenceTrackingModuleStatus")',
+                success: function (response) {
+                    console.log(response);
+                    toastr.info('Geofence module status updated');
+                    redirectToIndex();
+                },
+                failure: function (response) {
+                    console.log(response.responseText);
+                },
+                error: function (response) {
+                    toastr.error(response.responseText);
+                }
+
+            });
+        }
+
+
+        function changeOfflineTrackingModuleStatus() {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ChangeOfflineTrackingModuleStatus")',
+                success: function (response) {
+                    console.log(response);
+                    toastr.info('Offline tracking module status updated');
+                    redirectToIndex();
+                },
+                failure: function (response) {
+                    console.log(response.responseText);
+                },
+                error: function (response) {
+                    toastr.error(response.responseText);
+                }
+
+            });
+        }
+
+        function changePaymentCollectionModuleStatus() {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ChangePaymentCollectionModuleStatus")',
+                success: function (response) {
+                    console.log(response);
+                    toastr.info('Payment Collection Module status updated');
+                    redirectToIndex();
+                },
+                failure: function (response) {
+                    console.log(response.responseText);
+                },
+                error: function (response) {
+                    toastr.error(response.responseText);
+                }
+
+            });
+        }
+
+        function changeAiChatModuleStatus() {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ChangeAiChatModuleStatus")',
+                success: function (response) {
+                    console.log(response);
+                    toastr.info('AI Chat Module status updated');
+                    redirectToIndex();
+                },
+                failure: function (response) {
+                    console.log(response.responseText);
+                },
+                error: function (response) {
+                    toastr.error(response.responseText);
+                }
+
+            });
+        }
+
+        function changeLeaveModuleStatus() {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ChangeLeaveModuleStatus")',
+                success: function (response) {
+                    console.log(response);
+                    toastr.info('Leave module status updated');
+                    redirectToIndex();
+                },
+                failure: function (response) {
+                    console.log(response.responseText);
+                },
+                error: function (response) {
+                    toastr.error(response.responseText);
+                }
+
+            });
+        }
+
+        function changeLoanModuleStatus() {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ChangeLoanModuleStatus")',
+                success: function (response) {
+                    console.log(response);
+                    toastr.info('Loan module status updated');
+                    redirectToIndex();
+                },
+                failure: function (response) {
+                    console.log(response.responseText);
+                },
+                error: function (response) {
+                    toastr.error(response.responseText);
+                }
+
+            });
+        }
+
+        function changeExpenseModuleStatus() {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ChangeExpenseModuleStatus")',
+                success: function (response) {
+                    console.log(response);
+                    toastr.info('Expense module status updated');
+                    redirectToIndex();
+                },
+                failure: function (response) {
+                    console.log(response.responseText);
+                },
+                error: function (response) {
+                    toastr.error(response.responseText);
+                }
+
+            });
+        }
+
+        function changeDocumentModuleStatus() {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ChangeDocumentModuleStatus")',
+                success: function (response) {
+                    console.log(response);
+                    toastr.info('Document module status updated');
+                    redirectToIndex();
+                },
+                failure: function (response) {
+                    console.log('Hi' + response.responseText);
+                },
+                error: function (response) {
+                    toastr.error(response.responseText);
+                }
+
+            });
+        }
+
+        function changeChatModuleStatus() {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ChangeChatModuleStatus")',
+                success: function (response) {
+                    console.log(response);
+                    toastr.info('Chat module status updated');
+                    redirectToIndex();
+                },
+                failure: function (response) {
+                    console.log(response.responseText);
+                },
+                error: function (response) {
+                    toastr.error(response.responseText);
+                }
+
+            });
+        }
+
+        function changeProductModuleStatus() {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ChangeProductModuleStatus")',
+                success: function (response) {
+                    console.log(response);
+                    toastr.info('Product module status updated');
+                    redirectToIndex();
+                },
+                failure: function (response) {
+                    console.log(response.responseText);
+                },
+                error: function (response) {
+                    toastr.error(response.responseText);
+                }
+
+            });
+        }
+
+        function changeDynamicFormModuleStatus() {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ChangeDynamicFormModuleStatus")',
+                success: function (response) {
+                    console.log(response);
+                    toastr.info('Dynamic Form module status updated');
+                    redirectToIndex();
+                },
+                failure: function (response) {
+                    console.log(response.responseText);
+                },
+                error: function (response) {
+                    toastr.error(response.responseText);
+                }
+
+            });
+        }
+
+        function changeTaskModuleStatus() {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ChangeTaskModuleStatus")',
+                success: function (response) {
+                    console.log(response);
+                    toastr.info('Task module status updated');
+                    redirectToIndex();
+                },
+                failure: function (response) {
+                    console.log(response.responseText);
+                },
+                error: function (response) {
+                    toastr.error(response.responseText);
+                }
+
+            });
+        }
+
+        function changeNoticeModuleStatus() {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ChangeNoticeModuleStatus")',
+                success: function (response) {
+                    console.log(response);
+                    toastr.info('Notice module status updated');
+                    redirectToIndex();
+                },
+                failure: function (response) {
+                    console.log(response.responseText);
+                },
+                error: function (response) {
+                    toastr.error(response.responseText);
+                }
+
+            });
+        }
+
+        function changeDynamicQrCodeAttendanceModuleStatus() {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ChangeDynamicQrCodeAttendanceStatus")',
+                success: function (response) {
+                    console.log(response);
+                    toastr.info('Dynamic Qr Code Attendance module status updated');
+                    redirectToIndex();
+                },
+                failure: function (response) {
+                    console.log(response.responseText);
+                },
+                error: function (response) {
+                    toastr.error(response.responseText);
+                }
+
+            });
+        }
+
+        function changeBiometricVerificationRequired() {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ChangeBiometricVerificationStatus")',
+                success: function (response) {
+                    console.log(response);
+                    toastr.info('Biometric Verification Required status updated');
+                    redirectToIndex();
+                },
+                failure: function (response) {
+                    console.log(response.responseText);
+                },
+                error: function (response) {
+                    toastr.error(response.responseText);
+                }
+
+            });
+        }
+
+
+        function redirectToIndex() {
+            window.location.href = '@Url.Action("Index", "Addon")';
+        }
+    </script>
+}

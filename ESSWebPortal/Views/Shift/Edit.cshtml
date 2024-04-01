@@ -1,0 +1,74 @@
+﻿@model ESSDataAccess.Models.ScheduleModel
+
+@{
+    ViewData["Title"] = "Edit Shifts";
+    ViewData["back"] = true;
+}
+<form asp-action="Edit">
+    <div class="card shadow">
+        <div class="card-body">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group row mb-3">
+                <div class="form-group col-md-3">
+                    <label asp-for="Title" class="control-label"></label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-5">
+                    <label asp-for="Description" class="control-label"></label>
+                    <input asp-for="Description" class="form-control" />
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                <div class="form-group col-md-2">
+                    <label asp-for="StartTime" class="control-label"></label>
+                    <input asp-for="StartTime" type="time" class="form-control" />
+                    <span asp-validation-for="StartTime" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-2">
+                    <label asp-for="EndTime" class="control-label"></label>
+                    <input asp-for="EndTime" type="time" class="form-control" />
+                    <span asp-validation-for="EndTime" class="text-danger"></span>
+                </div>
+            </div>
+            <label class="control-label">Shift Days</label>
+            <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
+                <input type="checkbox" class="btn-check" type="checkbox" asp-for="Sunday" autocomplete="off">
+                <label class="btn btn-outline-primary" asp-for="Sunday"> @Html.DisplayNameFor(model => model.Sunday)</label>
+
+                <input type="checkbox" class="btn-check" type="checkbox" asp-for="Monday" autocomplete="off">
+                <label class="btn btn-outline-primary" asp-for="Monday"> @Html.DisplayNameFor(model => model.Monday)</label>
+
+                <input type="checkbox" class="btn-check" type="checkbox" asp-for="Tuesday" autocomplete="off">
+                <label class="btn btn-outline-primary" asp-for="Tuesday">@Html.DisplayNameFor(model => model.Tuesday)</label>
+
+                <input type="checkbox" class="btn-check" type="checkbox" asp-for="Wednesday" autocomplete="off">
+                <label class="btn btn-outline-primary" asp-for="Wednesday">@Html.DisplayNameFor(model => model.Wednesday)</label>
+
+                <input type="checkbox" class="btn-check" type="checkbox" asp-for="Thursday" autocomplete="off">
+                <label class="btn btn-outline-primary" asp-for="Thursday">@Html.DisplayNameFor(model => model.Thursday)</label>
+
+                <input type="checkbox" class="btn-check" type="checkbox" asp-for="Friday" autocomplete="off">
+                <label class="btn btn-outline-primary" asp-for="Friday">@Html.DisplayNameFor(model => model.Friday)</label>
+
+                <input type="checkbox" class="btn-check" type="checkbox" asp-for="Saturday" autocomplete="off">
+                <label class="btn btn-outline-primary" asp-for="Saturday">@Html.DisplayNameFor(model => model.Saturday)</label>
+            </div>
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="CreatedAt" />
+            <input type="hidden" asp-for="UpdatedAt" />
+            <input type="hidden" asp-for="CreatedBy" />
+            <input type="hidden" asp-for="Status" />
+            <input type="hidden" asp-for="TenantId" />
+        </div>
+        <div class="card-footer">
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

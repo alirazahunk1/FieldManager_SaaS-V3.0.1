@@ -1,0 +1,139 @@
+﻿@using ESSWebPortal.ViewModels.Device;
+@model IEnumerable<DeviceVM>
+
+@{
+    ViewData["Title"] = "Devices";
+}
+
+<div class="card shadow">
+    <div class="card-header">
+        <div class="float-start">
+            <h4>@ViewData["Title"]</h4>
+        </div>
+    </div>
+    <div class="card-body">
+        <table id="datatable" class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Id)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.FullName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Brand)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Model)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.SdkVersion)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.DeviceType)
+                    </th>
+                    <th>
+                        Last Location
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.LastUpdatedOn)
+                    </th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Id)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FullName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Brand)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Model)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SdkVersion)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DeviceType)
+                        </td>
+                        <td>
+                            @if (item.Latitude == null || item.Longitude == null)
+                            {
+                                <p>Not found!</p>
+                            }
+                            else
+                            {
+                                <a href="@("https://www.google.com/maps/search/?api=1&query="+item.Latitude+","+item.Longitude)"></a>
+                            }
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.LastUpdatedOn)
+                        </td>
+                        <td>
+                            <a data-bs-toggle="tooltip" data-bs-placement="top" title="Revoke Device" class="btn btn-danger" asp-action="RevokeDevice" onclick="return confirm('Are you sure you want to delete it?');" asp-route-id="@item.Id"><i class="fa fa-trash"></i></a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+
+        function getDetails(id) {
+            $.ajax({
+                type: "GET",
+                url: "Client/Details/" + id,
+                success: function (response) {
+                    console.log(response);
+                    setContent(response);
+                    var content = `<p> ${data.Id} </p> </br> <hr>`;
+
+                    $("#modelbody").html(content);
+                    $("#model").modal('toggle');
+                },
+                failure: function (response) {
+                    console.log(response.responseText);
+                },
+                error: function (response) {
+                    console.log(response.responseText);
+                }
+            });
+        }
+
+
+        function setContent(data) {
+
+            var content = `
+                    <table class="table table-striped">
+                    <tbody>
+                                    <tr> <td>Name</td> <td>${data.name}</td> </tr>
+                                    <tr> <td>Phone Number</td> <td>${data.phoneNumber}</td> </tr>
+                                    <tr> <td>Email</td> <td>${data.email}</td> </tr>
+                                    <tr> <td>City</td> <td>${data.city}</td> </tr>
+                                    <tr> <td>Address</td> <td>${data.address}</td> </tr>
+                                    <tr> <td>Contact Person</td> <td>${data.contactPerson}</td> </tr>
+                                    <tr> <td>Status</td> <td>${data.status}</td> </tr>
+                                    <tr> <td>Requested On</td> <td>${data.createdAt}</td> </tr>
+                    </tbody>
+                    </table>
+                            `;
+            $('#modeltitle').text('Client Details');
+            $("#modelbody").html(content);
+            $("#model").modal('toggle');
+        }
+
+    </script>
+}
+
+

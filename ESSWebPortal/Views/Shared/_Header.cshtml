@@ -1,0 +1,106 @@
+﻿@using ESSWebPortal.Core.Plan;
+@inject ISASettings _settings;
+@inject IPlan plan
+@{
+    var currentController = (ViewContext.RouteData.Values["controller"] != null) ? ViewContext.RouteData.Values["controller"].ToString() : null;
+    var currentAction = (ViewContext.RouteData.Values["action"] != null) ? ViewContext.RouteData.Values["action"].ToString() : null;
+    var userName = User.Identity.Name;
+}
+<nav class="navbar navbar-top fixed-top navbar-expand" id="navbarDefault">
+    <div class="collapse navbar-collapse justify-content-between">
+        <div class="navbar-logo">
+            <button class="btn navbar-toggler navbar-toggler-humburger-icon hover-bg-transparent" type="button" data-bs-toggle="collapse" data-bs-target="#navbarVerticalCollapse" aria-controls="navbarVerticalCollapse" aria-expanded="false" aria-label="Toggle Navigation"><span class="navbar-toggle-icon"><span class="toggle-line"></span></span></button>
+            <a class="navbar-brand me-1 me-sm-3" asp-controller="Dashboard" asp-action="Index">
+                <div class="d-flex align-items-center">
+                    <div class="d-flex align-items-center">
+                        <img src="~/img/app_logo.png" alt="Field Manager" width="27" />
+                        <p class="logo-text ms-2 d-none d-sm-block">@await _settings.GetAppName()</p>
+                    </div>
+                </div>
+            </a>
+        
+        </div>
+
+        <ul class="navbar-nav navbar-nav-icons flex-row">
+
+            @if (!User.IsInRole(UserRoles.SuperAdmin))
+            {
+                <li class="nav-item me-3">
+                    <a class="nav-link text-green" asp-controller="Payment" asp-action="MyPlan">
+                        <span class="badge badge-phoenix fs--2 badge-phoenix-success"><span class="badge-label">@await plan.GetPlanDetailsForUser(User.FindFirstValue(ClaimTypes.NameIdentifier))</span><span class="ms-1" data-feather="check" style="height:12.8px;width:12.8px;"></span></span>
+                    </a>
+                </li>
+            }
+
+            <li class="nav-item me-2">
+                <div class="theme-control-toggle fa-icon-wait px-2">
+                    <input class="form-check-input ms-0 theme-control-toggle-input" type="checkbox" data-theme-control="phoenixTheme" value="dark" id="themeControlToggle" />
+                    <label class="mb-0 theme-control-toggle-label theme-control-toggle-light" for="themeControlToggle" data-bs-toggle="tooltip" data-bs-placement="left" title="Switch theme"><span class="icon" data-feather="moon"></span></label>
+                    <label class="mb-0 theme-control-toggle-label theme-control-toggle-dark" for="themeControlToggle" data-bs-toggle="tooltip" data-bs-placement="left" title="Switch theme"><span class="icon" data-feather="sun"></span></label>
+                </div>
+            </li>
+          <partial name="_Notification" />
+            <li class="nav-item dropdown me-2">
+                @if (User.IsInRole(UserRoles.SuperAdmin))
+                {
+                    <a class="nav-link" asp-controller="SASettings" asp-action="Index" role="button">
+                        <i class="fas fa-cog"></i>
+                    </a>
+                }
+                else
+                {
+
+                    <a class="nav-link" asp-controller="Settings" asp-action="Index">
+                        <i data-feather="settings"></i>
+                    </a>
+                }
+            </li>
+            @if(User.IsInRole(UserRoles.SuperAdmin))
+            {
+                <li class="nav-item dropdown me-2">
+                    <a class="nav-link" asp-controller="Addon" asp-action="Index" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Addons">
+                        <i data-feather="layers"></i>
+                    </a>
+                </li>
+            }
+            <li class="nav-item dropdown">
+                <a class="nav-link lh-1 pe-0" id="navbarDropdownUser" href="#!" role="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-haspopup="true" aria-expanded="false">
+                    <div class="avatar avatar-l ">
+                        <img class="rounded-circle " src="~/img/user.png" alt="" />
+                    </div>
+                    @userName
+                </a>
+                <div class="dropdown-menu dropdown-menu-end navbar-dropdown-caret py-0 dropdown-profile shadow border border-300" aria-labelledby="navbarDropdownUser">
+                    <div class="card position-relative border-0">
+                        <div class="card-body p-0">
+                            <div class="text-center pt-4 pb-1">
+                                <div class="avatar avatar-xl ">
+                                    <img class="rounded-circle " src="~/img/user.png" alt="" />
+                                </div>
+                                <h6 class="mt-2 text-black">@userName</h6>
+                                <p>@User.FindFirstValue("Designation")</p>
+                            </div>
+                        </div>
+                        <div class="overflow-auto">
+                            <ul class="nav d-flex flex-column mb-2 pb-1">
+                                <li class="nav-item"><a class="nav-link px-3" asp-controller="Account" asp-action="Profile"> <span class="me-2 text-900" data-feather="user"></span><span>Profile</span></a></li>
+                                <li class="nav-item"><a class="nav-link px-3" asp-controller="Account" asp-action="Changepassword"><span class="me-2 text-900" data-feather="log-out"></span>Change Password</a></li>
+                            </ul>
+                        </div>
+                        <div class="card-footer p-0 border-top">
+
+                            <div class="px-3">
+                                <form method="post" asp-controller="Auth" asp-action="Logout" class="mt-2 mb-2">
+                                    <button class="btn btn-danger d-flex flex-center w-100" type="submit">
+                                        <span class="me-2" data-feather="log-out"> </span>Log out
+                                    </button>
+                                </form>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>

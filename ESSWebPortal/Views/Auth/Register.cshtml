@@ -1,0 +1,110 @@
+﻿@using ESSWebPortal.Core.ViewModel.Auth;
+@model RegisterVM
+@inject ISASettings _settings;
+@{
+    ViewData["Title"] = "Register";
+    ViewData["islogin"] = true;
+    var appName = await _settings.GetAppName();
+}
+
+<div class="container-fluid bg-300 dark__bg-1200">
+    <div class="bg-holder bg-auth-card-overlay" style="background-image:url(../../../assets/img/bg/37.png);">
+    </div>
+    <!--/.bg-holder-->
+    <div class="row flex-center position-relative min-vh-100 g-0 py-5">
+        <div class="col-11 col-sm-10 col-xl-8">
+            <div class="card border border-200 auth-card">
+                <div class="card-body pe-md-0">
+                    <div class="row align-items-center gx-0 gy-7">
+                        <div class="col-auto bg-100 dark__bg-1100 rounded-3 position-relative overflow-hidden auth-title-box">
+                            <div class="bg-holder" style="background-image:url(../../../assets/img/bg/38.png);">
+                            </div>
+                            <!--/.bg-holder-->
+
+                            <div class="position-relative px-4 px-lg-7 pt-7 pb-7 pb-sm-5 text-center text-md-start pb-lg-7 card-sign-up">
+                                <h3 class="mb-3 text-black fs-1">With @appName</h3>
+                                <p class="text-700">Track &amp; manager your field employee's</p>
+                                <ul class="list-unstyled mb-0 w-max-content w-md-auto mx-auto">
+                                    <li class="d-flex align-items-center"><span class="uil uil-check-circle text-success me-2"></span><span class="text-700 fw-semi-bold">Attendance</span></li>
+                                    <li class="d-flex align-items-center"><span class="uil uil-check-circle text-success me-2"></span><span class="text-700 fw-semi-bold">Leaves</span></li>
+                                    <li class="d-flex align-items-center"><span class="uil uil-check-circle text-success me-2"></span><span class="text-700 fw-semi-bold">Expenses</span></li>
+                                    <li class="d-flex align-items-center"><span class="uil uil-check-circle text-success me-2"></span><span class="text-700 fw-semi-bold">Travel</span></li>
+                                    <li class="d-flex align-items-center"><span class="uil uil-check-circle text-success me-2"></span><span class="text-700 fw-semi-bold">Payslip</span></li>
+                                    <li class="d-flex align-items-center"><span class="uil uil-check-circle text-success me-2"></span><span class="text-700 fw-semi-bold">Team Chat</span></li>
+                                    <li class="d-flex align-items-center"><span class="uil uil-check-circle text-success me-2"></span><span class="text-700 fw-semi-bold">and more..</span></li>
+                                </ul>
+                            </div>
+                            <div class="position-relative z-index--1 mb-6 d-none d-md-block text-center mt-md-15"><img class="auth-title-box-img d-dark-none" src="../../../assets/img/spot-illustrations/auth.png" alt="" /><img class="auth-title-box-img d-light-none" src="../../../assets/img/spot-illustrations/auth-dark.png" alt="" /></div>
+                        </div>
+                        <div class="col mx-auto">
+                            <div class="auth-form-box">
+                                <div class="text-center mb-7">
+                                    <a class="d-flex flex-center text-decoration-none mb-4">
+                                        <div class="d-flex align-items-center fw-bolder fs-5 d-inline-block">
+                                            <img src="~/img/app_logo.png" alt="Field Manager" width="58" />
+                                        </div>
+                                        <h3 class="ms-1 text-uppercase">@appName @("V" + await _settings.GetAppVersion())</h3>
+                                    </a>
+                                    <h3 class="text-1000">Sign Up</h3>
+                                    <p class="text-700">Create your account today</p>
+                                </div>
+                                <form method="post">
+                                    <div class="row g-3 g-3 mb-3">
+                                        <div class="col-xl-6">
+                                            <label class="form-label" asp-for="FirstName"></label>
+                                            <input class="form-control" asp-for="FirstName" type="text" placeholder="First Name" />
+                                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                                        </div>
+                                        <div class="col-xl-6">
+                                            <label class="form-label" asp-for="LastName"></label>
+                                            <input class="form-control" asp-for="LastName" type="text" placeholder="Last Name" />
+                                            <span asp-validation-for="LastName" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 text-start">
+                                        <label class="form-label" asp-for="Gender"></label>
+                                        <select asp-for="Gender" asp-items="@Html.GetEnumSelectList<UserGender>()" class="form-select"></select>
+                                        <span asp-validation-for="Gender" class="text-danger"></span>
+                                    </div>
+                                  @*   <div class="mb-3 text-start">
+                                        <label class="form-label" asp-for="EmailId">Email address</label>
+                                        <input class="form-control" asp-for="EmailId" type="email" placeholder="Enter your email id" />
+                                        <span asp-validation-for="EmailId" class="text-danger"></span>
+                                    </div> *@
+                                    <div class="mb-3 text-start">
+                                        <label class="form-label" asp-for="PhoneNumber"></label>
+                                        <input class="form-control" asp-for="PhoneNumber" type="number" placeholder="Phone number" />
+                                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                                    </div>
+                                    <div class="mb-3 text-start">
+                                        <label class="form-label" asp-for="UserName"></label>
+                                        <input class="form-control" asp-for="UserName" type="text" placeholder="User Name" />
+                                        <span asp-validation-for="UserName" class="text-danger"></span>
+                                    </div>
+                                    <div class="row g-3 mb-3">
+                                        <div class="col-xl-6">
+                                            <label class="form-label" asp-for="Password">Password</label>
+                                            <input class="form-control form-icon-input" asp-for="Password" type="password" placeholder="Password" />
+                                            <span asp-validation-for="Password" class="text-danger"></span>
+                                        </div>
+                                        <div class="col-xl-6">
+                                            <label class="form-label" asp-for="ConfirmPassword">Confirm Password</label>
+                                            <input class="form-control form-icon-input" asp-for="ConfirmPassword" type="password" placeholder="Confirm Password" />
+                                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" id="termsService" type="checkbox" />
+                                        <label class="form-label fs--1 text-none" for="termsService">I accept the <a href="#!">terms </a>and <a href="#!">privacy policy</a></label>
+                                    </div>
+                                    <button class="btn btn-primary w-100 mb-3" type="submit">Sign up</button>
+                                    <div class="text-center"><a class="fs--1 fw-bold" asp-action="Login">Sign in to an existing account</a></div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

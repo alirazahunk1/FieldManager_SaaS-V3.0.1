@@ -1,0 +1,266 @@
+﻿@using ESSCommon.Core.SharedModels
+@inject GoogleMaps _maps
+@inject IDbSettings _settings;
+@{
+    ViewData["Title"] = "Live location";
+    var mapsUrl = "https://maps.googleapis.com/maps/api/js?key=" + _maps.ApiKey + "&callback=initMap&v=weekly";
+    var mapCenter = await _settings.GetMapSettings();
+}
+@*//border-0 border-start border-tiffany border-3*@
+<div class="card radius-10 shadow border-0 border-start">
+    <div class="card-body">
+        <div class="text-center">
+            <div class="col">
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <button id="all" name="all" type="button" class="btn btn-outline-primary">All <span class="badge bg-primary">0</span> </button>
+                    <button id="onduty" name="onduty" type="button" class="btn btn-outline-primary">On Duty <span class="badge bg-success">0</span></button>
+                    <button id="inactive" name="inactive" type="button" class="btn btn-outline-primary">Inactive <span class="badge bg-warning">0</span></button>
+                    <button id="offduty" name="offduty" type="button" class="btn btn-outline-primary">Off Duty <span class="badge bg-danger">0</span></button>
+                    <button id="nw" name="nw" type="button" class="btn btn-outline-primary">Not working <span class="badge bg-info">0</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="card shadow">
+    <div id="map" class="gmaps p-0 shadow" style="height:80vh">
+    </div>
+</div>
+
+
+@section Scripts{
+    <script src="@mapsUrl"
+            async defer>
+    </script>
+
+    <script>
+        var directionsDisplay,
+            directionsService,
+            map;
+        var ltlng = [];
+        var infoWindows = [];
+        var marker;
+
+        function initMap() {
+            var latitide = '@(mapCenter.Latitude)';
+            var longitude = '@(mapCenter.Longitude)';
+            var india = new google.maps.LatLng(latitide, longitude);
+
+            var mapOptions = {
+                zoom: parseInt('@(mapCenter.MapZoomLevel)'),
+                mapTypeId: google.maps.MapTypeId.ROADMAP,
+                center: india,
+                scrollWheel: true,
+                gestureHandling: 'greedy',
+                //styles: [
+                //    { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
+                //    { elementType: "labels.text.stroke", stylers: [{ color: "#242f3e" }] },
+                //    { elementType: "labels.text.fill", stylers: [{ color: "#746855" }] },
+                //    {
+                //        featureType: "administrative.locality",
+                //        elementType: "labels.text.fill",
+                //        stylers: [{ color: "#d59563" }],
+                //    },
+                //    {
+                //        featureType: "poi",
+                //        elementType: "labels.text.fill",
+                //        stylers: [{ color: "#d59563" }],
+                //    },
+                //    {
+                //        featureType: "poi.park",
+                //        elementType: "geometry",
+                //        stylers: [{ color: "#263c3f" }],
+                //    },
+                //    {
+                //        featureType: "poi.park",
+                //        elementType: "labels.text.fill",
+                //        stylers: [{ color: "#6b9a76" }],
+                //    },
+                //    {
+                //        featureType: "road",
+                //        elementType: "geometry",
+                //        stylers: [{ color: "#38414e" }],
+                //    },
+                //    {
+                //        featureType: "road",
+                //        elementType: "geometry.stroke",
+                //        stylers: [{ color: "#212a37" }],
+                //    },
+                //    {
+                //        featureType: "road",
+                //        elementType: "labels.text.fill",
+                //        stylers: [{ color: "#9ca5b3" }],
+                //    },
+                //    {
+                //        featureType: "road.highway",
+                //        elementType: "geometry",
+                //        stylers: [{ color: "#746855" }],
+                //    },
+                //    {
+                //        featureType: "road.highway",
+                //        elementType: "geometry.stroke",
+                //        stylers: [{ color: "#1f2835" }],
+                //    },
+                //    {
+                //        featureType: "road.highway",
+                //        elementType: "labels.text.fill",
+                //        stylers: [{ color: "#f3d19c" }],
+                //    },
+                //    {
+                //        featureType: "transit",
+                //        elementType: "geometry",
+                //        stylers: [{ color: "#2f3948" }],
+                //    },
+                //    {
+                //        featureType: "transit.station",
+                //        elementType: "labels.text.fill",
+                //        stylers: [{ color: "#d59563" }],
+                //    },
+                //    {
+                //        featureType: "water",
+                //        elementType: "geometry",
+                //        stylers: [{ color: "#17263c" }],
+                //    },
+                //    {
+                //        featureType: "water",
+                //        elementType: "labels.text.fill",
+                //        stylers: [{ color: "#515c6d" }],
+                //    },
+                //    {
+                //        featureType: "water",
+                //        elementType: "labels.text.stroke",
+                //        stylers: [{ color: "#17263c" }],
+                //    },
+                //],
+                streetViewControl: false
+            };
+
+            //Icons
+            var iconBase = window.location.origin + "/img/map/";
+
+            const icons = {
+                green: {
+                    icon: iconBase + "green_circle.png",
+                },
+                red: {
+                    icon: iconBase + "red_circle.png",
+                },
+                info: {
+                    icon: iconBase + "info-i_maps.png",
+                },
+            };
+
+            var infoWindow;
+            map = new google.maps.Map(document.getElementById('map'), mapOptions);
+            $.ajax({
+                type: "GET",
+                url: "/Dashboard/GetLiveLocationAjax/",
+                success: function (response) {
+                    var active = 0,
+                        inActive = 0,
+                        offline = 0,
+                        notworking = 0;
+
+                    for (let i = 0; i < response.length; i++) {
+
+                        var user = response[i];
+
+                        var markerIcon;
+
+                        if (user.status === 'active') {
+
+                            markerIcon = {
+                                url: iconBase + "green_circle.png",
+                                // url: "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png",
+                                scaledSize: new google.maps.Size(32, 32),
+                                labelOrigin: new google.maps.Point(20, -10)
+                            };
+                            active++;
+                        } else if (status === 'inactive') {
+                            markerIcon = {
+                                url: iconBase + "yellow_circle.png",
+                                //url: "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png",
+                                scaledSize: new google.maps.Size(32, 32),
+                                labelOrigin: new google.maps.Point(20, -10)
+                            };
+                            inActive++;
+                        } else {
+                            markerIcon = {
+                                url: iconBase + "red_circle.png",
+                                // url: "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png",
+                                scaledSize: new google.maps.Size(32, 32),
+                                labelOrigin: new google.maps.Point(20, -10)
+                            };
+                            offline++;
+                        }
+
+
+                        marker = new google.maps.Marker({
+                            position: new google.maps.LatLng(user.latitude, user.longitude),
+                            icon: markerIcon,
+                            map: map,
+                            label: {
+                                text: user.name,
+                                color: '#1F1C1C',
+                                fontWeight: "bold",
+                                fontSize: "16px",
+                                className: "card p-1"
+                            },
+                            draggable: false,
+                        });
+
+                        infoWindow = new google.maps.InfoWindow({
+                            maxWidth: 200
+                        });
+
+                        var content = user.updatedAt;
+                        google.maps.event.addListener(marker, 'click', (function (marker, content, infoWindow) {
+                            return function () {
+                                infoWindow.setContent(`Last Update: ${content}`);
+                                infoWindow.open(map, marker);
+                            };
+                        })(marker, content, infoWindow));
+
+                        ltlng.push(new google.maps.LatLng(user.latitude, user.longitude));
+                        console.log(user);
+                    }
+
+                    //Setting header button
+                    setFilterButton(active, inActive, offline, notworking);
+                },
+                failure: function (response) {
+                    console.log(response.responseText);
+                },
+                error: function (response) {
+                    console.log(response.responseText);
+                }
+            });
+
+            window.initMap = initMap;
+        }
+        function closeOtherInfo() {
+            if (infoWindows.length > 0) {
+                /* detach the info-window from the marker ... undocumented in the API docs */
+                infoWindows[0].set("marker", null);
+                /* and close it */
+                infoWindows[0].close();
+                /* blank the array */
+                infoWindows.length = 0;
+            }
+        }
+
+        function setFilterButton(active, inactive, offduty, nw) {
+            $('#all').html(`All <span class="badge bg-primary">${active + inactive + offduty + nw}</span> `);
+            $('#onduty').html(`On Duty <span class="badge bg-success">${active}</span> `);
+            $('#inactive').html(`Inactive <span class="badge bg-warning">${inactive}</span> `);
+            $('#offduty').html(`Offline <span class="badge bg-danger">${offduty}</span> `);
+            $('#nw').html(`Not Working <span class="badge bg-info">${nw}</span> `);
+        }
+
+        function showEmployees() {
+            $("#employeeModel").modal('toggle');
+        }
+    </script>
+    }

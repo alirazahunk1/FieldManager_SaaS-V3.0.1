@@ -1,0 +1,56 @@
+﻿@model IEnumerable<GeofenceModel>
+<div class="card">
+    <div class="card-header">
+        <h5> IP Addresses</h5>
+    </div>
+    <div class="card-body">
+        @if (Model.Any())
+        {
+            <table class="table table-striped" id="datatable">
+                <thead>
+                    <tr>
+                        <td>@Html.DisplayNameFor(x => x.Id)</td>
+                        <td>Location</td>
+                        <td>@Html.DisplayNameFor(x => x.Radius)</td>
+                        <td>@Html.DisplayNameFor(x => x.Name)</td>
+                        <td>@Html.DisplayNameFor(x => x.Description)</td>
+                        <td>@Html.DisplayNameFor(x => x.IsEnabled)</td>
+                        <td>@Html.DisplayNameFor(x => x.CreatedAt)</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="ps-2">@item.Id</td>
+                            <td>
+                                <a href="@("https://www.google.com/maps/search/?api=1&query="+item.Latitude+","+item.Longitude)" target="_blank"><i class="fa fa-share"></i> Open in maps</a>
+                            </td>
+                            <td>@item.Radius</td>
+                            <td>@item.Name</td>
+                            <td>@item.Description</td>
+                            <td>
+                                <div class="form-check form-switch">
+                                    @if (item.IsEnabled)
+                                    {
+                                        <input class="form-check-input" type="checkbox" checked onchange="changeStatusN(@item.Id)" />
+                                    }
+                                    else
+                                    {
+                                        <input class="form-check-input" type="checkbox" onchange="changeStatusN(@item.Id)" />
+                                    }
+                                </div>
+                            </td>
+                            <td>@item.CreatedAt</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+        }
+        else
+        {
+            <p>No Ip Address Added!</p>
+        }
+    </div>
+</div>

@@ -1,0 +1,479 @@
+﻿@inject IDbSettings _settings;
+@{
+    ViewData["Title"] = "Dashboard";
+    var moduleSettings = await _settings.GetModuleSettings();
+    var currencySymbol = await _settings.GetCurrencySymbol();
+}
+<h3 class="mb-3">Today's Statistics</h3>
+<!--Counts Section-->
+<div class="row align-items-center g-6 mb-3">
+    @if (moduleSettings.IsLeaveModuleEnabled)
+    {
+        <div class="col-12 col-md-auto">
+            <a asp-controller="LeaveRequest" asp-action="Index">
+                <div class="card p-3">
+                    <div class="d-flex align-items-center">
+                        <span class="fa-stack" style="min-height: 46px;min-width: 46px;"><span class="fa-solid fa-square fa-stack-2x text-success-300" data-fa-transform="down-4 rotate--10 left-4"></span><span class="fa-solid fa-circle fa-stack-2x stack-circle text-success-100" data-fa-transform="up-4 right-3 grow-2"></span><span class="fa-stack-1x fa-solid fa-sign-out-alt text-success " data-fa-transform="shrink-2 up-8 right-6"></span></span>
+                        <div class="ms-3">
+                            <h4 class="mb-0">
+                                @ViewBag.leaveRequests
+                            </h4>
+                            <p class="text-800 fs--1 mb-0">Leave Requests</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    }
+    @if (moduleSettings.IsExpenseModuleEnabled)
+    {
+        <div class="col-12 col-md-auto">
+            <a asp-controller="ExpenseRequest" asp-action="Index">
+                <div class="card p-3">
+                    <div class="d-flex align-items-center">
+                        <span class="fa-stack" style="min-height: 46px;min-width: 46px;"><span class="fa-solid fa-square fa-stack-2x text-danger-300" data-fa-transform="down-4 rotate--10 left-4"></span><span class="fa-solid fa-circle fa-stack-2x stack-circle text-danger-100" data-fa-transform="up-4 right-3 grow-2"></span><span class="fa-stack-1x fa-solid fa-xmark text-danger " data-fa-transform="shrink-2 up-8 right-6"></span></span>
+                        <div class="ms-3">
+                            <h4 class="mb-0">
+                                @ViewBag.expenseRequests
+                            </h4>
+                            <p class="text-800 fs--1 mb-0">Expense Requests</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    }
+    @if (moduleSettings.IsDynamicFormModuleEnabled)
+    {
+        <div class="col-12 col-md-auto">
+            <a asp-controller="FormSubmission" asp-action="Index">
+                <div class="card p-3">
+                    <div class="d-flex align-items-center">
+                        <span class="fa-stack" style="min-height: 46px;min-width: 46px;"><span class="fa-solid fa-square fa-stack-2x text-danger-300" data-fa-transform="down-4 rotate--10 left-4"></span><span class="fa-solid fa-circle fa-stack-2x stack-circle text-danger-100" data-fa-transform="up-4 right-3 grow-2"></span><span class="fa-stack-1x fa-solid fa-list text-danger " data-fa-transform="shrink-2 up-8 right-6"></span></span>
+                        <div class="ms-3">
+                            <h4 class="mb-0">
+                                @ViewBag.formEntries
+                            </h4>
+                            <p class="text-800 fs--1 mb-0">Form submissions</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    }
+    @if (moduleSettings.IsTaskModuleEnabled)
+    {
+        <div class="col-12 col-md-auto">
+            <a asp-controller="Task" asp-action="Index">
+                <div class="card p-3">
+                    <div class="d-flex align-items-center">
+                        <span class="fa-stack" style="min-height: 46px;min-width: 46px;"><span class="fa-solid fa-square fa-stack-2x text-warning-300" data-fa-transform="down-4 rotate--10 left-4"></span><span class="fa-solid fa-circle fa-stack-2x stack-circle text-warning-100" data-fa-transform="up-4 right-3 grow-2"></span><span class="fa-stack-1x fa-solid fa-list text-warning " data-fa-transform="shrink-2 up-8 right-6"></span></span>
+                        <div class="ms-3">
+                            <h4 class="mb-0">
+                                @ViewBag.tasks
+                            </h4>
+                            <p class="text-800 fs--1 mb-0">Tasks</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    }
+    @if (moduleSettings.IsProductModuleEnabled)
+    {
+        <div class="col-12 col-md-auto">
+            <a asp-controller="Order" asp-action="Index">
+                <div class="card p-3">
+                    <div class="d-flex align-items-center">
+                        <span class="fa-stack" style="min-height: 46px;min-width: 46px;"><span class="fa-solid fa-square fa-stack-2x text-warning-300" data-fa-transform="down-4 rotate--10 left-4"></span><span class="fa-solid fa-circle fa-stack-2x stack-circle text-warning-100" data-fa-transform="up-4 right-3 grow-2"></span><span class="fa-stack-1x fa-solid fa-box text-warning " data-fa-transform="shrink-2 up-8 right-6"></span></span>
+                        <div class="ms-3">
+                            <h4 class="mb-0">
+                                @ViewBag.orders
+                            </h4>
+                            <p class="text-800 fs--1 mb-0">Orders</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    }
+</div>
+<!--Counts Section-->
+<!--Recent Checkin-->
+<div class="row">
+    <div class="col-12 @(moduleSettings.IsProductModuleEnabled ? "col-xl-6" : "")">
+        <div class="mx-n4 mx-lg-n6 ms-xl-0 p-3">
+            <div class="card w-100">
+                <h5 class="p-3">Recent Checkin's</h5>
+                <div class="card-body w-100">
+                    <div class="table-responsive scrollbar" style="height:700px">
+                        <table class="table table-striped fs--1">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Attendance</th>
+                                    <th>Last Update</th>
+                                    <th>Location</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @if (moduleSettings.IsProductModuleEnabled)
+    {
+        <div class="col-12 col-xl-6">
+            <div class="mx-n4 mx-lg-n6 ms-xl-0 p-3">
+                <div class="card w-100">
+                    <h5 class="p-3">Recent Orders</h5>
+                    <div class="card-body w-100">
+                        <div class="table-responsive scrollbar" style="height:700px">
+                            <table class="table table-striped fs--1">
+                                <thead>
+                                    <tr>
+                                        <th>Sl.no</th>
+                                        <th>Employee</th>
+                                        <th>Client</th>
+                                        <th>Items</th>
+                                        <th>Status</th>
+                                        <th>Value</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recentOrdersTableBody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<!--Recent Checkin-->
+<!--Charts Section-->
+<div class="row gap-4 card mt-3">
+    <div class="card-body">
+        <div id="teamchart"></div>
+    </div>
+</div>
+@section Scripts {
+    <script src="~/vendors/apexcharts-bundle/js/apexcharts.min.js"></script>
+
+
+    @if (moduleSettings.IsProductModuleEnabled)
+    {
+        <script>
+
+            $(document).ready(function () {
+                getRecentOrders();
+            });
+
+
+            function getRecentOrders() {
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("GetRecentOrdersAjax")',
+                    success: function (response) {
+                        var data = response;
+                        console.log(data);
+                        loadRecentOrdersTable(data);
+                    },
+                    failure: function (response) {
+                        console.log(response.responseText);
+                    },
+                    error: function (response) {
+                        console.log(response.responseText);
+                    }
+                });
+            }
+
+            function loadRecentOrdersTable(items) {
+
+                var selector = '#recentOrdersTableBody';
+
+                $(selector).html('');
+
+                items.forEach(function (item, index) {
+
+                    var content = ` <tr>
+                                                                   <td>${item.id}</td>
+                                                                   <td>${item.employeeName}</td>
+                                                                   <td>${item.clientName}</td>
+                                                                   <td>${item.itemsCount}</td>
+                                                                   <td>
+                                                                       <span class="badge badge-phoenix badge-phoenix-info">${item.status}</span>
+                                                                   </td>
+                                                                    <td>@(currencySymbol)${item.amount}</td>
+                                                                    <td>
+                                                                         <a href="@Url.Action("Details", "Order")/${item.id}" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Details"><i class="fa fa-eye"> </i> </a>
+                                                                    </td>
+                                                               </tr>`;
+                    $(selector).append(content);
+                });
+            }
+
+        </script>
+    }
+
+    <script>
+        $(document).ready(function () {
+
+            setupCharts();
+
+            let isTeamView = getCookie("team_wise_view");
+
+            if (isTeamView) {
+                //Settings Title
+                $('#attendanceReportType').text('Attendance Report (Team View)');
+                $('#teamView').text('AdminView');
+                loadData();
+                loadTeamWiseData();
+                console.log('Team View');
+            } else {
+                //Settings Title
+                $('#attendanceReportType').text('Attendance Report (Admin View)');
+                $('#teamView').text('TeamView');
+                loadData();
+                console.log('Admin View');
+            }
+
+            $("#teamView").click(function () {
+
+                isTeamView = getCookie("team_wise_view");
+
+                if (isTeamView) {
+                    setCookie("team_wise_view", false, 7);
+                    $('#attreport').html("");
+                    $('#teamView').text('TeamView');
+                    loadData();
+                } else {
+                    setCookie("team_wise_view", true, 7);
+                    $('#attreport').html("");
+                    $('#teamView').text('AdminView');
+                    loadTeamWiseData();
+                }
+            });
+
+
+        });
+
+        function setupCharts() {
+
+            loadTeamAttendanceChart();
+        }
+
+
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+
+        function setCookie(name, value, days) {
+            var expires = "";
+            if (days) {
+                var date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + (value || "") + expires + "; path=/";
+        }
+        function loadData() {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("IndexAjax")',
+                success: function (response) {
+                    var data = response;
+
+                    //setTopCounts(data.leaveRequestCount, data.clientsCount, data.photoUploadsCount, data.expenseRequestsCount, data.employeesCount, data.formEntriesCount);
+                    let isTeamView = getCookie("team_wise_view");
+
+                    if (isTeamView) {
+
+                    } else {
+                        $('#attreport').html("");
+                        $('#attreport').html(`  <div class="row">
+                                                                                                            <div class="col-6" id="username"></div>
+                                                                                                            <div class="col-6">
+                                                                                                                     <div class="d-flex align-items-center justify-content-around gap-3">
+                                                                                                                    <h5><span class="badge rounded-pill bg-success" id="activecount">0</span></h5>
+                                                                                                                    <h5><span class="badge rounded-pill bg-warning" id="inactivecount">0</span></h5>
+                                                                                                                    <h5><span class="badge rounded-pill bg-danger" id="offlinecount">0</span></h5>
+                                                                                                                    <h5><span class="badge rounded-pill bg-primary" id="nwcount">0</span></h5>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        </div>`);
+                        $('#username').text(data.user);
+                        $('#activecount').text(data.onlineCount);
+                        $('#inactivecount').text(data.inActiveCount);
+                        $('#offlinecount').text(data.offlineCount);
+                        $('#nwcount').text(data.notWorkingCount);
+                    }
+
+                    loadTable(data.employeeItems);
+                },
+                failure: function (response) {
+                    console.log(response.responseText);
+                },
+                error: function (response) {
+                    console.log(response.responseText);
+                }
+            });
+        }
+        function loadTeamWiseData() {
+            $.ajax({
+                type: "GET",
+                url: "Dashboard/GetTeamWiseCount",
+                success: function (response) {
+
+                    $('#attreport').html("");
+
+                    if (response.length > 0) {
+                        for (let i = 0; i < response.length; i++) {
+                            addTeamItem(response[i]);
+                        }
+                    }
+                },
+                failure: function (response) {
+                    console.log(response.responseText);
+                },
+                error: function (response) {
+                    console.log(response.responseText);
+                }
+
+            });
+        }
+
+        function loadTable(items) {
+            var selector = '#tableBody';
+
+            $(selector).html('');
+
+            items.forEach(function (item, index) {
+
+
+                var att = '';
+                if (item.attendanceInAt.length !== 0) {
+                    att = 'In at : ' + item.attendanceInAt;
+                }
+
+                if (item.attendanceOutAt.length !== 0) {
+                    att += '\n Out at : ' + item.attendanceOutAt;
+                }
+
+                if (item.attendanceInAt.length === 0 && item.attendanceOutAt.length === 0) {
+                    att = '<span class="badge badge-phoenix fs--2 badge-phoenix-warning"><span class="badge-label">Not checked in</span><span class="ms-1" data-feather="alert-octagon" style="height:12.8px;width:12.8px;"></span></span>';
+                }
+
+                var location = 'https://www.google.com/maps/search/?api=1&query=' + item.latitude + ',' + item.longitude;
+
+                var content = ` <tr>
+                                                                                                                 <td>   <img src="/img/user.png" width="40" class="user-img" alt=""> ${item.name}</td>
+                                                                                                         <td>${att}</td>
+                                                                                                         <td>${item.lastUpdate}</td>
+                                                                                                                     <td> <a href='${location}' target="_blank">Open in maps</a></td>
+                                                                                                     </tr>`;
+                $(selector).append(content);
+            });
+        }
+
+        function loadTeamAttendanceChart() {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("GetTeamWiseAttendanceAjax")",
+                success: function (response) {
+                    var data = response;
+
+                    let teams = data.map(x => x.name);
+
+                    let present = data.map(x => x.present);
+
+                    let absent = data.map(x => x.absent);
+
+                    let onLeave = data.map(x => x.onLeave);
+
+                    renderTeamChart(teams, present, absent, onLeave);
+                },
+                failure: function (response) {
+                    console.log(response.responseText);
+                },
+                error: function (response) {
+                    console.log(response.responseText);
+                }
+            });
+        }
+
+        function renderTeamChart(teams, present, absent, onLeave) {
+            var options = {
+                series: [{
+                    name: 'Present',
+                    data: present
+                }, {
+                    name: 'Absent',
+                    data: absent
+                }, {
+                    name: 'On Leave',
+                    data: onLeave
+                }],
+                chart: {
+                    foreColor: '#9ba7b2',
+                    type: 'bar',
+                    height: 360
+                },
+                plotOptions: {
+                    bar: {
+                        horizontal: false,
+                        columnWidth: '55%',
+                        endingShape: 'rounded'
+                    },
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    show: true,
+                    width: 2,
+                    colors: ['transparent']
+                },
+                title: {
+                    text: 'Team Wise Attendance',
+                    align: 'left',
+                    style: {
+                        fontSize: "16px",
+                        color: '#666'
+                    }
+                },
+                colors: ["#4CAF50", "#D32F2F", "#6c757d"],
+                xaxis: {
+                    categories: teams,
+                    // categories: ['Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+                },
+                yaxis: {
+                    title: {
+                        text: 'Count'
+                    }
+                },
+                fill: {
+                    opacity: 1
+                },
+                tooltip: {
+                    y: {
+                        formatter: function (val) {
+                            return val + " employees"
+                        }
+                    }
+                }
+            };
+            var chart = new ApexCharts(document.querySelector("#teamchart"), options);
+            chart.render();
+        }
+
+
+    </script>
+}

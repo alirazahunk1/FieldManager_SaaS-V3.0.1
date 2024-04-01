@@ -1,0 +1,216 @@
+﻿@model ESSWebPortal.ViewModels.Account.UserViewModel
+@{
+    ViewData["Title"] = "User Details";
+    ViewData["back"] = true;
+}<div class="row">
+    <div class="col-md-3">
+        <div class="card card-primary">
+            <div class="card-body">
+                <div class="text-center mb-3">
+                    @if (string.IsNullOrEmpty(Model.ImgUrl))
+                    {
+                        <img class="profile-user-img rounded-circle"
+                             width="100"
+                             height="100"
+                             src="/img/user.png"
+                             alt="User profile picture">
+                    }
+                    else
+                    {
+                        <img class="profile-user-img rounded-circle"
+                             width="100"
+                             height="100"
+                             src="@("/" + Model.ImgUrl)"
+                             alt="User profile picture">
+                    }
+                </div>
+                <h5 class="text-center">
+                    @Model.UserName @if (Model.Status == UserStatus.Active)
+                    {
+                        <span class="badge bg-success">Active</span>
+                    }
+                    else if (Model.Status == UserStatus.InActive)
+                    {
+                        <span class="badge bg-warning">InActive</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger">@Model.Status</span>
+                    }
+                </h5>
+
+                <p class="text-muted text-center">@Model.Designation</p>
+                <hr />
+                <div class="container text-center">
+                    <div class="row justify-content-center">
+                        <div class="col-3">
+                            <a class="btn btn-primary" asp-action="Edit" asp-route-id="@Model.Id"><i class="fa fa-edit"></i> Edit</a>
+                        </div>
+                        <div class="col-3">
+                            @if (Model.Status == UserStatus.Active)
+                            {
+                                <a class="btn btn-danger" asp-action="Block" asp-route-userId="@Model.Id" asp-route-isFromView="true"><i class="fa fa-ban"></i> Block</a>
+                            }
+                            else
+                            {
+                                <a class="btn btn-success" asp-action="Block" asp-route-userId="@Model.Id" asp-route-isFromView="true"><i class="fa fa-check"></i> UnBlock</a>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <br />
+                <div class="col text-center">
+                    <a class="btn btn-block btn-info" asp-action="ResetPasswordByAdmin" asp-route-userId="@Model.Id"><i class="fa fa-key ml-1"></i> Reset Password</a>
+                </div>
+
+
+            </div>
+            <!-- /.card-body -->
+        </div>
+
+        @*<div class="card card-primary">
+        <div class="card-header">
+        <h3 class="card-title"><i class="fa fa-mobile-alt"></i> Device Info</h3>
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body">
+        @if (Model.Device != null)
+        {
+        <strong>Brand</strong>
+        <p class="text-muted">
+        @Model.Device.Brand
+        </p>
+
+        <hr>
+        <strong>Model</strong>
+        <p class="text-muted">
+        @Model.Device.Model
+        </p>
+        <hr>
+
+        <strong>Device Type</strong>
+
+        <p class="text-muted">
+        @Model.Device.DeviceType
+        </p>
+        <hr>
+
+        <strong>Sdk Version</strong>
+
+        <p class="text-muted">
+        @Model.Device.SdkVersion
+        </p>
+        <hr>
+
+        <strong>Last Reported Location</strong>
+
+        <p class="text-muted">
+        @if (Model.Device.Latitude == null || Model.Device.Longitude == null)
+        {
+        <p>Not found!</p>
+        }
+        else
+        {
+        <a href="@("https://www.google.com/maps/search/?api=1&query="+Model.Device.Latitude+","+Model.Device.Longitude)"></a>
+        }
+        </p>
+
+        <strong>Last Reported On</strong>
+
+        <p class="text-muted">
+        @Model.Device.LastUpdatedOn
+        </p>
+
+        <a class="btn btn-danger btn-block" onclick="confirm('Are you sure you want to revoke the device?')"><i class="fa fa-ban"></i> Revoke Device</a>
+        }
+        else
+        {
+        <p>Device not configured</p>
+        }
+
+        </div>
+        <!-- /.card-body -->
+        </div>*@
+
+    </div>
+    <div class="col-md-9">
+        <div class="card shadow">
+            <div class="card-body">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h6>Login Details</h6>
+                    </div>
+                    <div class="card-body">
+                        <table id="example1" class="table table-bordered table-striped">
+                            <tbody>
+                                <tr>
+                                    <td>User Name</td>
+                                    <td>
+                                        @Model.UserName
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Phone Number</td>
+                                    <td>
+                                        @Model.PhoneNumber
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Email</td>
+                                    <td>
+                                        @Model.Email
+                                    </td>
+                                </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card card-primary mt-3">
+                    <div class="card-header">
+                        <h6>Personal Details</h6>
+                    </div>
+                    <div class="card-body">
+                        <table id="example1" class="table table-bordered table-striped">
+                            <tbody>
+                                <tr>
+                                    <td>First Name</td>
+                                    <td>
+                                        @Model.FirstName
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Last Name</td>
+                                    <td>
+                                        @Model.LastName
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Gender</td>
+                                    <td>
+                                        @Model.Gender
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Phone Number</td>
+                                    <td>
+                                        @Model.PhoneNumber
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Email</td>
+                                    <td>
+                                        @Model.Email
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- /.col -->
+</div>

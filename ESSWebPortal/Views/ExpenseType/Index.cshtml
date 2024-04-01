@@ -1,0 +1,54 @@
+﻿@model IEnumerable<ESSDataAccess.Models.ExpenseTypeModel>
+
+@{
+    ViewData["Title"] = "Expense Types";
+    ViewData["Create"] = true;
+}
+<div class="card shadow">
+    <div class="card-header">
+        <div class="float-start">
+            <h4>@ViewData["Title"]</h4>
+        </div>
+        <div class="float-end">
+            <a asp-action="Create" class="btn btn-outline-primary shadow"><i class="fa fa-plus-circle fa-fw me-1"></i> Create new</a>
+        </div>
+    </div>
+    <div class="card-body">
+        <table id="datatable" class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Id)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Name)
+                    </th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Id)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                            @if (item.IsImgRequired)
+                            {
+                                <span class="badge bg-success">Image required</span>
+                            }
+                        </td>
+                        <td class="d-flex flex-row">
+
+                            <div class="p-1"><a data-bs-toggle="tooltip" data-bs-placement="top" title="Edit" class="btn btn-primary" asp-action="Edit" asp-route-id="@item.Id"><i class="fa fa-edit"></i></a></div>
+
+                            <div class="p-1"><a data-bs-toggle="tooltip" data-bs-placement="top" title="Delete" class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id"><i class="fa fa-trash"></i></a></div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

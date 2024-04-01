@@ -1,0 +1,142 @@
+﻿@model IEnumerable<TeamVM>
+@{
+    ViewData["Title"] = "Teams";
+    ViewData["Create"] = true;
+    var isReadOnly = User.IsInRole(ESSDataAccess.UserRoles.HR);
+}
+<div class="card shadow">
+    <div class="card-header">
+        <div class="float-start">
+            <h4>@ViewData["Title"]</h4>
+        </div>
+        <div class="float-end">
+            <a asp-action="Create" class="btn btn-outline-primary shadow"><i class="fa fa-plus-circle fa-fw me-1"></i> Create new</a>
+        </div>
+    </div>
+    <div class="card-body">
+        <table id="datatable" class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Id)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Name)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Description)
+                    </th>
+                    <th>
+                        Employees
+                    </th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var team in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => team.Id)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => team.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => team.Description)
+                        </td>
+                        <td>
+                            @team.UserCount
+                        </td>
+                        <td class="d-flex flex-row justify-content-start">
+                            <div class="p-1">
+                                <a data-bs-toggle="tooltip" data-bs-placement="top" title="Team Users" class="btn btn-secondary" onclick="viewUsers(@team.Id)"><i class="fa fa-eye"></i></a>
+                            </div>
+                            <div class="p-1">
+                                <a data-bs-toggle="tooltip" data-bs-placement="top" title="Edit" class="btn btn-primary" asp-action="Edit" asp-route-id="@team.Id"><i class="fa fa-edit"></i></a>
+                            </div>
+
+                            @if (team.Status == TeamStatus.Active)
+                            {
+                                <div class="p-1"><a data-bs-toggle="tooltip" data-bs-placement="top" title="Disable Team" class="btn btn-success" asp-action="Block" asp-route-teamId="@team.Id"><i class="fa fa-toggle-on"></i></a></div>
+
+                            }
+                            else
+                            {
+                                <div class="p-1"><a data-bs-toggle="tooltip" data-bs-placement="top" title="Enable Team" class="btn btn-danger" asp-action="Block" asp-route-teamId="@team.Id"><i class="fa fa-toggle-off"></i></a></div>
+
+                            }
+
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        function viewUsers(userId) {
+            $.ajax({
+                type: 'GET',
+                url: 'Team/GetUsersAjax/' + userId,
+                success: function (response) {
+                    console.log(response);
+
+                    var content = `<div class="card shadow">
+                                            <div class="card-body">
+                                                <table id="datatable" class="table table-bordered table-striped">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>
+                                                               UserName
+                                                            </th>
+                                                            <th>
+                                                               Name
+                                                            </th>
+                                                            <th>
+                                                               Email
+                                                            </th>
+                                                            <th>
+                                                                Phonenumber
+                                                            </th>
+                                                            <th>
+                                                                Address
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>`;
+
+                    for (let i = 0; i < response.length; i++) {
+                        var user = response[i];
+                        content += `<tr>
+                                                        <td>${user.userName}</td>
+                                                        <td>${user.firstName} ${user.lastName}</td>
+                                                                <td>${user.email}</td>
+                                                                <td>${user.phoneNumber}</td>
+                                                                <td>${user.address}</td>
+                                                        </tr>`;
+                    }
+                    content += `</tbody>
+                                        </table>
+                                    </div>
+                                </div>`;
+                    $('#largemodaltitle').text('Team Employees');
+
+                    $('#largemodalbody').html(content);
+
+                    $("#largemodal").modal('toggle');
+                },
+                failure: function (response) {
+                    console.log(response);
+                },
+                error: function (response) {
+                    console.log(response.responseText);
+                }
+
+            });
+        }
+
+    </script>
+}

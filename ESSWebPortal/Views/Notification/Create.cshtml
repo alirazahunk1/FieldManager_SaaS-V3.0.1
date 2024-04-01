@@ -1,0 +1,72 @@
+﻿@model CreateNotificationVM
+@{
+    ViewData["Title"] = "Create Notification";
+}
+@section Styles{
+    <link href="~/plugins/select2/css/select2.min.css" rel="stylesheet" />
+    <link href="~/plugins/select2/css/select2-bootstrap4.css" rel="stylesheet" />
+}
+<form asp-action="Create" method="post">
+    <div class="card">
+        <div class="card-body">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row">
+                <div class="form-group col-md-3">
+                    <label asp-for="Type" class="control-label"></label>
+                    <select asp-for="Type" asp-items="Html.GetEnumSelectList<NotificationTypeEnumVM>()" class="form-control"></select>
+                    <span asp-validation-for="Type" class="text-danger"></span>
+                </div>
+                 <div class="form-group col-md-6">
+                        <label asp-for="Message" class="control-label"></label>
+                        <textarea asp-for="Message" type="text" class="form-control"></textarea>
+                        <span asp-validation-for="Message" class="text-danger"></span>
+                    </div>
+            </div>
+            <div class="form-group col-md-3" id="teamdiv" style="display:none" >
+                <label asp-for="TeamId" class="control-label"></label>
+                <select asp-for="TeamId" asp-items="ViewBag.teams" class="multiple-select" multiple="multiple"></select>
+                <span asp-validation-for="TeamId" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-3" id="userdiv" style="display:none">
+                <label asp-for="UserId" class="control-label"></label>
+                <select asp-for="UserId" asp-items="ViewBag.users" class="multiple-select" multiple="multiple"></select>
+                <span asp-validation-for="UserId" class="text-danger"></span>
+            </div>
+            
+        </div>
+        <div class="card-footer">
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Send now</button>
+            </div>
+        </div>
+    </div>
+</form>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="~/plugins/select2/js/select2.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+
+            $('#userdiv').hide();
+            $('#teamdiv').hide();
+
+
+            $('#Type').on('change', function () {
+                if (this.value === '2') {
+                    $('#teamdiv').hide();
+                    $('#userdiv').show();
+                } else if (this.value == '1') {
+                    $('#userdiv').hide();
+                    $('#teamdiv').show();
+                } else {
+                    $('#userdiv').hide();
+                    $('#teamdiv').hide();
+                }
+            })
+        });
+
+    </script>
+    }

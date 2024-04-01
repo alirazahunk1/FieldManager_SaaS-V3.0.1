@@ -1,0 +1,192 @@
+﻿@{
+    ViewData["Title"] = ViewBag.team;
+    ViewData["Back"] = true;
+}
+<div class="row">
+    <div class="col-md-12">
+        <!-- DIRECT CHAT PRIMARY -->
+        <div class="card card-primary card-outline direct-chat direct-chat-primary" >
+            <div class="card-header">
+                <h3 class="card-title">Direct Chat</h3>
+
+                <div class="card-tools">
+                    <span title="3 New Messages" class="badge bg-primary">3</span>
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                    <button type="button" class="btn btn-tool" title="Contacts" data-widget="chat-pane-toggle">
+                        <i class="fas fa-comments"></i>
+                    </button>
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <!-- Conversations are loaded here -->
+                <div class="direct-chat-messages" id="items" style="height:500px">
+                   <div class="col justify-content-center align-items-center">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                   </div>
+                   Loading..
+                </div>
+                <!-- Contacts are loaded here -->
+                <div class="direct-chat-contacts">
+                    <ul class="contacts-list">
+                        <li>
+                            <a href="#">
+                                <img class="contacts-list-img" src="~/img/user.png" alt="User Avatar">
+                                <div class="contacts-list-info">
+                                    <span class="contacts-list-name">
+                                        Count Dracula
+                                        <small class="contacts-list-date float-right">2/28/2015</small>
+                                    </span>
+                                    <span class="contacts-list-msg">How have you been? I was...</span>
+                                </div>
+                                <!-- /.contacts-list-info -->
+                            </a>
+                        </li>
+                        <!-- End Contact Item -->
+                    </ul>
+                    <!-- /.contatcts-list -->
+                </div>
+                <!-- /.direct-chat-pane -->
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer">
+                    <div class="input-group">
+                        <input type="text" id="message" name="message" placeholder="Type Message ..." class="form-control">
+                        <span class="input-group-append">
+                        <button onclick="sendMessage()" class="btn btn-primary"><i class="fa fa-paper-plane"></i> Send</button>
+                        </span>
+                    </div>
+            </div>
+            <!-- /.card-footer-->
+        </div>
+        <!--/.direct-chat -->
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        var baseUrl = window.location.origin;
+        var x;
+        $(document).ready(function () {
+            getData();
+            autoRefreshStart();
+            $("#autoRefreshSwitch").change(function (val) {
+                if ($('#autoRefreshSwitch').is(':checked')) {
+                    //$('#autoRefreshSwitch').removeAttr('checked');
+                    autoRefreshStart();
+                } else {
+                    // $('#autoRefreshSwitch').attr('checked', 'checked');
+                    autoRefreshStop();
+                }
+            });
+        });
+
+        function sendMessage(){
+            var message = $('#message').val();
+            
+            if(message){
+                console.log(message);
+                $.ajax({
+                type:"POST",
+                url:`/Team/SendMessage?id=@(ViewBag.id)&message=${message}`,
+                success: function (response){
+                    getData();
+                        $('#message').val('');
+                    },
+                    failure: function (response) {
+                        console.log(response.responseText);
+                    },
+                    error: function (response) {
+                        console.log(response.responseText);
+                    }
+                });
+            }
+        }
+
+        function getData() {
+            $.ajax({
+                type: "GET",
+                url: "/Team/GetChatDataAjax/@(ViewBag.id)",
+                //data: { "name": $("#txtName").val() },
+                success: function (response) {
+                    var chat = response;
+                    var chatItems = chat.chatItems.reverse();
+                    console.log(chat);
+                    var contents = '';
+                    if(chatItems.length > 0){
+
+                        for (let i = 0; i < chatItems.length; i++) {
+                            var chatItem = chatItems[i];
+                            var content = '';
+                            //Own Message
+                            if (chatItem.from === null) {
+                                contents += ` <div class="direct-chat-msg right">
+                                        <div class="direct-chat-infos clearfix">
+                                            <span class="direct-chat-name float-right">You</span>
+                                                    <span class="direct-chat-timestamp float-right"> ${chatItem.createdAt} </span>
+                                        </div>
+                                        <!-- /.direct-chat-infos -->
+                                                <img class="direct-chat-img" src="${baseUrl}/img/user.png" alt="Message User Image">
+                                        <!-- /.direct-chat-img -->
+                                        <div class="direct-chat-text float-right" style="display:inline-flex">
+                                                     ${chatItem.message}
+                                        </div>
+                                        <!-- /.direct-chat-text -->
+                                    </div>`;
+                            }
+                            else {
+                                content = `
+                                                            <!-- Message. Default to the left -->
+                                                    <div class="direct-chat-msg">
+                                                        <div class="direct-chat-infos clearfix">
+                                                            <span class="direct-chat-name float-left">${chatItem.from}</span>
+                                                            <span class="direct-chat-timestamp float-left">${chatItem.createdAt}</span>
+                                                        </div>
+                                                        <!-- /.direct-chat-infos -->
+                                                        <img class="direct-chat-img" src="${baseUrl}/img/user.png" alt="Message User Image">
+                                                        <!-- /.direct-chat-img -->
+                                                          <div class="direct-chat-text" style="display:inline-flex">
+                                                            ${chatItem.message}
+                                                        </div>
+                                                        <!-- /.direct-chat-text -->
+                                                    </div>`;
+                            }
+
+                            contents += content;
+
+                        }
+                    }
+                    else{
+                        contents = '<p> No chats! </p>'
+                    }
+                    $('#items').html(contents);
+                    //Scrolling
+                    var elem = document.getElementById('items');
+                    elem.scrollTop = elem.scrollHeight;
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+        function autoRefreshStart() {
+            x = setInterval(function () {
+                console.log("Timer called")
+                getData();
+            }, 3000);
+        }
+        function autoRefreshStop() {
+            if (x != undefined) {
+                clearInterval(x);
+            }
+        }
+
+    </script>
+}

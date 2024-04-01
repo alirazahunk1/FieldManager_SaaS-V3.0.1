@@ -1,0 +1,90 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Views\Plan\Create.cshtml" />
+    <None Remove="Views\Plan\Details.cshtml" />
+    <None Remove="Views\Plan\Edit.cshtml" />
+    <None Remove="Views\Plan\Index.cshtml" />
+    <None Remove="Views\SASettings\Index.cshtml" />
+    <None Remove="Views\SuperAdmin\Activate.cshtml" />
+    <None Remove="Views\SuperAdmin\ChangePlan.cshtml" />
+    <None Remove="Views\SuperAdmin\Index.cshtml" />
+    <None Remove="Views\SuperAdmin\Orders.cshtml" />
+    <None Remove="Views\SuperAdmin\ResetPasswordBySAAdmin.cshtml" />
+    <None Remove="Views\SuperAdmin\UserDetails.cshtml" />
+    <None Remove="Views\SuperAdmin\UsersList.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+	  <EmbeddedResource Include="Views\SASettings\Index.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+	  <EmbeddedResource Include="Views\Plan\Create.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </EmbeddedResource>
+	  <EmbeddedResource Include="Views\Plan\Details.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </EmbeddedResource>
+	  <EmbeddedResource Include="Views\Plan\Edit.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </EmbeddedResource>
+	  <EmbeddedResource Include="Views\Plan\Index.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </EmbeddedResource>
+	  <EmbeddedResource Include="Views\SuperAdmin\Activate.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </EmbeddedResource>
+	  <EmbeddedResource Include="Views\SuperAdmin\ChangePlan.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </EmbeddedResource>
+		  <EmbeddedResource Include="Views\SuperAdmin\Index.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </EmbeddedResource>
+	  <EmbeddedResource Include="Views\SuperAdmin\Orders.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </EmbeddedResource>
+	  <EmbeddedResource Include="Views\SuperAdmin\ResetPasswordBySAAdmin.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </EmbeddedResource>
+	  <EmbeddedResource Include="Views\SuperAdmin\UserDetails.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </EmbeddedResource>
+	  <EmbeddedResource Include="Views\SuperAdmin\UsersList.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </EmbeddedResource>
+  
+
+
+</ItemGroup>
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+		<PackageReference Include="MySql.Data" Version="8.3.0" />
+		<PackageReference Include="NToastNotify" Version="8.0.0" />
+	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\ESSCommon.Core\ESSCommon.Core.csproj" />
+	  <ProjectReference Include="..\ESSDataAccess\ESSDataAccess.csproj" />
+	  <ProjectReference Include="..\ESSWebPortal.Core\ESSWebPortal.Core.csproj" />
+	</ItemGroup>
+</Project>

@@ -1,0 +1,152 @@
+﻿@inject SignInManager<AppUser> _signInmanager
+@inject ISASettings _appSettings
+<!DOCTYPE html>
+<html lang="en-US" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title> @await _appSettings.GetAppName() | @ViewData["Title"]</title>
+
+
+    <!-- ===============================================-->
+    <!--    Favicons-->
+    <!-- ===============================================-->
+    <link rel="shortcut icon" type="image/x-icon" href="~/favicon.ico">
+    <meta name="theme-color" content="#ffffff">
+    <script src="~/vendors/imagesloaded/imagesloaded.pkgd.min.js"></script>
+    <script src="~/vendors/simplebar/simplebar.min.js"></script>
+    <script src="~/assets/js/config.js"></script>
+
+
+    <!-- ===============================================-->
+    <!--    Stylesheets-->
+    <!-- ===============================================-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800;900&amp;display=swap" rel="stylesheet">
+    <link href="~/vendors/simplebar/simplebar.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link href="~/assets/css/theme-rtl.min.css" type="text/css" rel="stylesheet" id="style-rtl">
+    <link href="~/assets/css/theme.min.css" type="text/css" rel="stylesheet" id="style-default">
+    <link href="~/assets/css/user-rtl.min.css" type="text/css" rel="stylesheet" id="user-style-rtl">
+    <link href="~/assets/css/user.min.css" type="text/css" rel="stylesheet" id="user-style-default">
+
+
+
+    <script>
+        var phoenixIsRTL = window.config.config.phoenixIsRTL;
+        if (phoenixIsRTL) {
+            var linkDefault = document.getElementById('style-default');
+            var userLinkDefault = document.getElementById('user-style-default');
+            linkDefault.setAttribute('disabled', true);
+            userLinkDefault.setAttribute('disabled', true);
+            document.querySelector('html').setAttribute('dir', 'rtl');
+        } else {
+            var linkRTL = document.getElementById('style-rtl');
+            var userLinkRTL = document.getElementById('user-style-rtl');
+            linkRTL.setAttribute('disabled', true);
+            userLinkRTL.setAttribute('disabled', true);
+        }
+    </script>
+    <link href="~/vendors/leaflet/leaflet.css" rel="stylesheet">
+    <link href="~/vendors/leaflet.markercluster/MarkerCluster.css" rel="stylesheet">
+    <link href="~/vendors/leaflet.markercluster/MarkerCluster.Default.css" rel="stylesheet">
+    <link href="~/vendors/datatable/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
+    @RenderSection("Styles", required: false)
+</head>
+
+
+<body>
+
+    <!-- ===============================================-->
+    <!--    Main Content-->
+    <!-- ===============================================-->
+    <main class="main fs--1" id="top">
+        @if (ViewData["islogin"] != null)
+        {
+            @RenderBody()
+            ;
+        }
+        else
+        {
+            @if (User.IsInRole(UserRoles.SuperAdmin))
+            {
+                <partial name="_Sidebar" />
+            }
+            else
+            {
+                <partial name="_Sidebar_Tenant" />
+            }
+            <partial name="_Header" />
+            <div class="content">
+                @RenderBody()
+                <partial name="_Footer" />
+            </div>
+            @*  <partial name="_Fab"/>*@
+            <partial name="_GlobalModal" />
+        }
+    </main>
+
+
+    <!-- ===============================================-->
+    <!--    JavaScripts-->
+    <!-- ===============================================-->
+    <script src="~/vendors/popper/popper.min.js"></script>
+    <script src="~/vendors/bootstrap/bootstrap.min.js"></script>
+    <script src="~/assets/js/jquery.min.js"></script>
+    <script src="~/vendors/anchorjs/anchor.min.js"></script>
+    <script src="~/vendors/is/is.min.js"></script>
+    <script src="~/vendors/fontawesome/all.min.js"></script>
+    <script src="~/vendors/lodash/lodash.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=window.scroll"></script>
+    <script src="~/vendors/list.js/list.min.js"></script>
+    <script src="~/vendors/feather-icons/feather.min.js"></script>
+    <script src="~/vendors/dayjs/dayjs.min.js"></script>
+    <script src="~/assets/js/phoenix.js"></script>
+    <script src="~/vendors/echarts/echarts.min.js"></script>
+    <script src="~/vendors/leaflet/leaflet.js"></script>
+    <script src="~/vendors/leaflet.markercluster/leaflet.markercluster.js"></script>
+    <script src="~/vendors/leaflet.tilelayer.colorfilter/leaflet-tilelayer-colorfilter.min.js"></script>
+    @* <script src="~/assets/js/ecommerce-dashboard.js"></script>*@
+
+    <script src="~/vendors/datatable/js/jquery.dataTables.min.js"></script>
+    <script src="~/vendors/datatable/js/dataTables.bootstrap5.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            var table = $('#datatable').DataTable({
+                autoWidth: false,
+                lengthChange: false,
+                //responsive: true,
+                scrollX: true,
+                buttons: ["copy", "csv", "excel", "pdf", "print"]
+            });
+
+            table.buttons().container()
+                .appendTo('#datatable_wrapper .col-md-6:eq(0)');
+        });
+
+        function changeStatus(id) {
+            $.ajax({
+                url: '@Url.Action("ChangeStatus")',
+                type: 'POST',
+                data: { id: id },
+                success: function (data) {
+                    toastr.info("Status Updated");
+                }
+            });
+        }
+
+    </script>
+    @if (User.Identity.IsAuthenticated && User.IsInRole(UserRoles.Admin))
+    {
+        <script type="module" src="~/firebase/firebase_messaging.js"></script>
+    }
+    @await Component.InvokeAsync("NToastNotify")
+    @RenderSection("Scripts", required: false)
+</body>
+
+</html>

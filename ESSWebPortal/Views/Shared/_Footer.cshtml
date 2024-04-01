@@ -1,0 +1,11 @@
+﻿@inject ISASettings _settings;
+<footer class="footer position-absolute">
+    <div class="row g-0 justify-content-between align-items-center h-100">
+        <div class="col-12 col-sm-auto text-center">
+            <p class="mb-0 mt-2 mt-sm-0 text-900"> Code with <i class="bi bi-heart-fill text-danger"></i>  by <a class="mx-1" href="https://czappstudio.com" target="_blank">CZ App Studio</a><span class="d-none d-sm-inline-block"></span><span class="d-none d-sm-inline-block mx-1">|</span><br class="d-sm-none" /> &copy; 2023</p>
+        </div>
+        <div class="col-12 col-sm-auto text-center">
+            <p class="mb-0 text-600">V @await _settings.GetAppVersion()</p>
+        </div>
+    </div>
+</footer>
